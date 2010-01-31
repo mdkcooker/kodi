@@ -2,8 +2,11 @@
 %define name	xbmc
 %define branch	pvr-testing2
 %define version	9.11
-%define svnsnap	26907
-%define rel	1
+# the svn revision of the end-result:
+%define svnsnap	27303
+# the svn revision of the tarball:
+%define basesnap 26907
+%define rel	0.1
 
 Summary:	XBMC Media Center - media player and home entertainment system
 Name:		%{name}
@@ -15,32 +18,26 @@ URL:		http://xbmc.org/
 # REV=$(svn info $URL| sed -ne 's/^Last Changed Rev: //p')
 # svn export -r $REV $URL xbmc-pvr-testing2-$REV
 # tar -cJf xbmc-pvr-testing2-$REV.tar.xz xbmc-pvr-testing2-$REV
-Source:		%{name}-%{branch}-%svnsnap.tar.xz
+Source:		%{name}-%{branch}-%basesnap.tar.xz
 # weather.rar in zip format:
 # rm -f ../xbmc-weather.zip && unrar x ../xbmc-foo/media/weather.rar &&
 # md5sum ../xbmc-foo/media/weather.rar | cut -d" " -f1 | zip -0rz ../xbmc-weather.zip *
 Source1:	xbmc-weather.zip
-# fix GPL compatibility issues, from gpl-compat branch, as of r26893:
-Patch0:		xbmc-pvr-testing-26907-gpl-compat-26893.patch
-# fix crash if reading VDR response fails
-# submitted as http://xbmc.org/trac/ticket/8542
-Patch1:		xbmc-pvr-testing-fix-crash.patch
-# fix a mistake in trunk => pvr-testing2 merge; fixes build
-# already fixed upstream
-Patch2:		xbmc-pvr-testing2-fix-trunk-merge.patch
+# bring snapshot up-to-date with pvr-testing2 branch:
+Patch0:		xbmc-pvr-testing2-%basesnap-to-27303.patch
+# (reminder: check that upstream pvr-testing2 merges Fileutils.cpp:RenameFile properly)
 # format strings in embedded timidity
 Patch3:		xbmc-timidity-format-strings.patch
 # do not use --as-needed for python module, as that breaks loading
 # system libpython via the module
 Patch4:		xbmc-python-module-no-as-needed.patch
-# format strings in xbmc itself
-# submitted as http://xbmc.org/trac/ticket/8543
-Patch5:		xbmc-format-strings.patch
 # code assumes 4 byte unicode on linux, while our python has 2 byte unicode
 # hack, reported as http://xbmc.org/trac/ticket/8430
 Patch6:		xbmc-python-unicode-2byte.patch
 # fix various undefined symbols in submodules
-# quick hacks, not proper fixes
+# quick hacks, not proper fixes (also, normally upstream links many unneeded
+# libs into the main executable so that the dependencies of submodules are
+# satisfied; this doesn't happen with our --as-needed)
 Patch7:		xbmc-fix-undefined-symbols.patch
 # add missing stsound source files
 # partial revert of http://xbmc.svn.sourceforge.net/viewvc/xbmc?view=rev&revision=14069
@@ -48,12 +45,16 @@ Patch7:		xbmc-fix-undefined-symbols.patch
 Patch8:		xbmc-stsound-fix-missing-files.patch
 # use weather.zip instead of weather.rar, as our rar support is disabled
 # this simply uncomments .zip defines and comments .rar defines
+# applied upstream
 Patch9:		xbmc-pvr-testing2-use-weatherzip-not-rar.patch
 # hacks to load modules from @XBMCLIBS@ (set in %%prep)
 Patch10:	xbmc-fhs-hack.patch
 # build faad,dca support with internal headers, but do not build the
-# libraries themselves; use system copies with dlopen instead
+# libraries themselves; use system copies with dlopen instead;
+# this allows keeping them as optional external libraries
 Patch11:	xbmc-hack-ext-libs-with-int-headers.patch
+# Fix python2.6 syntax errors (from rpmfusion)
+Patch12:	xbmc-9.11-spyce.diff
 License:	GPLv3+
 Group:		Video
 BuildRoot:	%{_tmppath}/%{name}-root
@@ -108,6 +109,7 @@ BuildRequires:	vdpau-devel
 BuildRequires:	cwiid-devel
 BuildRequires:	libice-devel
 BuildRequires:	libx11-devel
+BuildRequires:	crystalhd-devel
 BuildRequires:	cmake
 BuildRequires:	gperf
 %ifarch %ix86
@@ -116,7 +118,6 @@ BuildRequires:	nasm
 BuildRequires:	imagemagick
 # presently unpackaged:
 # BuildRequires:	libass-devel
-# BuildRequires:	crystalhd-devel
 # dts and faad support use internal headers as per above patch
 Requires:	%{name}-core = %{version}-%{release}
 Requires:	%{name}-skin-confluence
@@ -137,7 +138,8 @@ engine, XBMC feels very natural to use from the couch and is the
 ideal solution for your home theater.
 
 This is the development version of XBMC from pvr-testing2 branch,
-with VDR streamdev support.
+with VDR streamdev support. Support for RAR files and XBMS protocol
+is not included due to license issues.
 
 This package provides the standard XBMC suite.
 
@@ -153,7 +155,19 @@ Requires:	%{_lib}mad0
 Requires:	%{_lib}ogg0
 Requires:	%{_lib}vorbisenc2
 Requires:	%{_lib}vorbis0
+# not nearly as common as the above, so suggest instead for now:
+Suggests:	%{_lib}crystalhd1
 Requires:	xbmc-skin
+# for FEH.py, to check current configuration is ok for xbmc:
+Requires:	xdpyinfo
+%if %{mdkversion} >= 201010
+Requires:	glxinfo
+%else
+Requires:	mesa-demos
+%endif
+# for FEH.py to allow it to give an error message (should be available already
+# on most systems):
+Requires:	pygtk2
 # Packages not shipped by Mandriva:
 Suggests:	%{_lib}faad2_2
 Suggests:	%{_lib}lame0
@@ -167,6 +181,9 @@ and entertainment hub for digital media.
 This package contains the core files of XBMC from pvr-testing2
 branch, with VDR streamdev support. See package 'xbmc' for the full
 suite.
+
+Support for RAR files and XBMS protocol is not included due to
+license issues.
 
 %package	script-examples
 Summary:	XBMC example python scripts
@@ -339,7 +356,10 @@ This is the version from pvr-testing2 branch, with VDR support.
 This package contains the xbmc-send eventclient.
 
 %prep
-%setup -q -n %name-%{branch}-%svnsnap
+%setup -q -n %name-%{branch}-%basesnap
+# make the patches affecting strings.xml from git apply to sources from svn:
+sed -i 's,^<!--\$Revision: [0-9]* \$-->$,<!--\$Revision\$-->,' language/*/strings.xml
+
 %apply_patches
 # otherwise backups end up in binary rpms
 find -type f -name '*.00??' -print -delete
@@ -362,6 +382,8 @@ sed -i 's,@XBMCLIBS@,"%{_libdir}/xbmc",g' \
 # adapt sonames for dlopen:
 grep -q libfaad.so.0 xbmc/DllPaths_generated.h.in
 sed -i s,libfaad.so.0,libfaad.so.2, xbmc/DllPaths_generated.h.in
+grep -q libcrystalhd.so\" xbmc/DllPaths_generated.h.in
+sed -i 's,"libcrystalhd.so","libcrystalhd.so.1",' xbmc/DllPaths_generated.h.in
 
 # confirm that there are no special://xbmc entries that would have to
 # be adapted:
@@ -378,10 +400,6 @@ chmod a+x lib/libmodplug/configure
 # fix python directory
 sed -i 's,python.\../site,python%py_ver/site,' tools/EventClients/Makefile
 
-# disable FEH.py to avoid dependencies on mesa-demos, xdpyinfo and gnome-python:
-sed -i 's,^python,true #&,' tools/Linux/xbmc.sh.in
-# this unfortunately disables the warning when using software rendering
-
 # original md5 stored in zip comment, see Source1
 current_weather_rar_md5=$(md5sum media/weather.rar | cut -d" " -f1)
 original_weather_rar_md5=$(unzip -qz %{_sourcedir}/xbmc-weather.zip)
@@ -393,6 +411,7 @@ install -m644 %{_sourcedir}/xbmc-weather.zip media/weather.zip
 %build
 export SVN_REV=%svnsnap
 ./bootstrap
+# fixes build
 autoreconf -vif lib/libmodplug
 
 # due to xbmc modules that use symbols from xbmc binary
