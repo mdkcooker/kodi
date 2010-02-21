@@ -68,6 +68,8 @@ Patch41:	xbmc-python-unicode-2byte.patch
 Patch42:	xbmc-stsound-fix-missing-files.patch
 # load global default-addons.xml if there is no local one yet
 # allows loading non-pvr addons by default as per trunk behaviour
+# (FIXME: what about added addons on upgrade? should we parse default-addons.xml always,
+#  while keeping a list of previously added addons?)
 Patch43:	xbmc-default-addons.patch
 
 # Patches for policy compatibility, not necessarily "real" upstream bugs
@@ -147,6 +149,7 @@ BuildRequires:	libx11-devel
 BuildRequires:	crystalhd-devel
 BuildRequires:	libmicrohttpd-devel
 BuildRequires:	libmodplug-devel
+BuildRequires:	a52dec-devel
 BuildRequires:	cmake
 BuildRequires:	gperf
 BuildRequires:	zip
