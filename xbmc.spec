@@ -54,6 +54,8 @@ Patch21:	xbmc-pvr-testing2-fix-save-settings.patch
 # fix non-literal format strings in goom
 # submitted in http://trac.xbmc.org/ticket/8661
 Patch23:	xbmc-goom-strfmt.patch
+# workaround usage of 'byte' in glib2 headers
+Patch24:        xbmc-fix-glib2.23.4.patch
 
 # Non-upstreamable patches for upstream bugs
 # =============================
@@ -82,7 +84,7 @@ Patch60:	xbmc-python-module-no-as-needed.patch
 # libs into the main executable so that the dependencies of submodules are
 # satisfied; this doesn't happen with our --as-needed)
 Patch61:	xbmc-fix-undefined-symbols.patch
-# same as above but for PVR symbols: 
+# same as above but for PVR symbols:
 Patch62:	xbmc-pvr-testing2-underlinking.patch
 # hacks to load modules from @XBMCLIBS@ (set in %%prep)
 Patch63:	xbmc-fhs-hack.patch
@@ -168,7 +170,7 @@ Suggests:	%{name}-nosefart = %{version}-%{release}
 
 %description
 XBMC is an award-winning free and open source software media player
-and entertainment hub for digital media. 
+and entertainment hub for digital media.
 
 While XBMC functions very well as a standard media player application
 for your computer, it has been designed to be the perfect companion
@@ -219,7 +221,7 @@ Obsoletes:	xbmc-web-pm3 < 9.11-1.svn27796
 
 %description	core
 XBMC is an award-winning free and open source software media player
-and entertainment hub for digital media. 
+and entertainment hub for digital media.
 
 This package contains the core files of XBMC from pvr-testing2
 branch, with VDR streamdev support. See package 'xbmc' for the full
@@ -245,7 +247,7 @@ Provides:	xbmc-skin
 
 %description	skin-confluence
 XBMC is an award-winning free and open source software media player
-and entertainment hub for digital media. 
+and entertainment hub for digital media.
 
 This is the version from pvr-testing2 branch, with VDR support.
 
@@ -259,7 +261,7 @@ Provides:	xbmc-skin
 
 %description	skin-pm3-hd
 XBMC is an award-winning free and open source software media player
-and entertainment hub for digital media. 
+and entertainment hub for digital media.
 
 This is the version from pvr-testing2 branch, with VDR support.
 
@@ -294,7 +296,7 @@ Group:		Video
 
 %description	eventclients-common
 XBMC is an award-winning free and open source software media player
-and entertainment hub for digital media. 
+and entertainment hub for digital media.
 
 This is the version from pvr-testing2 branch, with VDR support.
 
@@ -306,7 +308,7 @@ Group:		Development/C
 
 %description	eventclients-devel
 XBMC is an award-winning free and open source software media player
-and entertainment hub for digital media. 
+and entertainment hub for digital media.
 
 This is the version from pvr-testing2 branch, with VDR support.
 
@@ -319,7 +321,7 @@ Requires:	%{name}-eventclients-common = %{version}-%{release}
 
 %description	eventclient-wiiremote
 XBMC is an award-winning free and open source software media player
-and entertainment hub for digital media. 
+and entertainment hub for digital media.
 
 This is the version from pvr-testing2 branch, with VDR support.
 
@@ -333,7 +335,7 @@ Requires:	%{name}-eventclients-common = %{version}-%{release}
 
 %description	eventclient-j2me
 XBMC is an award-winning free and open source software media player
-and entertainment hub for digital media. 
+and entertainment hub for digital media.
 
 This is the version from pvr-testing2 branch, with VDR support.
 
@@ -348,7 +350,7 @@ Requires:	%{name}-eventclients-common = %{version}-%{release}
 
 %description	eventclient-ps3remote
 XBMC is an award-winning free and open source software media player
-and entertainment hub for digital media. 
+and entertainment hub for digital media.
 
 This is the version from pvr-testing2 branch, with VDR support.
 
@@ -361,7 +363,7 @@ Requires:	%{name}-eventclients-common = %{version}-%{release}
 
 %description	eventclient-xbmc-send
 XBMC is an award-winning free and open source software media player
-and entertainment hub for digital media. 
+and entertainment hub for digital media.
 
 This is the version from pvr-testing2 branch, with VDR support.
 
@@ -427,7 +429,8 @@ export CXX="g++ %optflags %{?ldflags}"
 # dvdcss is handled via dlopen when disabled
 # faac is always handled via libavcodec
 
-%make
+# parallel build broken as of 03/2010
+make
 
 %make -C tools/EventClients wiimote WII_EXTRA_OPTS="%{optflags} %{?ldflags}" prefix=%{_prefix}
 # prevent recompilation in install stage:
@@ -497,7 +500,7 @@ done
 # icons
 file %{buildroot}%{_datadir}/pixmaps/xbmc.png | grep -q 256 || exit 1
 install -m644 -D %{buildroot}%{_datadir}/pixmaps/xbmc.png %{buildroot}%{_iconsdir}/hicolor/256x256/apps/xbmc.png
-for size in 64 48 32 16; do 
+for size in 64 48 32 16; do
 	install -d -m755 %{buildroot}%{_iconsdir}/hicolor/${size}x${size}/apps
 	convert %{buildroot}%{_datadir}/pixmaps/xbmc.png -resize $size %{buildroot}%{_iconsdir}/hicolor/${size}x${size}/apps/xbmc.png
 done
