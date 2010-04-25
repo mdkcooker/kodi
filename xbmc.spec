@@ -40,6 +40,8 @@ Source:		%{name}-%{branch}-%basesnap.tar.xz
 Patch20:	xbmc-old-avcodec-without-h264profile-export.patch
 # fix missing -fPIC
 Patch21:	xbmc-projectm-fpic.patch
+# add versioning to avcodec ac3 workaround
+Patch22:	xbmc-versionize-avcodec-ac3-workaround.patch
 
 # Non-upstreamable patches for upstream bugs
 # =============================
@@ -376,7 +378,8 @@ sed -i 's,python.\../site,python%py_ver/site,' tools/EventClients/Makefile
 
 mkdir -p fake_libs
 # fake libfaad.so.. this is dlopened, here just for configure script
-gcc -c -xc /dev/null -o fake_libs/libfaad.so -shared -Wl,-soname,libfaad.so.2
+gcc -xc /dev/null -o fake_libs/libfaad.so -shared -Wl,-soname,libfaad.so.2
+sed -i "s,file-name=libfaad.so,file-name=$PWD/fake_libs/libfaad.so," configure.in
 
 %build
 export SVN_REV=%svnsnap
@@ -391,9 +394,6 @@ autoreconf -vif lib/libmodplug
 # workaround it by adding those into $CC and $CXX (as of 2010-04):
 export CC="gcc %optflags %{?ldflags}"
 export CXX="g++ %optflags %{?ldflags}"
-
-# faad soname check in configure uses CFLAGS only
-export CFLAGS="%optflags -L$PWD/fake_libs"
 
 %configure2_5x \
 	--disable-ccache \
