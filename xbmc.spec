@@ -1,12 +1,13 @@
 
 %define name	xbmc
 %define branch	pvr-testing2
+# this version is not backported to stable as xbmc.org warns against it
 %define version	9.11
 # the svn revision of the end-result:
-%define svnsnap	28014
+%define svnsnap	29467
 # the svn revision of the tarball:
-%define basesnap 28000
-%define rel	3
+%define basesnap 29467
+%define rel	1
 
 Summary:	XBMC Media Center - media player and home entertainment system
 Name:		%{name}
@@ -26,59 +27,28 @@ Source:		%{name}-%{branch}-%basesnap.tar.xz
 # Patches from upstream and related patches resolving merge conflicts
 # =================================
 # bring snapshot up-to-date with pvr-testing2 branch:
-# already up-to-date
-# Patch0:		xbmc-pvr-testing2-%basesnap-to-27596.patch
+#already up-to-date
+#Patch0:		xbmc-pvr-testing2-%basesnap-to-27596.patch
 # bring snapshot up-to-date with trunk:
-# git diff -a ffae046521a2e408..9663680e8808c55d4e2d
-Patch1:		xbmc-pvr-testing2-merge-trunk-27946-27976.patch
-# resolve merge issues in addon code:
-Patch2:		xbmc-pvr-testing2-merge-actions.patch
-# git diff -a 9663680e8808c55d4e2d..ced60f8a3b1fdf66828ef
-Patch3:		xbmc-pvr-testing2-merge-trunk-27976-27986.patch
-# git diff -a ced60f8a3b1fdf66828ef..80cbed7072a761ca39f976d1
-Patch4:		xbmc-pvr-testing2-merge-trunk-27986-28007.patch
-# drop httpapi support from unused ExecuteHttpApi() method, as it has not
-# been updated for the switch to microhttpd yet
-Patch5:		xbmc-addon-httpapi.patch
-# git diff -a 80cbed7072a761ca39f976d1..088a1f046d68e5161
-Patch6:		xbmc-pvr-testing2-merge-trunk-28007-28014.patch
+# git diff -a c1a3427fea..628eb326755f2a
+#up-to-date enough
+#Patch1:		xbmc-pvr-testing2-merge-trunk-29464-%svnsnap.patch
 
 # Upstreamable patches fixing upstream bugs
 # ===============================
-# better OpenGL visual selection routine
-# submitted in http://trac.xbmc.org/ticket/8661
-Patch20:	xbmc-glxvisuals.patch
-# fix saving addon settings
-# submitted as http://trac.xbmc.org/ticket/8836
-Patch21:	xbmc-pvr-testing2-fix-save-settings.patch
-# fix non-literal format strings in goom
-# submitted in http://trac.xbmc.org/ticket/8661
-Patch23:	xbmc-goom-strfmt.patch
-# workaround usage of 'byte' in glib2 headers
-Patch24:        xbmc-fix-glib2.23.4.patch
+# fix build with older ffmpeg
+Patch20:	xbmc-old-avcodec-without-h264profile-export.patch
+# fix missing -fPIC
+Patch21:	xbmc-projectm-fpic.patch
 
 # Non-upstreamable patches for upstream bugs
 # =============================
-# fix addon library sonames:
-Patch40:	xbmc-pvr-testing2-addon-sonames.patch
 # code assumes 4 byte unicode on linux, while our python has 2 byte unicode
 # hack, reported as http://xbmc.org/trac/ticket/8430
 Patch41:	xbmc-python-unicode-2byte.patch
-# add missing stsound source files
-# partial revert of http://xbmc.svn.sourceforge.net/viewvc/xbmc?view=rev&revision=14069
-# and fix it for 64bit; still doesn't seem to work, though
-Patch42:	xbmc-stsound-fix-missing-files.patch
-# load global default-addons.xml if there is no local one yet
-# allows loading non-pvr addons by default as per trunk behaviour
-# (FIXME: what about added addons on upgrade? should we parse default-addons.xml always,
-#  while keeping a list of previously added addons?)
-Patch43:	xbmc-default-addons.patch
 
 # Patches for policy compatibility, not necessarily "real" upstream bugs
 # ================================
-# do not use --as-needed for python module, as that breaks loading
-# system libpython via the module
-Patch60:	xbmc-python-module-no-as-needed.patch
 # fix various undefined symbols in submodules
 # quick hacks, not proper fixes (also, normally upstream links many unneeded
 # libs into the main executable so that the dependencies of submodules are
@@ -92,9 +62,7 @@ Patch64:	xbmc-addons-fhs-hack.patch
 # build faad,dca support with internal headers, but do not build the
 # libraries themselves; use system copies with dlopen instead;
 # this allows keeping them as optional external libraries
-# (nb. dca is no longer used in favor of ffmpeg, but faad part is still useful)
 Patch65:	xbmc-hack-ext-libs-with-int-headers.patch
-
 License:	GPLv3+
 Group:		Video
 BuildRoot:	%{_tmppath}/%{name}-root
@@ -152,6 +120,10 @@ BuildRequires:	crystalhd-devel
 BuildRequires:	libmicrohttpd-devel
 BuildRequires:	libmodplug-devel
 BuildRequires:	a52dec-devel
+BuildRequires:	ssh-devel
+BuildRequires:	libva-devel
+BuildRequires:	gettext-devel
+BuildRequires:	expat-devel
 BuildRequires:	cmake
 BuildRequires:	gperf
 BuildRequires:	zip
@@ -159,7 +131,7 @@ BuildRequires:	zip
 BuildRequires:	nasm
 %endif
 BuildRequires:	imagemagick
-# presently unpackaged:
+# presently unpackaged, internal version used:
 # BuildRequires:	libass-devel
 # dts and faad support use internal headers as per above patch
 Requires:	%{name}-core = %{version}-%{release}
@@ -387,11 +359,10 @@ sed -i 's,@XBMCLIBS@,%{_libdir}/xbmc,g' tools/Linux/xbmc.sh.in
 sed -i 's,@XBMCLIBS@,"%{_libdir}/xbmc",g' \
 	xbmc/cores/DllLoader/DllLoaderContainer.cpp \
 	xbmc/lib/libPython/XBPython.cpp \
-	xbmc/utils/AddonDll.h
+	xbmc/addons/AddonDll.h \
+	xbmc/addons/AddonManager.cpp
 
 # adapt sonames for dlopen:
-grep -q \"libfaad.so.0\" xbmc/DllPaths_generated.h.in
-sed -i 's,"libfaad.so.0","libfaad.so.2",' xbmc/DllPaths_generated.h.in
 grep -q libcrystalhd.so\" xbmc/DllPaths_generated.h.in
 sed -i 's,"libcrystalhd.so","libcrystalhd.so.1",' xbmc/DllPaths_generated.h.in
 
@@ -403,6 +374,10 @@ rm -r xbmc/cores/DllLoader/exports/emu_socket
 # fix python directory
 sed -i 's,python.\../site,python%py_ver/site,' tools/EventClients/Makefile
 
+mkdir -p fake_libs
+# fake libfaad.so.. this is dlopened, here just for configure script
+gcc -c -xc /dev/null -o fake_libs/libfaad.so -shared -Wl,-soname,libfaad.so.2
+
 %build
 export SVN_REV=%svnsnap
 ./bootstrap
@@ -413,9 +388,12 @@ autoreconf -vif lib/libmodplug
 %define _disable_ld_no_undefined 1
 
 # some parts are compiled/linked without $C(XX)FLAGS and linked without $LDFLAGS,
-# workaround it by adding those into $CC and $CXX (as of 2010-01):
+# workaround it by adding those into $CC and $CXX (as of 2010-04):
 export CC="gcc %optflags %{?ldflags}"
 export CXX="g++ %optflags %{?ldflags}"
+
+# faad soname check in configure uses CFLAGS only
+export CFLAGS="%optflags -L$PWD/fake_libs"
 
 %configure2_5x \
 	--disable-ccache \
@@ -429,8 +407,7 @@ export CXX="g++ %optflags %{?ldflags}"
 # dvdcss is handled via dlopen when disabled
 # faac is always handled via libavcodec
 
-# parallel build broken as of 03/2010
-make
+%make
 
 %make -C tools/EventClients wiimote WII_EXTRA_OPTS="%{optflags} %{?ldflags}" prefix=%{_prefix}
 # prevent recompilation in install stage:
@@ -444,12 +421,9 @@ rm -rf %{buildroot}
 # in %%doc already:
 rm %{buildroot}%{_datadir}/xbmc/{*.txt,LICENSE.GPL,README.linux}
 
-# we already have shared ones
-rm %{buildroot}%{_libdir}/libXBMC_*.a
-
 # unused
 rm %{buildroot}%{_datadir}/xsessions/XBMC.desktop
-# our version:
+# our version of the above:
 install -d -m755 %{buildroot}%{_sysconfdir}/X11/wmsession.d
 cat > %{buildroot}%{_sysconfdir}/X11/wmsession.d/15XBMC <<EOF
 NAME=XBMC
@@ -460,25 +434,6 @@ SCRIPT:
 exec %{_bindir}/xbmc-standalone
 EOF
 
-# mediaportal client is not built on linux yet
-grep -q '<library>XBMC_MPTV.pvr</library>' %{buildroot}%{_datadir}/xbmc/addons/pvr/MediaPortal/description.xml
-[ ! -e %{buildroot}%{_datadir}/xbmc/addons/pvr/MediaPortal/XBMC_MPTV.pvr ]
-rm -rf %{buildroot}%{_datadir}/xbmc/addons/pvr/MediaPortal
-
-# create default-addons.xml file, loading non-PVR addons by default as per trunk behaviour
-echo "<addons>" > %{buildroot}%{_datadir}/xbmc/default-addons.xml
-for type in visualization screensaver; do
-	echo "<$type>"
-	for file in %{buildroot}%{_datadir}/xbmc/addons/${type}s/*/description.xml; do
-		uuid=$(sed -ne 's,^.*<uuid>\(.*\)</uuid>.*$,\1,p' $file)
-		echo "<addon>"
-		echo "<uuid>$uuid</uuid>"
-		echo "</addon>"
-	done
-	echo "</$type>"
-done >> %{buildroot}%{_datadir}/xbmc/default-addons.xml
-echo "</addons>" >> %{buildroot}%{_datadir}/xbmc/default-addons.xml
-
 # when adding files here remember to make sure they are handled in fhs-hack.patch!
 for file in \
 	%{buildroot}%{_datadir}/xbmc/xbmc.bin \
@@ -487,9 +442,10 @@ for file in \
 	%{buildroot}%{_datadir}/xbmc/system/players/dvdplayer/*.so \
 	%{buildroot}%{_datadir}/xbmc/system/players/paplayer/*.so \
 	%{buildroot}%{_datadir}/xbmc/system/python/*.so \
-	%{buildroot}%{_datadir}/xbmc/addons/pvr/*/*.pvr \
-	%{buildroot}%{_datadir}/xbmc/addons/screensavers/*/*.xbs \
-	%{buildroot}%{_datadir}/xbmc/addons/visualizations/*/*.vis \
+	%{buildroot}%{_datadir}/xbmc/addons/*/*.pvr \
+	%{buildroot}%{_datadir}/xbmc/addons/*/*.xbs \
+	%{buildroot}%{_datadir}/xbmc/addons/*/*.vis \
+	%{buildroot}%{_datadir}/xbmc/addons/*/*.so \
 	; do
 	dirname="$(dirname "$file")"
 	dirname="${dirname#%{buildroot}%{_datadir}/xbmc}"
@@ -543,11 +499,6 @@ rm -rf %{buildroot}
 %{_bindir}/xbmc-standalone
 %dir %{_libdir}/xbmc
 %dir %{_libdir}/xbmc/addons
-%dir %{_libdir}/xbmc/addons/pvr
-%dir %{_libdir}/xbmc/addons/pvr/*
-%dir %{_libdir}/xbmc/addons/screensavers
-%dir %{_libdir}/xbmc/addons/visualizations
-%dir %{_libdir}/xbmc/addons/visualizations/*
 %dir %{_libdir}/xbmc/system
 %dir %{_libdir}/xbmc/system/players
 %dir %{_libdir}/xbmc/system/players/dvdplayer
@@ -555,10 +506,14 @@ rm -rf %{buildroot}
 %dir %{_libdir}/xbmc/system/python
 %{_libdir}/xbmc/xbmc.bin
 %{_libdir}/xbmc/xbmc-xrandr
-%{_libdir}/xbmc/addons/pvr/*/*.pvr
-%{_libdir}/xbmc/addons/visualizations/*/*.vis
+%dir %{_libdir}/xbmc/addons/*
+%{_libdir}/xbmc/addons/*/*.so
+%{_libdir}/xbmc/addons/*/*.pvr
+%{_libdir}/xbmc/addons/*/*.vis
+%exclude %{_libdir}/xbmc/addons/net.sf.rsxs.*
 %{_libdir}/xbmc/system/ImageLib-*-linux.so
 %{_libdir}/xbmc/system/hdhomerun-*-linux.so
+%{_libdir}/xbmc/system/libcpluff-*-linux.so
 %{_libdir}/xbmc/system/libexif-*-linux.so
 %{_libdir}/xbmc/system/libid3tag-*-linux.so
 %{_libdir}/xbmc/system/players/dvdplayer/libass-*-linux.so
@@ -574,12 +529,9 @@ rm -rf %{buildroot}
 %{_libdir}/xbmc/system/players/paplayer/SNESAPU-*-linux.so
 %endif
 %{_libdir}/xbmc/system/python/python*-*-linux.so
-# Not libified as they are completely useless without XBMC, and there is no
-# need to have multiple copies installed. - Anssi 02/2010
-%{_libdir}/libXBMC_*.so.*
 %dir %{_datadir}/xbmc
 %{_datadir}/xbmc/addons
-%{_datadir}/xbmc/default-addons.xml
+%exclude %{_datadir}/xbmc/addons/net.sf.rsxs.*
 %{_datadir}/xbmc/FEH.py
 %{_datadir}/xbmc/language
 %{_datadir}/xbmc/media
@@ -599,10 +551,7 @@ rm -rf %{buildroot}
 %files devel
 %defattr(-,root,root)
 %dir %{_includedir}/xbmc
-%doc %{_includedir}/xbmc/NOTE
-%{_includedir}/xbmc/libXBMC_*.h
-%{_includedir}/xbmc/xbmc_*.h
-%{_libdir}/libXBMC_*.so
+%{_includedir}/xbmc/xbmcclient.h
 
 %files skin-confluence
 %defattr(-,root,root)
@@ -614,8 +563,8 @@ rm -rf %{buildroot}
 
 %files screensavers-default
 %defattr(-,root,root)
-%dir %{_libdir}/xbmc/addons/screensavers/*
-%{_libdir}/xbmc/addons/screensavers/*/*.xbs
+%{_libdir}/xbmc/addons/net.sf.rsxs.*
+%{_datadir}/xbmc/addons/net.sf.rsxs.*
 
 %files nosefart
 %defattr(-,root,root)
