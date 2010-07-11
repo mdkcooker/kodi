@@ -7,7 +7,7 @@
 %define svnsnap	29467
 # the svn revision of the tarball:
 %define basesnap 29467
-%define rel	1
+%define rel	2
 
 Summary:	XBMC Media Center - media player and home entertainment system
 Name:		%{name}
