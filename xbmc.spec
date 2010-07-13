@@ -270,11 +270,6 @@ rm -rf xbmc/cores/dvdplayer/Codecs/{libdts,liba52} xbmc/cores/paplayer/AC3Codec/
 # win32 only
 rm -rf system/players/dvdplayer/etc/fonts
 
-mkdir -p fake_libs
-# fake libfaad.so.. this is dlopened, here just for configure script
-gcc -xc /dev/null -o fake_libs/libfaad.so -shared -Wl,-soname,libfaad.so.2
-sed -i "s,file-name=libfaad.so,file-name=$PWD/fake_libs/libfaad.so," configure.in
-
 %build
 export SVN_REV=%svnsnap
 ./bootstrap
