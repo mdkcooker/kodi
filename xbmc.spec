@@ -40,6 +40,9 @@ Source:		%{name}-%basesnap.tar.xz
 #up-to-date enough
 #Patch1:		xbmc-trunk-29464-%svnsnap.patch
 
+# build snesapu on x86 as intended (committed upstream):
+Patch10:	xbmc-fix-snesapu.patch
+
 # build faad support with internal headers, but do not build the
 # internal library; use system lib with dlopen instead;
 # this allows keeping it as optional external library
