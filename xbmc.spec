@@ -8,7 +8,7 @@
 # the svn revision of the tarball:
 %define basesnap 31746
 %define branchsnap 30871
-%define rel	2
+%define rel	3
 
 %define branchr	%([ "%branch" ] && echo .%branch | tr - _)
 
