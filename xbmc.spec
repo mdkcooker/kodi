@@ -273,6 +273,9 @@ export SVN_REV=%svnsnap
 	--disable-dvdcss \
 	--disable-faac \
 	--enable-goom \
+%if %{mdkversion} <= 201010
+	--disable-vaapi \
+%endif
 %if %{mdkversion} >= 201000
 	--with-lirc-device=/var/run/lirc/lircd
 %else
