@@ -1,14 +1,14 @@
 
 %define name	xbmc
-%define branch	%nil
-#define branch	pvr-testing2
+%define branch_release	dharma
+%define branch_feature	pvr-testing2
+%define branch	%branch_release.%branch_feature
 %define version	9.11
 # the svn revision of the end-result:
-%define svnsnap	31746
+%define svnsnap	32705
 # the svn revision of the tarball:
-%define basesnap 31746
-%define branchsnap 30871
-%define rel	3
+%define basesnap 32705
+%define rel	1
 
 %define branchr	%([ "%branch" ] && echo .%branch | tr - _)
 
@@ -17,31 +17,28 @@ Name:		%{name}
 Version:	%{version}
 Release:	%mkrel 1.svn%svnsnap%branchr.%rel
 URL:		http://xbmc.org/
-# URL=https://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk
-# REV=$(svn info $URL| sed -ne 's/^Last Changed Rev: //p')
-# svn export -r $REV $URL xbmc-pvr-testing2-$REV
-# tar -cJf xbmc-pvr-testing2-$REV.tar.xz xbmc-pvr-testing2-$REV
-# or
-# REV=$(git log -1 origin/master | grep git-svn-id | sed -ne 's,^.*@\([^ ]\+\).*$,\1,p')
-# git archive --prefix=xbmc-$REV/ origin/master | xz > xbmc-$REV.tar.xz
-# Patches from upstream and related patches resolving merge conflicts
-Source:		%{name}-%basesnap.tar.xz
+# REV=$(git log -1 origin/Dharma | grep git-svn-id | sed -ne 's,^.*@\([^ ]\+\).*$,\1,p')
+# git archive --prefix=xbmc-dharma-$REV/ origin/Dharma | xz > xbmc-dharma-$REV.tar.xz
+Source:		%{name}-%branch_release-%basesnap.tar.xz
 
 # bring snapshot up-to-date with pvr-testing2 branch:
-# git diff -a 11347c77560180821f0..origin/pvr-testing2
-#Patch0:		xbmc-pvr-testing2-%branchsnap.patch
-## NOTE: When updating, confirm that strings 23053-23054 are set/used correctly.
-# temporary merge hack:
-#Patch1:		xbmc-pvr-testing2-fix-merge.patch
-# fix missing addons.xml files
-#Patch2:		xbmc-pvr-testing2-addons-xml.patch
+# git diff -ba 33a036c1efc852feb..600458134f262455 | filterdiff -x*.dll -x*.sln -x*.vcproj -x*/configure -x*/windows/* -x*win32*
+# + rediff against dharma
+Patch0:		xbmc-dharma-pvr-testing2-32579.patch
+# git diff -a 600458134f2624558b06..a8dd7de674433456ca0366
+Patch1:		xbmc-dharma-pvr-testing2-32579-32590.patch
+
 # bring snapshot up-to-date with trunk:
 # git diff -a c1a3427fea..628eb326755f2a
-#up-to-date enough
-#Patch1:		xbmc-trunk-29464-%svnsnap.patch
+## already up-to-date
+#Patch10:		xbmc-trunk-29464-%svnsnap.patch
 
-# build snesapu on x86 as intended (committed upstream):
-Patch10:	xbmc-fix-snesapu.patch
+# VDPAU patches, on their way upstream
+Patch31:	0001-fixed-ensure-that-surfaces-used-for-VDPAU-video-mixe.patch
+Patch32:	0002-fixed-VDPAU-temporal-deinterlacer-was-not-provided-e.patch
+Patch33:	0003-changed-allow-VDPAU-reverse-telecine-when-deinterlac.patch
+Patch34:	0004-fixed-VDPAU-reverse-telecine.patch
+Patch35:	0005-changed-enable-VDPAU-temporal-deinterlacer-when-temp.patch
 
 # build faad support with internal headers, but do not build the
 # internal library; use system lib with dlopen instead;
@@ -110,6 +107,7 @@ BuildRequires:	libva-devel
 BuildRequires:	gettext-devel
 BuildRequires:	expat-devel
 BuildRequires:	libass-devel
+BuildRequires:	rtmp-devel
 BuildRequires:	cmake
 BuildRequires:	gperf
 BuildRequires:	zip
@@ -164,28 +162,14 @@ and combined with its beautiful interface and powerful skinning
 engine, XBMC feels very natural to use from the couch and is the
 ideal solution for your home theater.
 
-This is the development version of XBMC from trunk, without VDR
-support. Support for RAR files and XBMS protocol is not
-included due to license issues.
-
-%if 0
-%package	devel
-Summary:	XBMC addon development files
-Group:		Development/C++
-Requires:	%{name} = %{version}-%{release}
-
-%description	devel
-Development headers and library symlinks needed for building XBMC
-addons. This package is not needed for normal XBMC usage.
-%endif
+This is the development version of XBMC from dharma release branch,
+with VDR support added from pvr-testing2 branch. Support for RAR
+files and XBMS protocol is not included due to license issues.
 
 %package	eventclients-common
 Summary:	Common files for XBMC eventclients
 Group:		Video
 %py_requires
-# required by zeroconf.py, only used by PS3 sixaxis client,
-# not installed by default:
-# Requires:	python-gobject avahi-python python-dbus
 
 %description	eventclients-common
 XBMC is an award-winning free and open source software media player
@@ -227,17 +211,21 @@ and entertainment hub for digital media.
 This package contains the J2ME eventclient, providing a bluetooth
 server that can communicate with a mobile tool supporting J2ME.
 
-%package	eventclient-ps3remote
-Summary:	PS3 Remote eventclient for XBMC
+%package	eventclient-ps3
+Summary:	PS3 eventclients for XBMC
 Group:		Video
 Requires:	python-pybluez
 Requires:	%{name}-eventclients-common = %{version}-%{release}
+# requires via zeroconf.py, only used by xbmc-ps3d:
+Requires:	python-gobject avahi-python python-dbus
+# TODO merge all these?, and TODO zeroconf.py to a correct package? :)
+Obsoletes:	eventclient-ps3remote < 9.11-1.svn31936
 
-%description	eventclient-ps3remote
+%description	eventclient-ps3
 XBMC is an award-winning free and open source software media player
 and entertainment hub for digital media.
 
-This package contains the PS3 Remote eventclient.
+This package contains the PS3 remote and sixaxis eventclients.
 
 %package	eventclient-xbmc-send
 Summary:	PS3 eventclient for XBMC
@@ -251,10 +239,7 @@ and entertainment hub for digital media.
 This package contains the xbmc-send eventclient.
 
 %prep
-%setup -q -n %name-%basesnap
-# make the patches affecting strings.xml from git apply to sources from svn:
-sed -i 's,^<!--\$Revision: [0-9]* \$-->$,<!--\$Revision\$-->,' language/*/strings.xml
-
+%setup -q -n %name-%branch_release-%basesnap
 %apply_patches
 # otherwise backups end up in binary rpms
 find -type f -name '*.00??' -print -delete
@@ -375,8 +360,8 @@ rm -rf %{buildroot}
 %{_libdir}/xbmc/xbmc.bin
 %{_libdir}/xbmc/xbmc-xrandr
 %dir %{_libdir}/xbmc/addons/*
-#%{_libdir}/xbmc/addons/*/*.so
-#%{_libdir}/xbmc/addons/*/*.pvr
+%{_libdir}/xbmc/addons/*/*.so
+%{_libdir}/xbmc/addons/*/*.pvr
 %{_libdir}/xbmc/addons/*/*.vis
 %{_libdir}/xbmc/addons/*/*.xbs
 %{_libdir}/xbmc/addons/script.module.*/*.xml
@@ -402,20 +387,12 @@ rm -rf %{buildroot}
 %{_datadir}/xbmc/FEH.py
 %{_datadir}/xbmc/language
 %{_datadir}/xbmc/media
-%dir %{_datadir}/xbmc/scripts
-%{_datadir}/xbmc/scripts/autoexec.py
 %{_datadir}/xbmc/sounds
 %{_datadir}/xbmc/system
 %{_datadir}/xbmc/userdata
 %{_datadir}/xbmc/web
 %{_datadir}/applications/xbmc.desktop
 %{_iconsdir}/hicolor/*/apps/xbmc.png
-
-%if 0
-%files devel
-%defattr(-,root,root)
-%dir %{_includedir}/xbmc
-%endif
 
 %files eventclients-common
 %defattr(-,root,root)
@@ -432,8 +409,9 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %{_bindir}/xbmc-j2meremote
 
-%files eventclient-ps3remote
+%files eventclient-ps3
 %defattr(-,root,root)
+%{_bindir}/xbmc-ps3d
 %{_bindir}/xbmc-ps3remote
 
 %files eventclient-xbmc-send
