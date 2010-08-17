@@ -40,6 +40,9 @@ Patch33:	0003-changed-allow-VDPAU-reverse-telecine-when-deinterlac.patch
 Patch34:	0004-fixed-VDPAU-reverse-telecine.patch
 Patch35:	0005-changed-enable-VDPAU-temporal-deinterlacer-when-temp.patch
 
+# applied upstream
+Patch37:	0001-fixed-crash-if-PVR-addon-fails-to-connect-on-startup.patch
+
 # build faad support with internal headers, but do not build the
 # internal library; use system lib with dlopen instead;
 # this allows keeping it as optional external library
