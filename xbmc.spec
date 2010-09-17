@@ -3,19 +3,19 @@
 %define branch_release	dharma
 %define branch_feature	pvr-testing2
 %define branch	%branch_release.%branch_feature
-%define version	9.11
+%define version	10.0
 # the svn revision of the end-result:
-%define svnsnap	32705
+%define svnsnap	33938
 # the svn revision of the tarball:
-%define basesnap 32705
-%define rel	2
+%define basesnap 33938
+%define rel	1
 
 %define branchr	%([ "%branch" ] && echo .%branch | tr - _)
 
 Summary:	XBMC Media Center - media player and home entertainment system
 Name:		%{name}
 Version:	%{version}
-Release:	%mkrel 1.svn%svnsnap%branchr.%rel
+Release:	%mkrel 0.svn%svnsnap%branchr.%rel
 URL:		http://xbmc.org/
 # REV=$(git log -1 origin/Dharma | grep git-svn-id | sed -ne 's,^.*@\([^ ]\+\).*$,\1,p')
 # git archive --prefix=xbmc-dharma-$REV/ origin/Dharma | xz > xbmc-dharma-$REV.tar.xz
@@ -24,28 +24,33 @@ Source:		%{name}-%branch_release-%basesnap.tar.xz
 # bring snapshot up-to-date with pvr-testing2 branch:
 # git diff -ba 33a036c1efc852feb..600458134f262455 | filterdiff -x*.dll -x*.sln -x*.vcproj -x*/configure -x*/windows/* -x*win32*
 # + rediff against dharma
-Patch0:		xbmc-dharma-pvr-testing2-32579.patch
+#Patch0:		xbmc-dharma-pvr-testing2-32579.patch
 # git diff -a 600458134f2624558b06..a8dd7de674433456ca0366
-Patch1:		xbmc-dharma-pvr-testing2-32579-32590.patch
+#Patch1:		xbmc-dharma-pvr-testing2-32579-32590.patch
+# rebased:
+Patch0:		0001-XBMC-pvr-testing2-r32590-linux-bits.patch
 
 # bring snapshot up-to-date with trunk:
 # git diff -a c1a3427fea..628eb326755f2a
 ## already up-to-date
 #Patch10:		xbmc-trunk-29464-%svnsnap.patch
 
-# VDPAU patches, on their way upstream
-Patch31:	0001-fixed-ensure-that-surfaces-used-for-VDPAU-video-mixe.patch
+# VDPAU backports from upstream master
+Patch31:	0001-changed-split-CDVDVideoCodecFFmpeg-GetPicture.patch
 Patch32:	0002-fixed-VDPAU-temporal-deinterlacer-was-not-provided-e.patch
 Patch33:	0003-changed-allow-VDPAU-reverse-telecine-when-deinterlac.patch
 Patch34:	0004-fixed-VDPAU-reverse-telecine.patch
 Patch35:	0005-changed-enable-VDPAU-temporal-deinterlacer-when-temp.patch
+Patch36:	0006-fixed-flush-VDPAU-video-surfaces-and-picture-queue-w.patch
+Patch37:	0007-fixed-picture.iDuration-0-comparison.patch
+Patch38:	0008-fixed-vdpau-needs-to-memset-its-DVDVideoPicture-stru.patch
 
-# applied upstream
-Patch37:	0001-fixed-crash-if-PVR-addon-fails-to-connect-on-startup.patch
+# applied upstream in pvr-testing2
+Patch50:	0001-fixed-crash-if-PVR-addon-fails-to-connect-on-startup.patch
 
 # build faad support with internal headers, but do not build the
 # internal library; use system lib with dlopen instead;
-# this allows keeping it as optional external library
+# this allows keeping it as an optional external library
 Patch70:	xbmc-hack-ext-faad-with-int-headers.patch
 
 # nosefart audio plugin and RSXS-0.9 based screensavers are GPLv2
@@ -111,6 +116,7 @@ BuildRequires:	gettext-devel
 BuildRequires:	expat-devel
 BuildRequires:	libass-devel
 BuildRequires:	rtmp-devel
+BuildRequires:	bluray-devel
 BuildRequires:	cmake
 BuildRequires:	gperf
 BuildRequires:	zip
@@ -119,16 +125,19 @@ BuildRequires:	nasm
 %endif
 Requires:	lsb-release
 # dlopened:
-Requires:	%{_lib}curl4
-Requires:	%{_lib}flac8
-Requires:	%{_lib}vorbisfile3
-Requires:	%{_lib}mad0
-Requires:	%{_lib}ogg0
-Requires:	%{_lib}vorbisenc2
-Requires:	%{_lib}vorbis0
-Requires:	%{_lib}modplug0
-# not nearly as common as the above, so suggest instead for now:
-Suggests:	%{_lib}crystalhd2
+%define dlopenreq() %(rpm -qf --qf '%%{name}' $(readlink -f %{_libdir}/lib%{1}.so) || echo %{name})
+Requires:	%dlopenreq curl
+Requires:	%dlopenreq FLAC
+Requires:	%dlopenreq mad
+Requires:	%dlopenreq ogg
+Requires:	%dlopenreq vorbis
+Requires:	%dlopenreq vorbisenc
+Requires:	%dlopenreq vorbisfile
+Requires:	%dlopenreq modplug
+Requires:	%dlopenreq rtmp
+# not nearly as common as the above, so just suggest instead for now:
+Suggests:	%dlopenreq bluray
+Suggests:	%dlopenreq crystalhd
 # for FEH.py, to check current configuration is ok for xbmc:
 Requires:	xdpyinfo
 %if %{mdkversion} >= 201010
@@ -139,6 +148,9 @@ Requires:	mesa-demos
 # for FEH.py to allow it to give an error message (should be available already
 # on most systems):
 Requires:	pygtk2
+# for xbmc python scripts:
+Requires:	python-imaging
+Requires:	python-sqlite2
 # Packages not shipped by Mandriva:
 Suggests:	%{_lib}faad2_2
 Suggests:	%{_lib}lame0
@@ -310,6 +322,9 @@ SCRIPT:
 exec %{_bindir}/xbmc-standalone
 EOF
 
+# unused files, TODO fix this upstream:
+find %{buildroot}%{_datadir}/xbmc/addons/skin.*/media -name '*.png' -delete
+
 # Check for issues in ELF binaries
 undefined=
 fhserr=
@@ -396,7 +411,6 @@ rm -rf %{buildroot}
 %{_datadir}/xbmc/sounds
 %{_datadir}/xbmc/system
 %{_datadir}/xbmc/userdata
-%{_datadir}/xbmc/web
 %{_datadir}/applications/xbmc.desktop
 %{_iconsdir}/hicolor/*/apps/xbmc.png
 
