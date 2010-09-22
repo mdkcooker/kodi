@@ -8,7 +8,7 @@
 %define svnsnap	33938
 # the svn revision of the tarball:
 %define basesnap 33938
-%define rel	2
+%define rel	3
 
 %define branchr	%([ "%branch" ] && echo .%branch | tr - _)
 
@@ -125,7 +125,7 @@ BuildRequires:	nasm
 %endif
 Requires:	lsb-release
 # dlopened:
-%define dlopenreq() %(rpm -qf --qf '%%{name}' $(readlink -f %{_libdir}/lib%{1}.so) || echo %{name})
+%define dlopenreq() %(rpm -qf --qf '%%{name}' $(readlink -f %{_libdir}/lib%{1}.so) 2>/dev/null || echo %{name})
 Requires:	%dlopenreq curl
 Requires:	%dlopenreq FLAC
 Requires:	%dlopenreq mad
