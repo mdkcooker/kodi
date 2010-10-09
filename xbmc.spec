@@ -5,10 +5,10 @@
 %define branch	%branch_release.%branch_feature
 %define version	10.0
 # the svn revision of the end-result:
-%define svnsnap	33938
+%define svnsnap	34597
 # the svn revision of the tarball:
 %define basesnap 33938
-%define rel	3
+%define rel	1
 
 %define branchr	%([ "%branch" ] && echo .%branch | tr - _)
 
@@ -31,9 +31,10 @@ Source:		%{name}-%branch_release-%basesnap.tar.xz
 Patch0:		0001-XBMC-pvr-testing2-r32590-linux-bits.patch
 
 # bring snapshot up-to-date with trunk:
-# git diff -a c1a3427fea..628eb326755f2a
-## already up-to-date
-#Patch10:		xbmc-trunk-29464-%svnsnap.patch
+# git diff -a e4d0e9f40c93..82018829678c4
+Patch10:	xbmc-dharma-r%basesnap-r34537.patch
+# git diff -a 82018829678c..802c661512144
+Patch11:	xbmc-dharma-r34537-r%svnsnap.patch
 
 # VDPAU backports from upstream master
 Patch31:	0001-changed-split-CDVDVideoCodecFFmpeg-GetPicture.patch
@@ -393,7 +394,6 @@ rm -rf %{buildroot}
 %{_libdir}/xbmc/system/libid3tag-*-linux.so
 %{_libdir}/xbmc/system/players/dvdplayer/libdvdnav-*-linux.so
 %{_libdir}/xbmc/system/players/paplayer/adpcm-*-linux.so
-%{_libdir}/xbmc/system/players/paplayer/gensapu-*-linux.so
 %{_libdir}/xbmc/system/players/paplayer/libsidplay2-*-linux.so
 %{_libdir}/xbmc/system/players/paplayer/nosefart-*-linux.so
 %{_libdir}/xbmc/system/players/paplayer/stsoundlibrary-*-linux.so
