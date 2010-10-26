@@ -5,7 +5,7 @@
 %define branch	%branch_release.%branch_feature
 %define version	10.0
 # the svn revision of the end-result:
-%define svnsnap	34597
+%define svnsnap	35025
 # the svn revision of the tarball:
 %define basesnap 33938
 %define rel	1
@@ -31,10 +31,14 @@ Source:		%{name}-%branch_release-%basesnap.tar.xz
 Patch0:		0001-XBMC-pvr-testing2-r32590-linux-bits.patch
 
 # bring snapshot up-to-date with trunk:
-# git diff -a e4d0e9f40c93..82018829678c4
+# git diff -a e4d0e9f40c93..82018829678c
 Patch10:	xbmc-dharma-r%basesnap-r34537.patch
-# git diff -a 82018829678c..802c661512144
-Patch11:	xbmc-dharma-r34537-r%svnsnap.patch
+# git diff -a 82018829678c..802c66151214
+Patch11:	xbmc-dharma-r34537-r34597.patch
+# git diff -a 802c66151214..2b02b2b3f1b8
+Patch12:	xbmc-dharma-r34597-r34650.patch
+# git diff -a 2b02b2b3f1b8..ec807cc9d63
+Patch13:	xbmc-dharma-r34650-r%svnsnap.patch
 
 # VDPAU backports from upstream master
 Patch31:	0001-changed-split-CDVDVideoCodecFFmpeg-GetPicture.patch
@@ -48,6 +52,11 @@ Patch38:	0008-fixed-vdpau-needs-to-memset-its-DVDVideoPicture-stru.patch
 
 # applied upstream in pvr-testing2
 Patch50:	0001-fixed-crash-if-PVR-addon-fails-to-connect-on-startup.patch
+
+# Disable updates of the default skin. Our one is the PVR version, while the
+# one in the XBMC.org addon repository would be the vanilla one (Confluence
+# is currently not in the addon repository, though, as of 2010-10).
+Patch60:	xbmc-disable-confluence-update.patch
 
 # build faad support with internal headers, but do not build the
 # internal library; use system lib with dlopen instead;
