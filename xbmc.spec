@@ -5,7 +5,7 @@
 %define branch	%branch_release.%extra_feature
 %define version	10.0
 # the svn revision of the end-result:
-%define svnsnap	35113
+%define svnsnap	35159
 # the svn revision of the tarball:
 %define basesnap 33938
 %define rel	1
@@ -53,7 +53,9 @@ Patch12:	xbmc-dharma-r34597-r34650.patch
 # git diff -a 2b02b2b3f1b..ec807cc9d63
 Patch13:	xbmc-dharma-r34650-r35025.patch
 # git diff -a ec807cc9d63..3c32c22eafa
-Patch14:	xbmc-dharma-r35025-r%svnsnap.patch
+Patch14:	xbmc-dharma-r35025-r35113.patch
+# git diff -a 3c32c22eafa..2b29fddc5b9
+Patch15:	xbmc-dharma-r35113-r%svnsnap.patch
 
 # VDPAU backports from upstream master
 Patch31:	0001-changed-split-CDVDVideoCodecFFmpeg-GetPicture.patch
