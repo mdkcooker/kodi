@@ -1,16 +1,25 @@
 
 %define name	xbmc
 %define branch_release	dharma
-%define branch_feature	pvr-testing2
-%define branch	%branch_release.%branch_feature
+%define extra_feature	pvr
+%define branch	%branch_release.%extra_feature
 %define version	10.0
 # the svn revision of the end-result:
-%define svnsnap	35025
+%define svnsnap	35113
 # the svn revision of the tarball:
 %define basesnap 33938
-%define rel	2
+%define rel	1
 
 %define branchr	%([ "%branch" ] && echo .%branch | tr - _)
+
+%define system_python	1
+
+%if %mdkversion >= 201100
+# using system python2.7+ reportedly causes problems with 
+# getcwd() and chdir() calls from python
+# http://trac.xbmc.org/ticket/8658
+%define system_python	0
+%endif
 
 Summary:	XBMC Media Center - media player and home entertainment system
 Name:		%{name}
@@ -21,6 +30,10 @@ URL:		http://xbmc.org/
 # git archive --prefix=xbmc-dharma-$REV/ origin/Dharma | xz > xbmc-dharma-$REV.tar.xz
 Source:		%{name}-%branch_release-%basesnap.tar.xz
 
+# needed modules when using bundled python (versions are those expected by the Makefiles):
+Source11:	http://www.effbot.org/downloads/Imaging-1.1.7.tar.gz
+Source12:	http://pysqlite.googlecode.com/files/pysqlite-2.5.6.tar.gz
+
 # bring snapshot up-to-date with pvr-testing2 branch:
 # git diff -ba 33a036c1efc852feb..600458134f262455 | filterdiff -x*.dll -x*.sln -x*.vcproj -x*/configure -x*/windows/* -x*win32*
 # + rediff against dharma
@@ -30,15 +43,17 @@ Source:		%{name}-%branch_release-%basesnap.tar.xz
 # rebased:
 Patch0:		0001-XBMC-pvr-testing2-r32590-linux-bits.patch
 
-# bring snapshot up-to-date with trunk:
-# git diff -a e4d0e9f40c93..82018829678c
+# bring snapshot up-to-date with trunk (patches rediffed for pvr):
+# git diff -a e4d0e9f40c9..82018829678c
 Patch10:	xbmc-dharma-r%basesnap-r34537.patch
-# git diff -a 82018829678c..802c66151214
+# git diff -a 82018829678..802c66151214
 Patch11:	xbmc-dharma-r34537-r34597.patch
-# git diff -a 802c66151214..2b02b2b3f1b8
+# git diff -a 802c6615121..2b02b2b3f1b8
 Patch12:	xbmc-dharma-r34597-r34650.patch
-# git diff -a 2b02b2b3f1b8..ec807cc9d63
-Patch13:	xbmc-dharma-r34650-r%svnsnap.patch
+# git diff -a 2b02b2b3f1b..ec807cc9d63
+Patch13:	xbmc-dharma-r34650-r35025.patch
+# git diff -a ec807cc9d63..3c32c22eafa
+Patch14:	xbmc-dharma-r35025-r%svnsnap.patch
 
 # VDPAU backports from upstream master
 Patch31:	0001-changed-split-CDVDVideoCodecFFmpeg-GetPicture.patch
@@ -50,21 +65,36 @@ Patch36:	0006-fixed-flush-VDPAU-video-surfaces-and-picture-queue-w.patch
 Patch37:	0007-fixed-picture.iDuration-0-comparison.patch
 Patch38:	0008-fixed-vdpau-needs-to-memset-its-DVDVideoPicture-stru.patch
 
+# backports from upstream master
+Patch40:	0001-added-note-in-linux-crashlog-if-gdb-is-not-installed.patch
+Patch41:	0001-Added-9763-Fix-64-bit-WiiRemote-connection-issues-Th.patch
+
 # applied upstream in pvr-testing2
 Patch50:	0001-fixed-crash-if-PVR-addon-fails-to-connect-on-startup.patch
+Patch51:	0001-fixed-missing-LDFLAGS-for-pvr-libs-and-clients.patch
 
 # Disable updates of the default skin. Our one is the PVR version, while the
 # one in the XBMC.org addon repository would be the vanilla one (Confluence
 # is currently not in the addon repository, though, as of 2010-10).
 Patch60:	xbmc-disable-confluence-update.patch
 
+# Workaround http://www.nvnews.net/vbulletin/showthread.php?t=156665
+# by forcing SDL to use alsa when pulse is disabled and nvidia proprietary
+# driver version 260.x is active.
+Patch61:	0001-added-workaround-for-crash-with-nonpulse-nvidia260.patch
+
+# forkpty and openpty are in -lutil
+Patch62:	0001-fixed-undefined-symbols-in-internal-python.patch
+
 # build faad support with internal headers, but do not build the
 # internal library; use system lib with dlopen instead;
 # this allows keeping it as an optional external library
 Patch70:	xbmc-hack-ext-faad-with-int-headers.patch
 
-# nosefart audio plugin and RSXS-0.9 based screensavers are GPLv2
-License:	GPLv3+ and GPLv2
+# nosefart audio plugin and RSXS-0.9 based screensavers are GPLv2 only
+# libhts, libhdhomerun and several eventclients are GPLv3+
+# the rest is GPLv2+
+License:	GPLv3+ and GPLv2+ and GPLv2
 Group:		Video
 BuildRoot:	%{_tmppath}/%{name}-root
 BuildRequires:	boost-devel
@@ -127,11 +157,16 @@ BuildRequires:	expat-devel
 BuildRequires:	libass-devel
 BuildRequires:	rtmp-devel
 BuildRequires:	bluray-devel
+BuildRequires:	bluez-devel
 BuildRequires:	cmake
 BuildRequires:	gperf
 BuildRequires:	zip
 %ifarch %ix86
 BuildRequires:	nasm
+%endif
+%if !%system_python
+# python-imaging
+BuildRequires:	lcms-devel
 %endif
 Requires:	lsb-release
 # dlopened:
@@ -158,9 +193,11 @@ Requires:	mesa-demos
 # for FEH.py to allow it to give an error message (should be available already
 # on most systems):
 Requires:	pygtk2
+%if %system_python
 # for xbmc python scripts:
 Requires:	python-imaging
 Requires:	python-sqlite2
+%endif
 # Packages not shipped by Mandriva:
 Suggests:	%{_lib}faad2_2
 Suggests:	%{_lib}lame0
@@ -283,6 +320,16 @@ rm -rf xbmc/cores/dvdplayer/Codecs/{libdts,liba52} xbmc/cores/paplayer/AC3Codec/
 # win32 only
 rm -rf system/players/dvdplayer/etc/fonts
 
+%if !%system_python
+cp %{SOURCE11} lib/addons/script.module.pil
+cp %{SOURCE12} lib/addons/script.module.pysqlite
+
+# we need to fix the lookup directories (otherwise setup.py queries
+# incorrect information from the bundled python)
+tar -xzf %{SOURCE11} -C lib/addons/script.module.pil
+sed -ri 's|^([A-Z0-9]+_ROOT =) None|\1 "%{_libdir}", "%{_includedir}"|' lib/addons/script.module.pil/Imaging-*/setup.py
+%endif
+
 %build
 export SVN_REV=%svnsnap
 ./bootstrap
@@ -294,6 +341,9 @@ export SVN_REV=%svnsnap
 %configure2_5x \
 	--disable-ccache \
 	--enable-external-libraries \
+%if !%system_python
+	--disable-external-python \
+%endif
 	--disable-non-free \
 	--disable-dvdcss \
 	--disable-faac \
@@ -313,6 +363,12 @@ export SVN_REV=%svnsnap
 
 %make
 %make -C tools/EventClients wiimote
+
+%if !%system_python
+for dir in lib/addons/script.module.*; do
+	%make -C $dir
+done
+%endif
 
 %install
 rm -rf %{buildroot}
@@ -361,14 +417,15 @@ for file in $(find %{buildroot} -type f -not -name '* *'); do
 		done
 		# Euphoria references rsxs PNG class, but it is never used at runtime,
 		# so it results in no errors due to RTLD_LAZY being used by xbmc module loader.
-		case $file:$symbol in */Euphoria.xbs:_ZN3PNG*) continue; esac
+		# _imaging*.so and _sqlite.so are python modules that exist when using bundled python
+		case $file:$symbol in */Euphoria.xbs:_ZN3PNG*|*/_imaging*.so:*|*/_sqlite.so:*) continue; esac
 		# the symbol was not found
 		undefined="${undefined}$file: $symbol\n"
 	done
 done
 set -x
 ok=1
-[ -n "$undefined" ] && echo -e "$undefined" && echo "Undefined symbols, update fix-undefined-symbols.patch!" && ok=
+[ -n "$undefined" ] && echo -e "$undefined" && echo "Undefined symbols!" && ok=
 [ -n "$fhserr" ] && echo -e "$fhserr" && echo "Binaries in datadir!" && ok=
 [ -n "$ok" ]
 
@@ -412,6 +469,11 @@ rm -rf %{buildroot}
 %{_libdir}/xbmc/system/players/paplayer/SNESAPU-*-linux.so
 %endif
 %{_libdir}/xbmc/system/python/python*-*-linux.so
+%if !%system_python
+%{_libdir}/xbmc/addons/script.module.pil/*
+%{_libdir}/xbmc/addons/script.module.pysqlite/*
+%{_libdir}/xbmc/system/python/python*.zip
+%endif
 %dir %{_datadir}/xbmc
 %{_datadir}/xbmc/addons
 %{_datadir}/xbmc/FEH.py
