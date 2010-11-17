@@ -5,14 +5,22 @@
 %define branch	%branch_release.%extra_feature
 %define version	10.0
 # the svn revision of the end-result:
-%define svnsnap	35159
+%define svnsnap	35305
 # the svn revision of the tarball:
 %define basesnap 33938
 %define rel	1
 
 %define branchr	%([ "%branch" ] && echo .%branch | tr - _)
 
-%define system_python	1
+# There are some compatibility issues with the various python addons which
+# are mostly tested against bundled python only, and there are too many of
+# them to be checked out and fixed by us for system python compatibility.
+# Additional issues are caused by the bundled python having several system
+# calls redirected through xbmc VFS layer, which doesn't currently work when
+# using the system python. Usage of system python can probably be safely
+# re-enabled when XBMC upstream migrates away from python 2.4 and fixes the
+# issues regarding external python (this is planned). -Anssi 11/2010
+%define system_python	0
 
 %if %mdkversion >= 201100
 # using system python2.7+ reportedly causes problems with 
@@ -44,18 +52,22 @@ Source12:	http://pysqlite.googlecode.com/files/pysqlite-2.5.6.tar.gz
 Patch0:		0001-XBMC-pvr-testing2-r32590-linux-bits.patch
 
 # bring snapshot up-to-date with trunk (patches rediffed for pvr):
-# git diff -a e4d0e9f40c9..82018829678c
+# git diff -a e4d0e9f40c9..82018829678
 Patch10:	xbmc-dharma-r%basesnap-r34537.patch
-# git diff -a 82018829678..802c66151214
+# git diff -a 82018829678..802c6615121
 Patch11:	xbmc-dharma-r34537-r34597.patch
-# git diff -a 802c6615121..2b02b2b3f1b8
+# git diff -a 802c6615121..2b02b2b3f1b
 Patch12:	xbmc-dharma-r34597-r34650.patch
 # git diff -a 2b02b2b3f1b..ec807cc9d63
 Patch13:	xbmc-dharma-r34650-r35025.patch
 # git diff -a ec807cc9d63..3c32c22eafa
 Patch14:	xbmc-dharma-r35025-r35113.patch
 # git diff -a 3c32c22eafa..2b29fddc5b9
-Patch15:	xbmc-dharma-r35113-r%svnsnap.patch
+Patch15:	xbmc-dharma-r35113-r35159.patch
+# git diff -a 2b29fddc5b9..e970127ec51
+Patch16:	xbmc-dharma-r35159-r35251.patch
+# git diff -a e970127ec51..8c4ce378a83
+Patch18:	xbmc-dharma-r35251-r%svnsnap.patch
 
 # VDPAU backports from upstream master
 Patch31:	0001-changed-split-CDVDVideoCodecFFmpeg-GetPicture.patch
@@ -82,7 +94,7 @@ Patch60:	xbmc-disable-confluence-update.patch
 
 # Workaround http://www.nvnews.net/vbulletin/showthread.php?t=156665
 # by forcing SDL to use alsa when pulse is disabled and nvidia proprietary
-# driver version 260.x is active.
+# driver version 260.x.y older than 260.19.21 is active.
 Patch61:	0001-added-workaround-for-crash-with-nonpulse-nvidia260.patch
 
 # forkpty and openpty are in -lutil
@@ -92,6 +104,23 @@ Patch62:	0001-fixed-undefined-symbols-in-internal-python.patch
 # internal library; use system lib with dlopen instead;
 # this allows keeping it as an optional external library
 Patch70:	xbmc-hack-ext-faad-with-int-headers.patch
+
+# CVE fixes for the internal python
+Patch81:	0001-fixed-CVE-2007-2052-in-internal-python-Mandriva.patch
+Patch82:	0002-fixed-CVE-2007-4965-in-internal-python-upstream.patch
+Patch83:	0003-fixed-CVE-2008-1679-in-internal-python-upstream.patch
+Patch84:	0004-fixed-CVE-2008-1887-in-internal-python-upstream.patch
+Patch85:	0005-fixed-CVE-2008-1721-in-internal-python-upstream.patch
+Patch86:	0006-fixed-CVE-2008-2315-in-internal-python-Gentoo.patch
+Patch87:	0007-fixed-CVE-2008-3142-in-internal-python-Gentoo.patch
+Patch88:	0008-fixed-CVE-2008-3144-in-internal-python-Gentoo.patch
+Patch89:	0009-fixed-CVE-2008-4864-in-internal-python-Mandriva.patch
+Patch90:	0010-fixed-CVE-2008-5031-in-internal-python-upstream.patch
+Patch91:	0011-fixed-CVE-2010-1634-in-internal-python-Mandriva.patch
+Patch92:	0012-fixed-CVE-2010-2089-in-internal-python-Mandriva.patch
+Patch93:	0013-fixed-CVE-2009-2625-in-internal-python-Mandriva.patch
+Patch94:	0014-fixed-CVE-2010-3492-in-internal-python-Mandriva.patch
+Patch95:	0015-fixed-CVE-2010-3493-in-internal-python-Mandriva.patch
 
 # nosefart audio plugin and RSXS-0.9 based screensavers are GPLv2 only
 # libhts, libhdhomerun and several eventclients are GPLv3+
