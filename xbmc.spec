@@ -5,7 +5,7 @@
 %define branch	%branch_release.%extra_feature
 %define version	10.0
 # the svn revision of the end-result:
-%define svnsnap	35305
+%define svnsnap	35571
 # the svn revision of the tarball:
 %define basesnap 33938
 %define rel	1
@@ -67,7 +67,9 @@ Patch15:	xbmc-dharma-r35113-r35159.patch
 # git diff -a 2b29fddc5b9..e970127ec51
 Patch16:	xbmc-dharma-r35159-r35251.patch
 # git diff -a e970127ec51..8c4ce378a83
-Patch18:	xbmc-dharma-r35251-r%svnsnap.patch
+Patch17:	xbmc-dharma-r35251-r35305.patch
+# git diff -a 8c4ce378a83..be7a70d87de
+Patch18:	xbmc-dharma-r35305-r%svnsnap.patch
 
 # VDPAU backports from upstream master
 Patch31:	0001-changed-split-CDVDVideoCodecFFmpeg-GetPicture.patch
@@ -335,7 +337,7 @@ This package contains the xbmc-send eventclient.
 %setup -q -n %name-%branch_release-%basesnap
 %apply_patches
 # otherwise backups end up in binary rpms
-find -type f -name '*.00??' -print -delete
+find -type f \( -name '*.00??' -o -name '*.00??~' \) -print -delete
 
 # remove prebuilt libraries
 find -type f \( -iname '*.so' -o -iname '*.dll' -o -iname '*.exe' \) -delete
