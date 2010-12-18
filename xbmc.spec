@@ -2,13 +2,20 @@
 %define name	xbmc
 %define branch_release	dharma
 %define extra_feature	pvr
-%define branch	%branch_release.%extra_feature
 %define version	10.0
 # the svn revision of the end-result:
-%define svnsnap	35571
+%define svnsnap	0
 # the svn revision of the tarball:
-%define basesnap 33938
+# (for stable releases, set basesnap to tag rev (it will be shown in gui
+#  when svnsnap is set to 0)
+%define basesnap 33648
 %define rel	1
+
+%if %svnsnap
+%define branch	%branch_release.%extra_feature
+%else
+%define branch	%extra_feature
+%endif
 
 %define branchr	%([ "%branch" ] && echo .%branch | tr - _)
 
@@ -32,44 +39,28 @@
 Summary:	XBMC Media Center - media player and home entertainment system
 Name:		%{name}
 Version:	%{version}
+%if %svnsnap
 Release:	%mkrel 0.svn%svnsnap%branchr.%rel
-URL:		http://xbmc.org/
 # REV=$(git log -1 origin/Dharma | grep git-svn-id | sed -ne 's,^.*@\([^ ]\+\).*$,\1,p')
 # git archive --prefix=xbmc-dharma-$REV/ origin/Dharma | xz > xbmc-dharma-$REV.tar.xz
 Source:		%{name}-%branch_release-%basesnap.tar.xz
+%else
+Release:	%mkrel 1.%branch.%rel
+Source:		%{name}-%{version}.tar.gz
+%endif
+URL:		http://xbmc.org/
 
 # needed modules when using bundled python (versions are those expected by the Makefiles):
 Source11:	http://www.effbot.org/downloads/Imaging-1.1.7.tar.gz
 Source12:	http://pysqlite.googlecode.com/files/pysqlite-2.5.6.tar.gz
 
-# bring snapshot up-to-date with pvr-testing2 branch:
-# git diff -ba 33a036c1efc852feb..600458134f262455 | filterdiff -x*.dll -x*.sln -x*.vcproj -x*/configure -x*/windows/* -x*win32*
-# + rediff against dharma
-#Patch0:		xbmc-dharma-pvr-testing2-32579.patch
-# git diff -a 600458134f2624558b06..a8dd7de674433456ca0366
-#Patch1:		xbmc-dharma-pvr-testing2-32579-32590.patch
-# rebased:
-Patch0:		0001-XBMC-pvr-testing2-r32590-linux-bits.patch
+# bring snapshot up-to-date with pvr branch
+# https://github.com/opdenkamp/xbmc/tree/Dharma-pvr
+Patch0:		xbmc-10.0-opdenkamp-pvr-fdb057b7754.patch
 
-# bring snapshot up-to-date with trunk (patches rediffed for pvr):
-# git diff -a e4d0e9f40c9..82018829678
-Patch10:	xbmc-dharma-r%basesnap-r34537.patch
-# git diff -a 82018829678..802c6615121
-Patch11:	xbmc-dharma-r34537-r34597.patch
-# git diff -a 802c6615121..2b02b2b3f1b
-Patch12:	xbmc-dharma-r34597-r34650.patch
-# git diff -a 2b02b2b3f1b..ec807cc9d63
-Patch13:	xbmc-dharma-r34650-r35025.patch
-# git diff -a ec807cc9d63..3c32c22eafa
-Patch14:	xbmc-dharma-r35025-r35113.patch
-# git diff -a 3c32c22eafa..2b29fddc5b9
-Patch15:	xbmc-dharma-r35113-r35159.patch
-# git diff -a 2b29fddc5b9..e970127ec51
-Patch16:	xbmc-dharma-r35159-r35251.patch
-# git diff -a e970127ec51..8c4ce378a83
-Patch17:	xbmc-dharma-r35251-r35305.patch
-# git diff -a 8c4ce378a83..be7a70d87de
-Patch18:	xbmc-dharma-r35305-r%svnsnap.patch
+# bring snapshot up-to-date with main branch (patches rediffed for pvr):
+# already up-to-date
+#Patch18:	xbmc-dharma-r35305-r%svnsnap.patch
 
 # VDPAU backports from upstream master
 Patch31:	0001-changed-split-CDVDVideoCodecFFmpeg-GetPicture.patch
@@ -85,10 +76,6 @@ Patch38:	0008-fixed-vdpau-needs-to-memset-its-DVDVideoPicture-stru.patch
 Patch40:	0001-added-note-in-linux-crashlog-if-gdb-is-not-installed.patch
 Patch41:	0001-Added-9763-Fix-64-bit-WiiRemote-connection-issues-Th.patch
 
-# applied upstream in pvr-testing2
-Patch50:	0001-fixed-crash-if-PVR-addon-fails-to-connect-on-startup.patch
-Patch51:	0001-fixed-missing-LDFLAGS-for-pvr-libs-and-clients.patch
-
 # Disable updates of the default skin. Our one is the PVR version, while the
 # one in the XBMC.org addon repository would be the vanilla one (Confluence
 # is currently not in the addon repository, though, as of 2010-10).
@@ -101,6 +88,10 @@ Patch61:	0001-added-workaround-for-crash-with-nonpulse-nvidia260.patch
 
 # forkpty and openpty are in -lutil
 Patch62:	0001-fixed-undefined-symbols-in-internal-python.patch
+
+# Ensure backward-compatibility with pvr-testing2 and prevent future compatibility
+# issues with trunk Addons database format
+Patch63:	0001-changed-use-the-legacy-pvr-testing2-addon-database.patch
 
 # build faad support with internal headers, but do not build the
 # internal library; use system lib with dlopen instead;
@@ -257,9 +248,9 @@ and combined with its beautiful interface and powerful skinning
 engine, XBMC feels very natural to use from the couch and is the
 ideal solution for your home theater.
 
-This is the development version of XBMC from dharma release branch,
-with VDR support added from pvr-testing2 branch. Support for RAR
-files and XBMS protocol is not included due to license issues.
+This is the stable version of XBMC from the dharma release branch,
+with PVR support added from opdenkamp Dharma-pvr branch. Support for
+RAR files and XBMS protocol is not included due to license issues.
 
 %package	eventclients-common
 Summary:	Common files for XBMC eventclients
@@ -334,7 +325,11 @@ and entertainment hub for digital media.
 This package contains the xbmc-send eventclient.
 
 %prep
+%if %svnsnap
 %setup -q -n %name-%branch_release-%basesnap
+%else
+%setup -q
+%endif
 %apply_patches
 # otherwise backups end up in binary rpms
 find -type f \( -name '*.00??' -o -name '*.00??~' \) -print -delete
@@ -364,7 +359,11 @@ sed -ri 's|^([A-Z0-9]+_ROOT =) None|\1 "%{_libdir}", "%{_includedir}"|' lib/addo
 %endif
 
 %build
+%if %svnsnap
 export SVN_REV=%svnsnap
+%else
+export SVN_REV=%basesnap
+%endif
 ./bootstrap
 
 # due to xbmc modules that use symbols from xbmc binary
