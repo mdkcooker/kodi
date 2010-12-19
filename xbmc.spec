@@ -380,7 +380,7 @@ export SVN_REV=%basesnap
 	--disable-dvdcss \
 	--disable-faac \
 	--enable-goom \
-%if %{mdkversion} <= 201010
+%if %{mdkversion} <= 201020
 	--disable-vaapi \
 %endif
 %if %{mdkversion} >= 201000
