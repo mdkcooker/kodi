@@ -371,6 +371,7 @@ export SVN_REV=%basesnap
 %define _disable_ld_no_undefined 1
 
 %configure2_5x \
+	--disable-debug \
 	--disable-ccache \
 	--enable-external-libraries \
 %if !%system_python
