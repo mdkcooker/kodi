@@ -9,7 +9,7 @@
 # (for stable releases, set basesnap to tag rev (it will be shown in gui
 #  when svnsnap is set to 0)
 %define basesnap 33648
-%define rel	1
+%define rel	2
 
 %if %svnsnap
 %define branch	%branch_release.%extra_feature
