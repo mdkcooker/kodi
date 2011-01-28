@@ -431,12 +431,14 @@ EOF
 # unused files, TODO fix this upstream:
 find %{buildroot}%{_datadir}/xbmc/addons/skin.*/media -name '*.png' -delete
 
+( # for IFS and +x
 # Check for issues in ELF binaries
 undefined=
 fhserr=
-echo Silencing output of ELF verification
+echo Silencing output of checking symbols and FHS conformance
 set +x
-for file in $(find %{buildroot} -type f -not -name '* *'); do
+IFS=$'\n'
+for file in $(find %{buildroot} -type f); do
 	type="$(file "$file")"
 	echo "$type" | grep -q "ELF" || continue
 
@@ -463,11 +465,11 @@ for file in $(find %{buildroot} -type f -not -name '* *'); do
 		undefined="${undefined}$file: $symbol\n"
 	done
 done
-set -x
 ok=1
 [ -n "$undefined" ] && echo -e "$undefined" && echo "Undefined symbols!" && ok=
 [ -n "$fhserr" ] && echo -e "$fhserr" && echo "Binaries in datadir!" && ok=
 [ -n "$ok" ]
+)
 
 %clean
 rm -rf %{buildroot}
