@@ -200,8 +200,8 @@ BuildRequires:	nasm
 BuildRequires:	lcms-devel
 %endif
 Requires:	lsb-release
-# dlopened:
-%define dlopenreq() %(rpm -qf --qf '%%{name}' $(readlink -f %{_libdir}/lib%{1}.so) 2>/dev/null || echo %{name})
+# dlopened (existence check required by rpm5 as it doesn't use stderr):
+%define dlopenreq() %([ -e %{_libdir}/lib%{1}.so ] && rpm -qf --qf '%%{name}' $(readlink -f %{_libdir}/lib%{1}.so) 2>/dev/null || echo %{name})
 Requires:	%dlopenreq curl
 Requires:	%dlopenreq FLAC
 Requires:	%dlopenreq mad
