@@ -2,14 +2,14 @@
 %define name	xbmc
 %define branch_release	dharma
 %define extra_feature	pvr
-%define version	10.0
+%define version	10.1
 # the svn revision of the end-result:
 %define svnsnap	0
 # the svn revision of the tarball:
-# (for stable releases, set basesnap to tag rev (it will be shown in gui
+# (for stable releases, set basesnap to %version-tar (it will be shown in gui
 #  when svnsnap is set to 0)
-%define basesnap 33648
-%define rel	4
+%define basesnap %version-tar
+%define rel	1
 
 %if %svnsnap
 %define branch	%branch_release.%extra_feature
@@ -92,9 +92,6 @@ Patch62:	0001-fixed-undefined-symbols-in-internal-python.patch
 # Ensure backward-compatibility with pvr-testing2 and prevent future compatibility
 # issues with trunk Addons database format
 Patch63:	0001-changed-use-the-legacy-pvr-testing2-addon-database.patch
-
-# Do not require ethernet encapsulation for an internet connection
-Patch64:	xbmc-allow-ppp.patch
 
 # Do not use avg_frame_rate for mkv files on 2010.1 and older, instead
 # use time_base if needed (fixes MicroDVD subtitles with 23.976 H.264 mkv)
