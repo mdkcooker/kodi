@@ -71,6 +71,9 @@ Patch38:	0008-fixed-vdpau-needs-to-memset-its-DVDVideoPicture-stru.patch
 Patch40:	0001-added-note-in-linux-crashlog-if-gdb-is-not-installed.patch
 Patch41:	0001-Added-9763-Fix-64-bit-WiiRemote-connection-issues-Th.patch
 
+# backports from upstream stable branch
+Patch51:	0001-dvdplayer-fix-build-with-gcc-4.6.-Flags-to-the-Linke.patch
+
 # Disable updates of the default skin. Our one is the PVR version, while the
 # one in the XBMC.org addon repository would be the vanilla one (Confluence
 # is currently not in the addon repository, though, as of 2010-10).
