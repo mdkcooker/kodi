@@ -3,15 +3,10 @@
 %define branch_release	dharma
 %define extra_feature	pvr
 %define version	10.1
-# the svn revision of the end-result:
-%define svnsnap	0
-# the svn revision of the tarball:
-# (for stable releases, set basesnap to %version-tar (it will be shown in gui
-#  when svnsnap is set to 0)
-%define basesnap %version-tar
-%define rel	1
+%define snap	0
+%define rel	2
 
-%if %svnsnap
+%if %snap
 %define branch	%branch_release.%extra_feature
 %else
 %define branch	%extra_feature
@@ -39,11 +34,11 @@
 Summary:	XBMC Media Center - media player and home entertainment system
 Name:		%{name}
 Version:	%{version}
-%if %svnsnap
-Release:	%mkrel 0.svn%svnsnap%branchr.%rel
+%if %snap
+Release:	%mkrel 0.svn%snap%branchr.%rel
 # REV=$(git log -1 origin/Dharma | grep git-svn-id | sed -ne 's,^.*@\([^ ]\+\).*$,\1,p')
 # git archive --prefix=xbmc-dharma-$REV/ origin/Dharma | xz > xbmc-dharma-$REV.tar.xz
-Source:		%{name}-%branch_release-%basesnap.tar.xz
+Source:		%{name}-%branch_release-%snap.tar.xz
 %else
 Release:	%mkrel 1.%branch.%rel
 Source:		%{name}-%{version}.tar.gz
@@ -329,8 +324,8 @@ and entertainment hub for digital media.
 This package contains the xbmc-send eventclient.
 
 %prep
-%if %svnsnap
-%setup -q -n %name-%branch_release-%basesnap
+%if %snap
+%setup -q -n %name-%branch_release-%snap
 %else
 %setup -q
 %endif
@@ -363,16 +358,19 @@ sed -ri 's|^([A-Z0-9]+_ROOT =) None|\1 "%{_libdir}", "%{_includedir}"|' lib/addo
 %endif
 
 %build
-%if %svnsnap
-export SVN_REV=%svnsnap
+%if %snap
+export GIT_REV=%snap
 %else
-export SVN_REV=%basesnap
+export GIT_REV=$(basename %SOURCE0)
 %endif
 ./bootstrap
 
 # due to xbmc modules that use symbols from xbmc binary
 # and are not using libtool
 %define _disable_ld_no_undefined 1
+
+# Workaround configure using git to override GIT_REV (TODO: fix it properly)
+export ac_cv_prog_HAVE_GIT="no"
 
 %configure2_5x \
 	--disable-debug \
