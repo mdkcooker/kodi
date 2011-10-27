@@ -4,7 +4,7 @@
 %define extra_feature	pvr
 %define version	10.1
 %define snap	0
-%define rel	2
+%define rel	3
 
 %if %snap
 %define branch	%branch_release.%extra_feature
