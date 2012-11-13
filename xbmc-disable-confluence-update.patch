@@ -1,0 +1,12 @@
+diff -Nurpa -x '*~' -x '*.orig' -x '*.rej' -x '*.swp' xbmc-11.0-Eden_rc2/addons/skin.confluence/addon.xml xbmc-11.0-Eden_rc2/addons/skin.confluence/addon.xml
+--- xbmc-11.0-Eden_rc2/addons/skin.confluence/addon.xml	2012-03-01 05:28:22.000000000 +0200
++++ xbmc-11.0-Eden_rc2/addons/skin.confluence/addon.xml	2012-03-03 18:39:11.931161151 +0200
+@@ -1,7 +1,7 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <addon
+   id="skin.confluence"
+-  version="2.1.0"
++  version="9.mdv-pvr.1.1.0"
+   name="Confluence"
+   provider-name="Jezz_X, Team XBMC">
+   <requires>
