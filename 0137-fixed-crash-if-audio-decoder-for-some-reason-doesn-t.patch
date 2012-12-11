@@ -1,0 +1,30 @@
+From 51544c3ff63f4e638145dff25b3416ff0ce83072 Mon Sep 17 00:00:00 2001
+From: elupus <elupus@xbmc.org>
+Date: Sun, 1 Apr 2012 21:44:40 +0200
+Subject: [PATCH 137/145] fixed crash if audio decoder for some reason doesn't
+ return a frame (cherry picked from commit
+ cfb1bd2269346047c32b4e6259089a6fe6960439)
+
+---
+ xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecFFmpeg.cpp |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecFFmpeg.cpp b/xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecFFmpeg.cpp
+index ad8a95c..46fd47f 100644
+--- a/xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecFFmpeg.cpp
++++ b/xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecFFmpeg.cpp
+@@ -149,7 +149,11 @@ int CDVDAudioCodecFFmpeg::Decode(BYTE* pData, int iSize)
+                                                  , &got_frame
+                                                  , &avpkt);
+   if (iBytesUsed < 0 || !got_frame)
++  {
++    m_iBufferSize1 = 0;
++    m_iBufferSize2 = 0;
+     return iBytesUsed;
++  }
+   m_iBufferSize1 = m_dllAvUtil.av_samples_get_buffer_size(NULL, m_pCodecContext->channels, m_pFrame1->nb_samples, m_pCodecContext->sample_fmt, 1);
+ 
+   /* some codecs will attempt to consume more data than what we gave */
+-- 
+1.7.10
+

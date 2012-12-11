@@ -1,10 +1,11 @@
-%define name	xbmc
+# Current version 2.0.1 is not supported by XBMC 11.0
+%define build_cec	0
+
 %define branch_release	Eden
 %define extra_feature	pvr
-%define version	11.0
 %define snap	0
 %define pre	0
-%define rel	1
+%define rel	4
 
 %if %snap
 %define branch	%branch_release.%extra_feature
@@ -15,17 +16,17 @@
 %define branchr	%([ "%branch" ] && echo .%branch | tr - _)
 
 Summary:	XBMC Media Center - media player and home entertainment system
-Name:		%{name}
-Version:	%{version}
-%if %snap
-Release:	%mkrel 0.git%snap%branchr.%rel
-Source:		%{name}-%branch_release-%snap.tar.xz
+Name:		xbmc
+Version:	11.0
+%if %{snap}
+Release:	0.git%{snap}%{branchr}.%{rel}
+Source:		%{name}-%{branch_release}-%{snap}.tar.xz
 %else
-%if %pre
-Release:	%mkrel 0.%pre%branchr.%rel
+%if %{pre}
+Release:	0.%{pre}%{branchr}.%{rel}
 Source:		%{name}-%{version}-%{branch_release}_%{pre}.tar.gz
 %else
-Release:	%mkrel 1.%branch.%rel
+Release:	1.%{branch}.%{rel}
 Source:		%{name}-%{version}.tar.gz
 %endif
 %endif
@@ -35,6 +36,8 @@ URL:		http://xbmc.org/
 # https://github.com/opdenkamp/xbmc
 # git diff 14feb096bcea1e..opdenkamp/Eden-pvr
 Patch0:		xbmc-Eden-pvr-rc1.1+20120324-g6a4c861.patch
+# gcc 4.7 support
+Patch1:		xbmc-wiiremote-missing-include.patch
 
 # Disable updates of the default skin. Our one is the PVR version, while the
 # one in the XBMC.org addon repository would be the vanilla one (Confluence
@@ -48,6 +51,56 @@ Patch211:	0001-fixed-undefined-symbols-in-MythTV-PVR-client.patch
 # details and an upstreaming plan.
 Patch213:	0001-hack-workaround-for-old-incompatible-PVR-addon-datab.patch
 
+# New ffmpeg API support
+
+Patch301:	0101-Update-ffmpeg-to-n0.10.2-f139838d6473c7b5152178f602c.patch
+Patch302:	0102-Update-patches.patch
+Patch303:	0103-Drop-neon-patch-that-doesn-t-apply-anymore.patch
+Patch304:	0104-Drop-patch-for-win32-build.patch
+Patch305:	0105-Drop-patch-for-cdxa-probe-it-causes-missdetections-o.patch
+Patch306:	0106-Drop-now-merged-or-redundant-patches.patch
+Patch307:	0107-replace-depreciated-av_open_input_stream-file-with-n.patch
+Patch308:	0108-replace-depreciated-ByteIOContext-with-AVIOContext.patch
+Patch309:	0109-replace-depreciated-AVMetadata-Tag-with-AVDictionary.patch
+Patch310:	0110-Don-t-listen-to-depreciated-return-value-of-av_read_.patch
+Patch311:	0111-Don-t-use-depreciated-avcodec_thread_init.patch
+Patch312:	0112-Replace-depreciated-av_find_stream_info-with-avforma.patch
+Patch313:	0113-Replace-more-depreciated-ffmpeg-functions.patch
+Patch314:	0114-Drop-support-for-ffmpeg-version-older-than-our-built.patch
+Patch315:	0115-Replace-deprecated-is_streamed-with-new-seekable-fla.patch
+Patch316:	0116-Remove-old-code-depending-on-deprecated-file_size.patch
+Patch317:	0117-changed-replace-old-libavfilter-integration-with-nul.patch
+Patch318:	0118-changed-replace-old-swscale-pixel-format-conversion-.patch
+Patch319:	0119-Drop-url_set_interrupt_cb-usage-which-was-removed-in.patch
+Patch320:	0120-Do-not-map-url_fdopen-as-it-is-deprecated-and-gone-i.patch
+Patch321:	0121-Replace-av_write_header-by-avformat_write_header.patch
+Patch322:	0122-Remove-av_set_parameters.patch
+Patch323:	0123-Replace-av_metadata_-get-set2-by-av_dict_-get-set.patch
+Patch324:	0124-Merge-av_close_input_-file-stream-into-avformat_clos.patch
+Patch325:	0125-Replace-init_put_byte-by-avio_alloc_context.patch
+Patch326:	0126-Replace-dump_format-by-av_dump_format.patch
+Patch327:	0127-Replace-url_-functions-by-their-avio_-counterparts.patch
+Patch328:	0128-Remove-av_alloc_put_byte-and-replace-its-occurences-.patch
+Patch329:	0129-Include-libavfilter-avcodec.h-for-av_vsrc_buffer_add.patch
+Patch330:	0130-Remove-assignment-to-stream_copy-which-is-never-read.patch
+Patch331:	0131-Do-not-set-AVFrame.age.patch
+Patch332:	0132-Use-av_opt_set-instead-of-av_set_string3-and-drop-su.patch
+Patch333:	0133-Replace-deprecated-av_get_bits_per_sample_fmt-by-av_.patch
+Patch334:	0134-Convert-to-avcodec_decode_audio4-and-drop-avcodec_de.patch
+Patch335:	0135-osx-ios-atv2-build-and-link-static-libs-for-ffmpeg-b.patch
+Patch336:	0136-changed-Only-allow-slice-based-parallel-decoding.patch
+Patch337:	0137-fixed-crash-if-audio-decoder-for-some-reason-doesn-t.patch
+Patch338:	0138-dvdplayer-previous-picture-is-invalidated-by-a-call-.patch
+Patch339:	0139-dvdplayer-Recalculate-codecname-when-we-update-based.patch
+Patch340:	0140-dvdplayer-avoid-crashing-if-ffmpeg-contains-more-tha.patch
+Patch341:	0141-Add-support-for-new-ffmpeg-10-11-api.patch
+Patch342:	0142-Bring-av_read_frame_flush-in-line-with-ffmpeg-git.patch
+Patch343:	0143-avutil-add-av_get_default_channel_layout-for-later-u.patch
+Patch344:	0144-Use-libavutil-av_get_default_channel_layout-instead-.patch
+Patch345:	0145-DllAvCodec-Remove-now-unused-private-avcodec_guess_c.patch
+
+Patch360:	xbmc-11.0-more-ffmpeg-fixes.patch
+
 # nosefart audio plugin and RSXS-0.9 based screensavers are GPLv2 only
 # several eventclients are GPLv3+ (in subpackages)
 # libhdhomerun is LGPLv3+ with an exception (always ok to link against it)
@@ -57,74 +110,77 @@ Patch213:	0001-hack-workaround-for-old-incompatible-PVR-addon-datab.patch
 # as allowed by a license exception
 License:	GPLv2+ and GPLv2 and (LGPLv3+ with exceptions)
 Group:		Video
-BuildRequires:	boost-devel
-BuildRequires:	ffmpeg-devel
-BuildRequires:	libmpeg2dec-devel
-BuildRequires:	libogg-devel
-BuildRequires:	libwavpack-devel
-BuildRequires:	python-devel
-BuildRequires:	glew-devel
-BuildRequires:	mesagl-devel
-BuildRequires:	mesaglu-devel
-BuildRequires:	libmad-devel
-BuildRequires:	libjpeg-devel
-BuildRequires:	libsamplerate-devel
-BuildRequires:	libvorbis-devel
-BuildRequires:	bzip2-devel
-BuildRequires:	mysql-devel
-BuildRequires:	liblzo2-devel
-BuildRequires:	zlib-devel
-BuildRequires:	openssl-devel
-BuildRequires:	fontconfig-devel
-BuildRequires:	fribidi-devel
-BuildRequires:	sqlite3-devel
-BuildRequires:	libpng-devel
-BuildRequires:	libpcre-devel
-BuildRequires:	libcdio-devel
-BuildRequires:	libmms-devel
-BuildRequires:	freetype2-devel
-BuildRequires:	libflac-devel
-BuildRequires:	libsmbclient-devel
-BuildRequires:	SDL_mixer-devel
-BuildRequires:	libjasper-devel
-BuildRequires:	libtiff-devel
-BuildRequires:	SDL_image-devel
-BuildRequires:	libalsa-devel
-BuildRequires:	enca-devel
-BuildRequires:	libxt-devel
-BuildRequires:	libxtst-devel
-BuildRequires:	libxmu-devel
-BuildRequires:	libxinerama-devel
-BuildRequires:	libcurl-devel
-BuildRequires:	dbus-devel
-BuildRequires:	hal-devel
-BuildRequires:	SDL-devel
-BuildRequires:	pulseaudio-devel
-BuildRequires:	avahi-common-devel
-BuildRequires:	avahi-client-devel
-BuildRequires:	libxrandr-devel
-BuildRequires:	vdpau-devel
-BuildRequires:	cwiid-devel
-BuildRequires:	libice-devel
-BuildRequires:	libx11-devel
-BuildRequires:	crystalhd-devel
-BuildRequires:	libmicrohttpd-devel
-BuildRequires:	libmodplug-devel
-BuildRequires:	ssh-devel
-BuildRequires:	libva-devel
-BuildRequires:	gettext-devel
-BuildRequires:	expat-devel
-BuildRequires:	libass-devel
-BuildRequires:	rtmp-devel
-BuildRequires:	bluray-devel
-BuildRequires:	bluez-devel
-BuildRequires:	udev-devel
-BuildRequires:	yajl-devel
-BuildRequires:	nfs-devel
 BuildRequires:	afpclient-devel
-BuildRequires:	libplist-devel
-BuildRequires:	shairport-devel
-BuildRequires:	cec-devel
+BuildRequires:	avahi-common-devel
+BuildRequires:	boost-devel
+BuildRequires:	bzip2-devel
+BuildRequires:	crystalhd-devel
+BuildRequires:	cwiid-devel
+BuildRequires:	ffmpeg-devel
+BuildRequires:	gettext-devel
+BuildRequires:	jpeg-devel
+BuildRequires:	liblzo2-devel
+BuildRequires:	mysql-devel
+BuildRequires:	python-devel
+BuildRequires:	rtmp-devel
+BuildRequires:	ssh-devel
+BuildRequires:	tiff-devel
+BuildRequires:	yajl-devel
+BuildRequires:	pkgconfig(alsa)
+BuildRequires:	pkgconfig(avahi-client)
+BuildRequires:	pkgconfig(bluez)
+BuildRequires:	pkgconfig(dbus-1)
+BuildRequires:	pkgconfig(enca)
+BuildRequires:	pkgconfig(expat)
+BuildRequires:	pkgconfig(flac)
+BuildRequires:	pkgconfig(fontconfig)
+BuildRequires:	pkgconfig(freetype2)
+BuildRequires:	pkgconfig(fribidi)
+BuildRequires:	pkgconfig(gl)
+BuildRequires:	pkgconfig(glew)
+BuildRequires:	pkgconfig(glu)
+BuildRequires:	pkgconfig(ice)
+BuildRequires:	pkgconfig(jasper)
+BuildRequires:	pkgconfig(libass)
+BuildRequires:	pkgconfig(libbluray)
+BuildRequires:	pkgconfig(libcdio)
+%if %{build_cec}
+BuildRequires:	pkgconfig(libcec)
+%else
+BuildConflicts:	pkgconfig(libcec)
+%endif
+BuildRequires:	pkgconfig(libcurl)
+BuildRequires:	pkgconfig(libmicrohttpd)
+BuildRequires:	pkgconfig(libmms)
+BuildRequires:	pkgconfig(libmodplug)
+BuildRequires:	pkgconfig(libmpeg2)
+BuildRequires:	pkgconfig(libnfs)
+BuildRequires:	pkgconfig(libpcre)
+BuildRequires:	pkgconfig(libplist)
+BuildRequires:	pkgconfig(libpng)
+BuildRequires:	pkgconfig(libpulse)
+BuildRequires:	pkgconfig(libshairport)
+BuildRequires:	pkgconfig(libva)
+BuildRequires:	pkgconfig(mad)
+BuildRequires:	pkgconfig(ogg)
+BuildRequires:	pkgconfig(openssl)
+BuildRequires:	pkgconfig(samplerate)
+BuildRequires:	pkgconfig(sdl)
+BuildRequires:	pkgconfig(SDL_mixer)
+BuildRequires:	pkgconfig(SDL_image)
+BuildRequires:	pkgconfig(smbclient)
+BuildRequires:	pkgconfig(sqlite3)
+BuildRequires:	pkgconfig(udev)
+BuildRequires:	pkgconfig(vdpau)
+BuildRequires:	pkgconfig(vorbis)
+BuildRequires:	pkgconfig(wavpack)
+BuildRequires:	pkgconfig(x11)
+BuildRequires:	pkgconfig(xinerama)
+BuildRequires:	pkgconfig(xmu)
+BuildRequires:	pkgconfig(xrandr)
+BuildRequires:	pkgconfig(xt)
+BuildRequires:	pkgconfig(xtst)
+BuildRequires:	pkgconfig(zlib)
 BuildRequires:	cmake
 BuildRequires:	gperf
 BuildRequires:	zip
@@ -150,7 +206,9 @@ Requires:	%dlopenreq nfs
 Requires:	%dlopenreq afpclient
 Requires:	%dlopenreq plist
 Requires:	%dlopenreq shairport
+%if %{build_cec}
 Requires:	%dlopenreq cec
+%endif
 # not nearly as common as the above, so just suggest instead for now:
 Suggests:	%dlopenreq crystalhd
 # TODO: FEH.py is useless nowadays, drop it here and upstream.
@@ -165,15 +223,6 @@ Requires:	python-imaging
 # Packages not shipped in core:
 Suggests:	%{_lib}lame0
 Suggests:	%{_lib}dvdcss2
-
-# Packages have been merged
-Obsoletes:	xbmc-core < 9.11-1.svn29468
-Obsoletes:	xbmc-skin-confluence < 9.11-1.svn29468
-Obsoletes:	xbmc-skin-pm3-hd < 9.11-1.svn29468
-Obsoletes:	xbmc-nosefart < 9.11-1.svn29468
-Obsoletes:	xbmc-screensavers-default < 9.11-1.svn29468
-Obsoletes:	xbmc-script-examples < 9.11-1.svn27796
-Obsoletes:	xbmc-web-pm3 < 9.11-1.svn27796
 
 %description
 XBMC is an award-winning free and open source software media player
@@ -247,8 +296,6 @@ Requires:	python-pybluez
 Requires:	%{name}-eventclients-common = %{version}-%{release}
 # requires via zeroconf.py, only used by xbmc-ps3d:
 Requires:	python-gobject avahi-python python-dbus
-# TODO merge all these?, and TODO zeroconf.py to a correct package? :)
-Obsoletes:	eventclient-ps3remote < 9.11-1.svn31936
 
 %description	eventclient-ps3
 XBMC is an award-winning free and open source software media player
@@ -270,7 +317,7 @@ This package contains the xbmc-send eventclient.
 
 %prep
 %if %snap
-%setup -q -n %name-%branch_release-%snap
+%setup -q -n %{name}-%{branch_release}-%{snap}
 %else
 %if %pre
 %setup -q -n %{name}-%{version}-%{branch_release}_%{pre}
@@ -324,7 +371,6 @@ export ac_cv_prog_HAVE_GIT="no"
 %make -C tools/EventClients wiimote
 
 %install
-%__rm -rf %{buildroot}
 %makeinstall_std
 %makeinstall_std -C tools/EventClients
 
@@ -383,9 +429,6 @@ ok=1
 [ -n "$ok" ]
 )
 
-%clean
-%__rm -rf %{buildroot}
-
 %files
 %doc %{_docdir}/xbmc
 %{_sysconfdir}/X11/wmsession.d/15XBMC
@@ -432,7 +475,7 @@ ok=1
 %{_iconsdir}/hicolor/*/apps/xbmc.png
 
 %files eventclients-common
-%python_sitelib/xbmc
+%{python_sitelib}/xbmc
 %dir %{_datadir}/pixmaps/xbmc
 %{_datadir}/pixmaps/xbmc/*.png
 
@@ -452,4 +495,5 @@ ok=1
 
 %files eventclient-wiiremote
 %{_bindir}/xbmc-wiiremote
+
 

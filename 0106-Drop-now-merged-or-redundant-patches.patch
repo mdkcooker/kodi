@@ -1,0 +1,2751 @@
+From 902ac4ddd9b28810d70aa2d148825565fde0d474 Mon Sep 17 00:00:00 2001
+From: elupus <elupus@xbmc.org>
+Date: Tue, 27 Mar 2012 22:40:55 +0200
+Subject: [PATCH 106/145] Drop now merged or redundant patches (cherry picked
+ from commit
+ 32ab5065e68b97c9e1e45974b1868daf41dfaea4)
+
+---
+ ...ow-reading-of-growing-avi-files-ie-curren.patch |   52 --------
+ .../patches/0002-w32thread-add-logging.patch       |   46 -------
+ .../0004-support-seeking-in-nuv-files.patch        |  126 -------------------
+ ...Media-file-gets-played-twice.-we-assume-a.patch |   35 ------
+ ...additional-HDMV-types-and-reg-descriptors.patch |   36 ------
+ ...ck-some-more-url_fseeks-in-asf-demuxer-to.patch |   39 ------
+ ...ds-DTS-detection-to-MOV-files-ffmpeg-issu.patch |   24 ----
+ ...ck-for-seek-error-when-attempting-to-read.patch |   27 ----
+ ...wrong-fps-for-rmvb-files-patch-by-taxigps.patch |   38 ------
+ ...0022-don-t-hardcode-subtitle-colors-to-16.patch |   25 ----
+ ...ck-return-value-of-seeks-to-avoid-messing.patch |   62 ---------
+ ...vc-s-mpeg2-decoder-was-asked-to-drop-a-fr.patch |   26 ----
+ ...ntainer-doesn-t-contain-timestamps-for-al.patch |   29 -----
+ ...ecoder-should-set-key_frame-field-of-AVFr.patch |   25 ----
+ ...-build-with-enable-runtime-cpudetect-disa.patch |   56 ---------
+ ...-t-store-RTSPStream-in-AVStream-priv_data.patch |  108 ----------------
+ ...fenc-fix-byte-order-on-big-endian-systems.patch |  121 ------------------
+ ..._STREAMS-hack-back-it-was-lost-after-the-.patch |   28 -----
+ ...pdate-ff_probe_input_buffer-documentation.patch |   29 -----
+ ...ify-pb-parameter-of-ff_probe_input_buffer.patch |   71 -----------
+ ...e-ff_probe_input_buffer-to-make-it-public.patch |  100 ---------------
+ ...scover-streams-in-extended-stream-propert.patch |   56 ---------
+ .../0046-os_support-fix-poll-implementation.patch  |   29 -----
+ ...-ffmpeg-feature-to-parse-flv-fileposition.patch |  105 ----------------
+ ...nt-mark-genereted-dummy-frame-as-keyframe.patch |   31 -----
+ ...ty-to-enable-workaround-for-dxva2-decodin.patch |   70 -----------
+ ...for-memory-leaks-in-DVB-subtitles-decoder.patch |   25 ----
+ lib/ffmpeg/patches/0058-fixed-seeks-in-mmsh.patch  |  124 ------------------
+ lib/ffmpeg/patches/0059-fix-h264-decode-size.patch |   43 -------
+ .../0061-fix-vc1-vaapi-intel-sandy-bridge.patch    |   48 -------
+ ...-in-ffmpeg-matroskadec-with-some-files-fi.patch |   50 --------
+ ...ow-yadif-deinterlacer-to-enable-and-disab.patch |  106 ----------------
+ ...ated-yadif-patch-to-same-as-will-be-appli.patch |   82 ------------
+ ...ated-dxva-zigzag-workaround-for-ATI-based.patch |   92 --------------
+ ...-should-copy-frame-properties-of-second-f.patch |   31 -----
+ ...-use-correct-compression-parameters-for-c.patch |   33 -----
+ lib/ffmpeg/patches/0071-fixed-Typo.patch           |   25 ----
+ ...smatching-frame-numbers-in-fields-to-sync.patch |   33 -----
+ ...in-frame-gaps-with-copied-refs-after-flus.patch |   36 ------
+ ...t-assert-on-value-read-from-input-bitstre.patch |   41 ------
+ ...ack-from-mmst-urls-would-halt-after-some-.patch |   30 -----
+ ...f-to-not-use-out-of-picture-lines.-Fixes-.patch |  133 --------------------
+ ...78-fixed-ffmpeg-build-with-gcc-4.7-on-x86.patch |   68 ----------
+ 43 files changed, 2394 deletions(-)
+ delete mode 100644 lib/ffmpeg/patches/0001-changed-allow-reading-of-growing-avi-files-ie-curren.patch
+ delete mode 100644 lib/ffmpeg/patches/0002-w32thread-add-logging.patch
+ delete mode 100644 lib/ffmpeg/patches/0004-support-seeking-in-nuv-files.patch
+ delete mode 100644 lib/ffmpeg/patches/0005-fixed-5585-Media-file-gets-played-twice.-we-assume-a.patch
+ delete mode 100644 lib/ffmpeg/patches/0009-additional-HDMV-types-and-reg-descriptors.patch
+ delete mode 100644 lib/ffmpeg/patches/0014-changed-check-some-more-url_fseeks-in-asf-demuxer-to.patch
+ delete mode 100644 lib/ffmpeg/patches/0015-Fix-7956-Adds-DTS-detection-to-MOV-files-ffmpeg-issu.patch
+ delete mode 100644 lib/ffmpeg/patches/0019-changed-check-for-seek-error-when-attempting-to-read.patch
+ delete mode 100644 lib/ffmpeg/patches/0020-fixed-wrong-fps-for-rmvb-files-patch-by-taxigps.patch
+ delete mode 100644 lib/ffmpeg/patches/0022-don-t-hardcode-subtitle-colors-to-16.patch
+ delete mode 100644 lib/ffmpeg/patches/0027-changed-check-return-value-of-seeks-to-avoid-messing.patch
+ delete mode 100644 lib/ffmpeg/patches/0028-fixed-if-lavc-s-mpeg2-decoder-was-asked-to-drop-a-fr.patch
+ delete mode 100644 lib/ffmpeg/patches/0029-fixed-if-container-doesn-t-contain-timestamps-for-al.patch
+ delete mode 100644 lib/ffmpeg/patches/0031-fixed-vp3-decoder-should-set-key_frame-field-of-AVFr.patch
+ delete mode 100644 lib/ffmpeg/patches/0036-swscale-fix-build-with-enable-runtime-cpudetect-disa.patch
+ delete mode 100644 lib/ffmpeg/patches/0038-rtsp-Don-t-store-RTSPStream-in-AVStream-priv_data.patch
+ delete mode 100644 lib/ffmpeg/patches/0039-spdifenc-fix-byte-order-on-big-endian-systems.patch
+ delete mode 100644 lib/ffmpeg/patches/0040-Add-our-MAX_STREAMS-hack-back-it-was-lost-after-the-.patch
+ delete mode 100644 lib/ffmpeg/patches/0041-lavf-update-ff_probe_input_buffer-documentation.patch
+ delete mode 100644 lib/ffmpeg/patches/0042-lavf-simplify-pb-parameter-of-ff_probe_input_buffer.patch
+ delete mode 100644 lib/ffmpeg/patches/0043-lavf-rename-ff_probe_input_buffer-to-make-it-public.patch
+ delete mode 100644 lib/ffmpeg/patches/0044-MMS-also-discover-streams-in-extended-stream-propert.patch
+ delete mode 100644 lib/ffmpeg/patches/0046-os_support-fix-poll-implementation.patch
+ delete mode 100644 lib/ffmpeg/patches/0047-Backporting-ffmpeg-feature-to-parse-flv-fileposition.patch
+ delete mode 100644 lib/ffmpeg/patches/0048-Dont-mark-genereted-dummy-frame-as-keyframe.patch
+ delete mode 100644 lib/ffmpeg/patches/0049-Added-ability-to-enable-workaround-for-dxva2-decodin.patch
+ delete mode 100644 lib/ffmpeg/patches/0050-Patch-for-memory-leaks-in-DVB-subtitles-decoder.patch
+ delete mode 100644 lib/ffmpeg/patches/0058-fixed-seeks-in-mmsh.patch
+ delete mode 100644 lib/ffmpeg/patches/0059-fix-h264-decode-size.patch
+ delete mode 100644 lib/ffmpeg/patches/0061-fix-vc1-vaapi-intel-sandy-bridge.patch
+ delete mode 100644 lib/ffmpeg/patches/0062-fixed-crash-in-ffmpeg-matroskadec-with-some-files-fi.patch
+ delete mode 100644 lib/ffmpeg/patches/0065-changed-allow-yadif-deinterlacer-to-enable-and-disab.patch
+ delete mode 100644 lib/ffmpeg/patches/0066-changed-updated-yadif-patch-to-same-as-will-be-appli.patch
+ delete mode 100644 lib/ffmpeg/patches/0067-changed-updated-dxva-zigzag-workaround-for-ATI-based.patch
+ delete mode 100644 lib/ffmpeg/patches/0068-fixed-yadif-should-copy-frame-properties-of-second-f.patch
+ delete mode 100644 lib/ffmpeg/patches/0070-matroskadec-use-correct-compression-parameters-for-c.patch
+ delete mode 100644 lib/ffmpeg/patches/0071-fixed-Typo.patch
+ delete mode 100644 lib/ffmpeg/patches/0072-h264-Use-mismatching-frame-numbers-in-fields-to-sync.patch
+ delete mode 100644 lib/ffmpeg/patches/0073-Don-t-fill-in-frame-gaps-with-copied-refs-after-flus.patch
+ delete mode 100644 lib/ffmpeg/patches/0074-vaapi-do-not-assert-on-value-read-from-input-bitstre.patch
+ delete mode 100644 lib/ffmpeg/patches/0075-fixed-playback-from-mmst-urls-would-halt-after-some-.patch
+ delete mode 100644 lib/ffmpeg/patches/0077-Change-yadif-to-not-use-out-of-picture-lines.-Fixes-.patch
+ delete mode 100644 lib/ffmpeg/patches/0078-fixed-ffmpeg-build-with-gcc-4.7-on-x86.patch
+
+diff --git a/lib/ffmpeg/patches/0001-changed-allow-reading-of-growing-avi-files-ie-curren.patch b/lib/ffmpeg/patches/0001-changed-allow-reading-of-growing-avi-files-ie-curren.patch
+deleted file mode 100644
+index 72af980..0000000
+--- a/lib/ffmpeg/patches/0001-changed-allow-reading-of-growing-avi-files-ie-curren.patch
++++ /dev/null
+@@ -1,52 +0,0 @@
+-From 4cb1a5a9e6a7258a5c4026c57f3e2bae9df292d0 Mon Sep 17 00:00:00 2001
+-From: Cory Fields <theuni-nospam-@xbmc.org>
+-Date: Mon, 28 Jun 2010 01:28:27 -0400
+-Subject: [PATCH 01/36] changed: allow reading of growing avi files (ie currently being written)
+-
+----
+- libavformat/avidec.c |    8 ++++----
+- 1 files changed, 4 insertions(+), 4 deletions(-)
+-
+-diff --git a/libavformat/avidec.c b/libavformat/avidec.c
+-index d8d4726..6b3e927 100644
+---- a/libavformat/avidec.c
+-+++ b/libavformat/avidec.c
+-@@ -139,7 +139,7 @@ static int read_braindead_odml_indx(AVFormatContext *s, int frame_num){
+-     AVIStream *ast;
+-     int i;
+-     int64_t last_pos= -1;
+--    int64_t filesize= url_fsize(s->pb);
+-+    int64_t filesize= avi->fsize;
+- 
+- #ifdef DEBUG_SEEK
+-     av_log(s, AV_LOG_ERROR, "longs_pre_entry:%d index_type:%d entries_in_use:%d chunk_id:%X base:%16"PRIX64"\n",
+-@@ -353,7 +353,7 @@ static int avi_read_header(AVFormatContext *s, AVFormatParameters *ap)
+-         return -1;
+- 
+-     avi->fsize = url_fsize(pb);
+--    if(avi->fsize<=0)
+-+    if(avi->fsize<=0 || avi->fsize < avi->riff_end)
+-         avi->fsize= avi->riff_end == 8 ? INT64_MAX : avi->riff_end;
+- 
+-     /* first list tag */
+-@@ -379,7 +379,7 @@ static int avi_read_header(AVFormatContext *s, AVFormatParameters *ap)
+-             if (tag1 == MKTAG('m', 'o', 'v', 'i')) {
+-                 avi->movi_list = url_ftell(pb) - 4;
+-                 if(size) avi->movi_end = avi->movi_list + size + (size & 1);
+--                else     avi->movi_end = url_fsize(pb);
+-+                else     avi->movi_end = avi->fsize;
+-                 av_dlog(NULL, "movi end=%"PRIx64"\n", avi->movi_end);
+-                 goto end_of_header;
+-             }
+-@@ -706,7 +706,7 @@ static int avi_read_header(AVFormatContext *s, AVFormatParameters *ap)
+-                 av_log(s, AV_LOG_ERROR, "Something went wrong during header parsing, "
+-                                         "I will ignore it and try to continue anyway.\n");
+-                 avi->movi_list = url_ftell(pb) - 4;
+--                avi->movi_end  = url_fsize(pb);
+-+                avi->movi_end  = avi->fsize;
+-                 goto end_of_header;
+-             }
+-             /* skip tag */
+--- 
+-1.7.3
+-
+diff --git a/lib/ffmpeg/patches/0002-w32thread-add-logging.patch b/lib/ffmpeg/patches/0002-w32thread-add-logging.patch
+deleted file mode 100644
+index 1767f87..0000000
+--- a/lib/ffmpeg/patches/0002-w32thread-add-logging.patch
++++ /dev/null
+@@ -1,46 +0,0 @@
+-From c564d6ba80e9c27c0fa95835cf09efd08fc6d570 Mon Sep 17 00:00:00 2001
+-From: Cory Fields <theuni-nospam-@xbmc.org>
+-Date: Mon, 28 Jun 2010 01:30:34 -0400
+-Subject: [PATCH 02/36] w32thread: add logging
+-
+----
+- libavcodec/w32thread.c |    6 ++++--
+- 1 files changed, 4 insertions(+), 2 deletions(-)
+-
+-diff --git a/libavcodec/w32thread.c b/libavcodec/w32thread.c
+-index f7a1430..5654334 100644
+---- a/libavcodec/w32thread.c
+-+++ b/libavcodec/w32thread.c
+-@@ -130,7 +130,7 @@ int avcodec_thread_init(AVCodecContext *s, int thread_count){
+-     uint32_t threadid;
+- 
+-     s->thread_count= thread_count;
+--
+-+av_log(NULL, AV_LOG_INFO, "[w32thread] thread count = %d\n", thread_count);
+-     if (thread_count <= 1)
+-         return 0;
+- 
+-@@ -147,17 +147,19 @@ int avcodec_thread_init(AVCodecContext *s, int thread_count){
+-     for(i=0; i<thread_count; i++){
+- //printf("init semaphors %d\n", i); fflush(stdout);
+-         c[i].avctx= s;
+-+av_log(NULL, AV_LOG_INFO, "[w32thread] init semaphors %d\n", i+1);
+-         c[i].work_sem = c[0].work_sem;
+-         c[i].job_sem  = c[0].job_sem;
+-         c[i].done_sem = c[0].done_sem;
+-         c[i].threadnr = i;
+- 
+- //printf("create thread %d\n", i); fflush(stdout);
+-+av_log(NULL, AV_LOG_INFO, "[w32thread] create thread %d\n", i+1);
+-         c[i].thread = (HANDLE)_beginthreadex(NULL, 0, thread_func, &c[i], 0, &threadid );
+-         if( !c[i].thread ) goto fail;
+-     }
+- //printf("init done\n"); fflush(stdout);
+--
+-+av_log(NULL, AV_LOG_INFO, "[w32thread] init done\n");
+-     s->execute= avcodec_thread_execute;
+-     s->execute2= avcodec_thread_execute2;
+- 
+--- 
+-1.7.3
+-
+diff --git a/lib/ffmpeg/patches/0004-support-seeking-in-nuv-files.patch b/lib/ffmpeg/patches/0004-support-seeking-in-nuv-files.patch
+deleted file mode 100644
+index 593427f..0000000
+--- a/lib/ffmpeg/patches/0004-support-seeking-in-nuv-files.patch
++++ /dev/null
+@@ -1,126 +0,0 @@
+-From 2433fbdc04fd5497f71b1e3d5f9a184048616734 Mon Sep 17 00:00:00 2001
+-From: Cory Fields <theuni-nospam-@xbmc.org>
+-Date: Mon, 28 Jun 2010 01:36:50 -0400
+-Subject: [PATCH 04/36] support seeking in nuv files
+-
+----
+- libavformat/nuv.c |   84 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+- 1 files changed, 84 insertions(+), 0 deletions(-)
+-
+-diff --git a/libavformat/nuv.c b/libavformat/nuv.c
+-index 58a00df..04b256c 100644
+---- a/libavformat/nuv.c
+-+++ b/libavformat/nuv.c
+-@@ -218,12 +218,18 @@ static int nuv_packet(AVFormatContext *s, AVPacket *pkt) {
+-                 ret = av_new_packet(pkt, copyhdrsize + size);
+-                 if (ret < 0)
+-                     return ret;
+-+
+-                 // HACK: we have no idea if it is a keyframe,
+-                 // but if we mark none seeking will not work at all.
+-                 pkt->flags |= AV_PKT_FLAG_KEY;
+-                 pkt->pos = pos;
+-                 pkt->pts = AV_RL32(&hdr[4]);
+-                 pkt->stream_index = ctx->v_id;
+-+                if(hdr[2] == 0) {
+-+                    AVStream *st = s->streams[pkt->stream_index];
+-+                    pkt->flags |= PKT_FLAG_KEY;
+-+                    av_add_index_entry(st, pkt->pos, pkt->pts, size + HDRSIZE, 0, AVINDEX_KEYFRAME);
+-+                }
+-                 memcpy(pkt->data, hdr, copyhdrsize);
+-                 ret = get_buffer(pb, pkt->data + copyhdrsize, size);
+-                 if (ret < 0) {
+-@@ -257,6 +263,83 @@ static int nuv_packet(AVFormatContext *s, AVPacket *pkt) {
+-     return AVERROR(EIO);
+- }
+- 
+-+/**
+-+ * \brief looks for the string RTjjjjjjjjjj in the stream too resync reading
+-+ * \return TRUE if the syncword is found.
+-+ */
+-+static int nuv_resync(AVFormatContext *s, int64_t pos_limit) {
+-+    ByteIOContext *pb = s->pb;
+-+    uint32_t tag;
+-+
+-+    tag = get_be32(pb);
+-+    while(!url_feof(pb) && url_ftell(pb) < pos_limit) {
+-+        if(tag != MKBETAG('R','T','j','j')) {
+-+            tag = (tag << 8) | get_byte(pb);
+-+            continue;
+-+        }
+-+        tag = get_be32(pb);
+-+        if(tag != MKBETAG('j','j','j','j'))
+-+          continue;
+-+
+-+        tag = get_be32(pb);
+-+        if(tag != MKBETAG('j','j','j','j'))
+-+          continue;
+-+
+-+        return 1;
+-+    }
+-+    return 0;
+-+}
+-+
+-+/**
+-+ * \brief attempts to read a timestamp from stream at the given stream position
+-+ * \return timestamp if successfull and AV_NOPTS_VALUE if failure
+-+ */
+-+static int64_t nuv_read_dts(AVFormatContext *s, int stream_index,
+-+                               int64_t *ppos, int64_t pos_limit)
+-+{
+-+    NUVContext *ctx = s->priv_data;
+-+    ByteIOContext *pb = s->pb;
+-+    uint8_t hdr[HDRSIZE];
+-+    nuv_frametype frametype;
+-+    int size;
+-+    int64_t pos, dts;
+-+
+-+    if (url_fseek(pb, *ppos, SEEK_SET) < 0)
+-+        return AV_NOPTS_VALUE;
+-+
+-+    if (!nuv_resync(s, pos_limit))
+-+        return AV_NOPTS_VALUE;
+-+
+-+    while (!url_feof(pb) && url_ftell(pb) < pos_limit) {
+-+        if (get_buffer(pb, hdr, HDRSIZE) <= 0)
+-+            return AV_NOPTS_VALUE;
+-+        frametype = hdr[0];
+-+        size = PKTSIZE(AV_RL32(&hdr[8]));
+-+        switch (frametype) {
+-+            case NUV_SEEKP:
+-+                break;
+-+            case NUV_AUDIO:
+-+            case NUV_VIDEO:
+-+                pos = url_ftell(s->pb) - HDRSIZE;
+-+                dts = AV_RL32(&hdr[4]);
+-+                // TODO - add general support in av_gen_search, so it adds positions after reading timestamps
+-+                av_add_index_entry(s->streams[frametype == NUV_VIDEO ? ctx->v_id : ctx->a_id]
+-+                                 , pos, dts, size + HDRSIZE, 0, hdr[2] == 0 ? AVINDEX_KEYFRAME : 0);
+-+
+-+                if ((frametype == NUV_VIDEO && stream_index == ctx->v_id) ||
+-+                    (frametype == NUV_AUDIO && stream_index == ctx->a_id)) {
+-+                    *ppos = pos;
+-+                    return dts;
+-+                }
+-+            default:
+-+                url_fskip(pb, size);
+-+                break;
+-+        }
+-+    }
+-+    return AV_NOPTS_VALUE;
+-+}
+-+
+-+
+- AVInputFormat ff_nuv_demuxer = {
+-     "nuv",
+-     NULL_IF_CONFIG_SMALL("NuppelVideo format"),
+-@@ -266,5 +349,6 @@ AVInputFormat ff_nuv_demuxer = {
+-     nuv_packet,
+-     NULL,
+-     NULL,
+-+    nuv_read_dts,
+-     .flags = AVFMT_GENERIC_INDEX,
+- };
+--- 
+-1.7.3
+-
+diff --git a/lib/ffmpeg/patches/0005-fixed-5585-Media-file-gets-played-twice.-we-assume-a.patch b/lib/ffmpeg/patches/0005-fixed-5585-Media-file-gets-played-twice.-we-assume-a.patch
+deleted file mode 100644
+index 29f2d9c..0000000
+--- a/lib/ffmpeg/patches/0005-fixed-5585-Media-file-gets-played-twice.-we-assume-a.patch
++++ /dev/null
+@@ -1,35 +0,0 @@
+-From 0c18eecd120fac527942cd8609545bfba7566b27 Mon Sep 17 00:00:00 2001
+-From: Cory Fields <theuni-nospam-@xbmc.org>
+-Date: Mon, 28 Jun 2010 01:45:48 -0400
+-Subject: [PATCH 05/36] fixed: #5585 Media file gets played twice. we assume avi EOF when we can't find the next streams index entry for non interleaved files.
+-
+----
+- libavformat/avidec.c |    5 ++++-
+- 1 files changed, 4 insertions(+), 1 deletions(-)
+-
+-diff --git a/libavformat/avidec.c b/libavformat/avidec.c
+-index 6b3e927..3d223b7 100644
+---- a/libavformat/avidec.c
+-+++ b/libavformat/avidec.c
+-@@ -898,7 +898,8 @@ static int avi_read_packet(AVFormatContext *s, AVPacket *pkt)
+-         if(i>=0){
+-             int64_t pos= best_st->index_entries[i].pos;
+-             pos += best_ast->packet_size - best_ast->remaining;
+--            url_fseek(s->pb, pos + 8, SEEK_SET);
+-+            if(url_fseek(s->pb, pos + 8, SEEK_SET) < 0)
+-+              return AVERROR_EOF;
+- //        av_log(s, AV_LOG_DEBUG, "pos=%"PRId64"\n", pos);
+- 
+-             assert(best_ast->remaining <= best_ast->packet_size);
+-@@ -908,6 +909,8 @@ static int avi_read_packet(AVFormatContext *s, AVPacket *pkt)
+-                 best_ast->packet_size=
+-                 best_ast->remaining= best_st->index_entries[i].size;
+-         }
+-+        else
+-+          return AVERROR_EOF;
+-     }
+- 
+- resync:
+--- 
+-1.7.3
+-
+diff --git a/lib/ffmpeg/patches/0009-additional-HDMV-types-and-reg-descriptors.patch b/lib/ffmpeg/patches/0009-additional-HDMV-types-and-reg-descriptors.patch
+deleted file mode 100644
+index cfa85ca..0000000
+--- a/lib/ffmpeg/patches/0009-additional-HDMV-types-and-reg-descriptors.patch
++++ /dev/null
+@@ -1,36 +0,0 @@
+-From 576a80321fbb6a6f4c4e69af75440e94990498bc Mon Sep 17 00:00:00 2001
+-From: Cory Fields <theuni-nospam-@xbmc.org>
+-Date: Mon, 28 Jun 2010 02:15:41 -0400
+-Subject: [PATCH 09/36] additional HDMV types and reg descriptors
+-
+----
+- libavformat/mpegts.c |    6 ++++++
+- 1 files changed, 6 insertions(+), 0 deletions(-)
+-
+-diff --git a/libavformat/mpegts.c b/libavformat/mpegts.c
+-index d550e3e..74b0886 100644
+---- a/libavformat/mpegts.c
+-+++ b/libavformat/mpegts.c
+-@@ -512,6 +512,8 @@ static const StreamType HDMV_types[] = {
+-     { 0x82, AVMEDIA_TYPE_AUDIO, CODEC_ID_DTS },
+-     { 0x83, AVMEDIA_TYPE_AUDIO, CODEC_ID_TRUEHD },
+-     { 0x84, AVMEDIA_TYPE_AUDIO, CODEC_ID_EAC3 },
+-+    { 0x85, AVMEDIA_TYPE_AUDIO, CODEC_ID_DTS }, /* DTS HD */
+-+    { 0x86, AVMEDIA_TYPE_AUDIO, CODEC_ID_DTS }, /* DTS HD MASTER*/
+-     { 0x90, AVMEDIA_TYPE_SUBTITLE, CODEC_ID_HDMV_PGS_SUBTITLE },
+-     { 0 },
+- };
+-@@ -526,6 +528,10 @@ static const StreamType MISC_types[] = {
+- static const StreamType REGD_types[] = {
+-     { MKTAG('d','r','a','c'), AVMEDIA_TYPE_VIDEO, CODEC_ID_DIRAC },
+-     { MKTAG('A','C','-','3'), AVMEDIA_TYPE_AUDIO,   CODEC_ID_AC3 },
+-+    { MKTAG('D','T','S','1'), AVMEDIA_TYPE_AUDIO,   CODEC_ID_DTS },
+-+    { MKTAG('D','T','S','2'), AVMEDIA_TYPE_AUDIO,   CODEC_ID_DTS },
+-+    { MKTAG('D','T','S','3'), AVMEDIA_TYPE_AUDIO,   CODEC_ID_DTS },
+-+    { MKTAG('V','C','-','1'), AVMEDIA_TYPE_VIDEO,   CODEC_ID_VC1 },
+-     { 0 },
+- };
+- 
+--- 
+-1.7.3
+-
+diff --git a/lib/ffmpeg/patches/0014-changed-check-some-more-url_fseeks-in-asf-demuxer-to.patch b/lib/ffmpeg/patches/0014-changed-check-some-more-url_fseeks-in-asf-demuxer-to.patch
+deleted file mode 100644
+index c196041..0000000
+--- a/lib/ffmpeg/patches/0014-changed-check-some-more-url_fseeks-in-asf-demuxer-to.patch
++++ /dev/null
+@@ -1,39 +0,0 @@
+-From 9f19ad85257c413cf6c1facb6dc49efa8a10b6b3 Mon Sep 17 00:00:00 2001
+-From: Cory Fields <theuni-nospam-@xbmc.org>
+-Date: Mon, 28 Jun 2010 22:27:09 -0400
+-Subject: [PATCH 14/36] changed: check some more url_fseeks in asf demuxer to avoid problems if file system is unseekable
+-
+----
+- libavformat/asfdec.c |    9 +++++++--
+- 1 files changed, 7 insertions(+), 2 deletions(-)
+-
+-diff --git a/libavformat/asfdec.c b/libavformat/asfdec.c
+-index 2bda885..4347601 100644
+---- a/libavformat/asfdec.c
+-+++ b/libavformat/asfdec.c
+-@@ -1058,7 +1058,8 @@ static int64_t asf_read_pts(AVFormatContext *s, int stream_index, int64_t *ppos,
+-     if (s->packet_size > 0)
+-         pos= (pos+s->packet_size-1-s->data_offset)/s->packet_size*s->packet_size+ s->data_offset;
+-     *ppos= pos;
+--    url_fseek(s->pb, pos, SEEK_SET);
+-+    if (url_fseek(s->pb, pos, SEEK_SET) < 0)
+-+        return AV_NOPTS_VALUE;
+- 
+- //printf("asf_read_pts\n");
+-     asf_reset_header(s);
+-@@ -1100,7 +1101,11 @@ static void asf_build_simple_index(AVFormatContext *s, int stream_index)
+-     int64_t current_pos= url_ftell(s->pb);
+-     int i;
+- 
+--    url_fseek(s->pb, asf->data_object_offset + asf->data_object_size, SEEK_SET);
+-+    if(url_fseek(s->pb, asf->data_object_offset + asf->data_object_size, SEEK_SET) < 0) {
+-+      asf->index_read= -1;
+-+      return;
+-+    }
+-+
+-     ff_get_guid(s->pb, &g);
+- 
+-     /* the data object can be followed by other top-level objects,
+--- 
+-1.7.3
+-
+diff --git a/lib/ffmpeg/patches/0015-Fix-7956-Adds-DTS-detection-to-MOV-files-ffmpeg-issu.patch b/lib/ffmpeg/patches/0015-Fix-7956-Adds-DTS-detection-to-MOV-files-ffmpeg-issu.patch
+deleted file mode 100644
+index 113d42a..0000000
+--- a/lib/ffmpeg/patches/0015-Fix-7956-Adds-DTS-detection-to-MOV-files-ffmpeg-issu.patch
++++ /dev/null
+@@ -1,24 +0,0 @@
+-From ead553179b4b145c4fd10af1bc9f827877bc559f Mon Sep 17 00:00:00 2001
+-From: Cory Fields <theuni-nospam-@xbmc.org>
+-Date: Mon, 28 Jun 2010 22:33:07 -0400
+-Subject: [PATCH 15/36] Fix #7956 - Adds DTS detection to MOV files (ffmpeg issue 1726)
+-
+----
+- libavformat/isom.c |    1 +
+- 1 files changed, 1 insertions(+), 0 deletions(-)
+-
+-diff --git a/libavformat/isom.c b/libavformat/isom.c
+-index 23ef82a..013cca7 100644
+---- a/libavformat/isom.c
+-+++ b/libavformat/isom.c
+-@@ -230,6 +230,7 @@ const AVCodecTag codec_movaudio_tags[] = {
+-     { CODEC_ID_AAC, MKTAG('m', 'p', '4', 'a') }, /* MPEG-4 AAC */
+-     { CODEC_ID_AC3, MKTAG('a', 'c', '-', '3') }, /* ETSI TS 102 366 Annex F */
+-     { CODEC_ID_AC3, MKTAG('s', 'a', 'c', '3') }, /* Nero Recode */
+-+    { CODEC_ID_DTS, MKTAG('D', 'T', 'S', ' ') }, /* DTS */
+- 
+-     { CODEC_ID_AMR_NB, MKTAG('s', 'a', 'm', 'r') }, /* AMR-NB 3gp */
+-     { CODEC_ID_AMR_WB, MKTAG('s', 'a', 'w', 'b') }, /* AMR-WB 3gp */
+--- 
+-1.7.3
+-
+diff --git a/lib/ffmpeg/patches/0019-changed-check-for-seek-error-when-attempting-to-read.patch b/lib/ffmpeg/patches/0019-changed-check-for-seek-error-when-attempting-to-read.patch
+deleted file mode 100644
+index 2dcc85c..0000000
+--- a/lib/ffmpeg/patches/0019-changed-check-for-seek-error-when-attempting-to-read.patch
++++ /dev/null
+@@ -1,27 +0,0 @@
+-From d4a0766af6b82ab3c99a56c726ec66cada0da6de Mon Sep 17 00:00:00 2001
+-From: Cory Fields <theuni-nospam-@xbmc.org>
+-Date: Fri, 9 Jul 2010 15:21:10 -0400
+-Subject: [PATCH 19/36] changed: check for seek error when attempting to read timestamp in rm demuxer
+-
+----
+- libavformat/rmdec.c |    4 +++-
+- 1 files changed, 3 insertions(+), 1 deletions(-)
+-
+-diff --git a/libavformat/rmdec.c b/libavformat/rmdec.c
+-index da7e6b2..94bfc43 100644
+---- a/libavformat/rmdec.c
+-+++ b/libavformat/rmdec.c
+-@@ -904,7 +904,9 @@ static int64_t rm_read_dts(AVFormatContext *s, int stream_index,
+-     if(rm->old_format)
+-         return AV_NOPTS_VALUE;
+- 
+--    url_fseek(s->pb, pos, SEEK_SET);
+-+    if (url_fseek(s->pb, pos, SEEK_SET) < 0)
+-+        return AV_NOPTS_VALUE;
+-+
+-     rm->remaining_len=0;
+-     for(;;){
+-         int seq=1;
+--- 
+-1.7.3
+-
+diff --git a/lib/ffmpeg/patches/0020-fixed-wrong-fps-for-rmvb-files-patch-by-taxigps.patch b/lib/ffmpeg/patches/0020-fixed-wrong-fps-for-rmvb-files-patch-by-taxigps.patch
+deleted file mode 100644
+index cde7f7a..0000000
+--- a/lib/ffmpeg/patches/0020-fixed-wrong-fps-for-rmvb-files-patch-by-taxigps.patch
++++ /dev/null
+@@ -1,38 +0,0 @@
+-From a10bd5edd13e8aff5e81bd1c8dddebde1698ed36 Mon Sep 17 00:00:00 2001
+-From: Cory Fields <theuni-nospam-@xbmc.org>
+-Date: Fri, 9 Jul 2010 15:22:09 -0400
+-Subject: [PATCH 20/36] fixed: wrong fps for rmvb files (patch by taxigps)
+-
+----
+- libavformat/rmdec.c |    7 +++----
+- 1 files changed, 3 insertions(+), 4 deletions(-)
+-
+-diff --git a/libavformat/rmdec.c b/libavformat/rmdec.c
+-index 94bfc43..8b59b1d 100644
+---- a/libavformat/rmdec.c
+-+++ b/libavformat/rmdec.c
+-@@ -294,18 +294,17 @@ ff_rm_read_mdpr_codecdata (AVFormatContext *s, ByteIOContext *pb,
+-             goto fail1;
+-         st->codec->width = get_be16(pb);
+-         st->codec->height = get_be16(pb);
+--        st->codec->time_base.num= 1;
+-+        st->codec->time_base.num= 1 << 16;
+-         fps= get_be16(pb);
+-         st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
+-         get_be32(pb);
+--        fps2= get_be16(pb);
+--        get_be16(pb);
+-+        fps2= get_be32(pb);
+- 
+-         if ((ret = rm_read_extradata(pb, st->codec, codec_data_size - (url_ftell(pb) - codec_pos))) < 0)
+-             return ret;
+- 
+- //        av_log(s, AV_LOG_DEBUG, "fps= %d fps2= %d\n", fps, fps2);
+--        st->codec->time_base.den = fps * st->codec->time_base.num;
+-+        st->codec->time_base.den = fps2;
+-         //XXX: do we really need that?
+-         switch(st->codec->extradata[4]>>4){
+-         case 1: st->codec->codec_id = CODEC_ID_RV10; break;
+--- 
+-1.7.3
+-
+diff --git a/lib/ffmpeg/patches/0022-don-t-hardcode-subtitle-colors-to-16.patch b/lib/ffmpeg/patches/0022-don-t-hardcode-subtitle-colors-to-16.patch
+deleted file mode 100644
+index bd5755b..0000000
+--- a/lib/ffmpeg/patches/0022-don-t-hardcode-subtitle-colors-to-16.patch
++++ /dev/null
+@@ -1,25 +0,0 @@
+-From 31ec1522bb763dac0e77788a989ac3690de5a7ca Mon Sep 17 00:00:00 2001
+-From: Cory Fields <theuni-nospam-@xbmc.org>
+-Date: Fri, 9 Jul 2010 16:15:55 -0400
+-Subject: [PATCH 22/36] don't hardcode subtitle colors to 16
+-
+----
+- libavcodec/dvbsubdec.c |    2 +-
+- 1 files changed, 1 insertions(+), 1 deletions(-)
+-
+-diff --git a/libavcodec/dvbsubdec.c b/libavcodec/dvbsubdec.c
+-index 0f1e004..e68a0b3 100644
+---- a/libavcodec/dvbsubdec.c
+-+++ b/libavcodec/dvbsubdec.c
+-@@ -1357,7 +1357,7 @@ static int dvbsub_display_end_segment(AVCodecContext *avctx, const uint8_t *buf,
+-         rect->y = display->y_pos + offset_y;
+-         rect->w = region->width;
+-         rect->h = region->height;
+--        rect->nb_colors = 16;
+-+        rect->nb_colors = (1 << region->depth);
+-         rect->type      = SUBTITLE_BITMAP;
+-         rect->pict.linesize[0] = region->width;
+- 
+--- 
+-1.7.3
+-
+diff --git a/lib/ffmpeg/patches/0027-changed-check-return-value-of-seeks-to-avoid-messing.patch b/lib/ffmpeg/patches/0027-changed-check-return-value-of-seeks-to-avoid-messing.patch
+deleted file mode 100644
+index f62cd67..0000000
+--- a/lib/ffmpeg/patches/0027-changed-check-return-value-of-seeks-to-avoid-messing.patch
++++ /dev/null
+@@ -1,62 +0,0 @@
+-From 470e2804c01b609532d95539c66ebb6d13c7f805 Mon Sep 17 00:00:00 2001
+-From: Cory Fields <theuni-nospam-@xbmc.org>
+-Date: Fri, 9 Jul 2010 17:36:00 -0400
+-Subject: [PATCH 27/36] changed: check return value of seeks to avoid messing up current stream location
+-
+----
+- libavformat/avidec.c |   16 ++++++++++++----
+- 1 files changed, 12 insertions(+), 4 deletions(-)
+-
+-diff --git a/libavformat/avidec.c b/libavformat/avidec.c
+-index 3d223b7..45ed8be 100644
+---- a/libavformat/avidec.c
+-+++ b/libavformat/avidec.c
+-@@ -206,13 +206,18 @@ static int read_braindead_odml_indx(AVFormatContext *s, int frame_num){
+-                 return -1;
+-             }
+- 
+--            url_fseek(pb, offset+8, SEEK_SET);
+-+            if(url_fseek(pb, offset+8, SEEK_SET) < 0)
+-+                return -1;
+-             avi->odml_depth++;
+-             read_braindead_odml_indx(s, frame_num);
+-             avi->odml_depth--;
+-             frame_num += duration;
+- 
+--            url_fseek(pb, pos, SEEK_SET);
+-+            if(url_fseek(pb, pos, SEEK_SET) < 0) {
+-+                av_log(s, AV_LOG_ERROR, "Failed to restore position after reading index");
+-+                return -1;
+-+            }
+-+
+-         }
+-     }
+-     avi->index_loaded=1;
+-@@ -1287,11 +1292,13 @@ static int avi_read_seek(AVFormatContext *s, int stream_index, int64_t timestamp
+-         /* the av_index_search_timestamp call above.                     */
+-         assert(stream_index == 0);
+- 
+-+        if(url_fseek(s->pb, pos, SEEK_SET) < 0)
+-+            return -1;
+-+
+-         /* Feed the DV video stream version of the timestamp to the */
+-         /* DV demux so it can synthesize correct timestamps.        */
+-         dv_offset_reset(avi->dv_demux, timestamp);
+- 
+--        url_fseek(s->pb, pos, SEEK_SET);
+-         avi->stream_index= -1;
+-         return 0;
+-     }
+-@@ -1333,7 +1340,8 @@ static int avi_read_seek(AVFormatContext *s, int stream_index, int64_t timestamp
+-     }
+- 
+-     /* do the seek */
+--    url_fseek(s->pb, pos, SEEK_SET);
+-+    if(url_fseek(s->pb, pos, SEEK_SET) < 0)
+-+        return -1;
+-     avi->stream_index= -1;
+-     return 0;
+- }
+--- 
+-1.7.3
+-
+diff --git a/lib/ffmpeg/patches/0028-fixed-if-lavc-s-mpeg2-decoder-was-asked-to-drop-a-fr.patch b/lib/ffmpeg/patches/0028-fixed-if-lavc-s-mpeg2-decoder-was-asked-to-drop-a-fr.patch
+deleted file mode 100644
+index 2c1ef30..0000000
+--- a/lib/ffmpeg/patches/0028-fixed-if-lavc-s-mpeg2-decoder-was-asked-to-drop-a-fr.patch
++++ /dev/null
+@@ -1,26 +0,0 @@
+-From 937ab2b921e37b8e17edef2bb5a8b3a476d20fd8 Mon Sep 17 00:00:00 2001
+-From: elupus <elupus@568bbfeb-2a22-0410-94d2-cc84cf5bfa90>
+-Date: Wed, 29 Sep 2010 21:18:03 +0000
+-Subject: [PATCH 28/36] fixed: if lavc's mpeg2 decoder was asked to drop a frame, it would still output an old frame, and mess up timestamps
+-
+-git-svn-id: https://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk@34307 568bbfeb-2a22-0410-94d2-cc84cf5bfa90
+----
+- libavcodec/mpeg12.c |    2 +-
+- 1 files changed, 1 insertions(+), 1 deletions(-)
+-
+-diff --git a/libavcodec/mpeg12.c b/libavcodec/mpeg12.c
+-index 3c73627..6254abb 100644
+---- a/libavcodec/mpeg12.c
+-+++ b/libavcodec/mpeg12.c
+-@@ -1911,7 +1911,7 @@ static int slice_end(AVCodecContext *avctx, AVFrame *pict)
+-         ff_xvmc_field_end(s);
+- 
+-     /* end of slice reached */
+--    if (/*s->mb_y<<field_pic == s->mb_height &&*/ !s->first_field) {
+-+    if (/*s->mb_y<<field_pic == s->mb_height &&*/ !s->first_field && !s->first_slice) {
+-         /* end of image */
+- 
+-         s->current_picture_ptr->qscale_type= FF_QSCALE_TYPE_MPEG2;
+--- 
+-1.7.3
+-
+diff --git a/lib/ffmpeg/patches/0029-fixed-if-container-doesn-t-contain-timestamps-for-al.patch b/lib/ffmpeg/patches/0029-fixed-if-container-doesn-t-contain-timestamps-for-al.patch
+deleted file mode 100644
+index 62fda88..0000000
+--- a/lib/ffmpeg/patches/0029-fixed-if-container-doesn-t-contain-timestamps-for-al.patch
++++ /dev/null
+@@ -1,29 +0,0 @@
+-From ab91f9fecf9ac6e38dbf5d9ed65a5bd123a4c031 Mon Sep 17 00:00:00 2001
+-From: elupus <elupus@568bbfeb-2a22-0410-94d2-cc84cf5bfa90>
+-Date: Tue, 19 Oct 2010 21:07:10 +0000
+-Subject: [PATCH 29/36] fixed: if container doesn't contain timestamps for all dts packets, lavf used wrong duration of packet to fill in the blanks
+-
+-The issue was discussed here: http://forum.xbmc.org/showthread.php?t=82896
+-
+-Ps. The DTS parser is really lacking. It doesn't fill in anything, it only slices up the frames. So if this value changes mid stream, we will start calculating this wrong again. I'm pondering if we should just stop trying to fill in the blanks.
+-
+-git-svn-id: https://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk@34863 568bbfeb-2a22-0410-94d2-cc84cf5bfa90
+----
+- libavcodec/dca.c |    1 +
+- 1 files changed, 1 insertions(+), 0 deletions(-)
+-
+-diff --git a/libavcodec/dca.c b/libavcodec/dca.c
+-index 63ea329..2e2b37f 100644
+---- a/libavcodec/dca.c
+-+++ b/libavcodec/dca.c
+-@@ -1642,6 +1642,7 @@ static int dca_decode_frame(AVCodecContext * avctx,
+-     //set AVCodec values with parsed data
+-     avctx->sample_rate = s->sample_rate;
+-     avctx->bit_rate = s->bit_rate;
+-+    avctx->frame_size = s->sample_blocks * 32;
+- 
+-     s->profile = FF_PROFILE_DTS;
+- 
+--- 
+-1.7.3
+-
+diff --git a/lib/ffmpeg/patches/0031-fixed-vp3-decoder-should-set-key_frame-field-of-AVFr.patch b/lib/ffmpeg/patches/0031-fixed-vp3-decoder-should-set-key_frame-field-of-AVFr.patch
+deleted file mode 100644
+index 55650c0..0000000
+--- a/lib/ffmpeg/patches/0031-fixed-vp3-decoder-should-set-key_frame-field-of-AVFr.patch
++++ /dev/null
+@@ -1,25 +0,0 @@
+-From 23c286841dda2df21bb05917ff6895bec1854f61 Mon Sep 17 00:00:00 2001
+-From: elupus <elupus@svn>
+-Date: Tue, 14 Sep 2010 00:42:57 +0000
+-Subject: [PATCH 31/36] fixed: vp3 decoder should set key_frame field of AVFrame
+-
+-git-svn-id: https://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk@33768 568bbfeb-2a22-0410-94d2-cc84cf5bfa90
+----
+- libavcodec/vp3.c |    1 +
+- 1 files changed, 1 insertions(+), 0 deletions(-)
+-
+-diff --git a/libavcodec/vp3.c b/libavcodec/vp3.c
+-index 06f55f6..d634fca 100644
+---- a/libavcodec/vp3.c
+-+++ b/libavcodec/vp3.c
+-@@ -1765,6 +1765,7 @@ static int vp3_decode_frame(AVCodecContext *avctx,
+- 
+-     s->current_frame.reference = 3;
+-     s->current_frame.pict_type = s->keyframe ? FF_I_TYPE : FF_P_TYPE;
+-+    s->current_frame.key_frame = s->keyframe;
+-     if (avctx->get_buffer(avctx, &s->current_frame) < 0) {
+-         av_log(s->avctx, AV_LOG_ERROR, "get_buffer() failed\n");
+-         goto error;
+--- 
+-1.7.3
+-
+diff --git a/lib/ffmpeg/patches/0036-swscale-fix-build-with-enable-runtime-cpudetect-disa.patch b/lib/ffmpeg/patches/0036-swscale-fix-build-with-enable-runtime-cpudetect-disa.patch
+deleted file mode 100644
+index 3c4a8b7..0000000
+--- a/lib/ffmpeg/patches/0036-swscale-fix-build-with-enable-runtime-cpudetect-disa.patch
++++ /dev/null
+@@ -1,56 +0,0 @@
+-From 189505c7a47007ae25fe9d4c46787c3ef9378dc9 Mon Sep 17 00:00:00 2001
+-From: Anssi Hannula <anssi.hannula@iki.fi>
+-Date: Wed, 2 Feb 2011 19:36:23 +0200
+-Subject: [PATCH 36/36] swscale: fix build with --enable-runtime-cpudetect --disable-mmx/mmx2/amd3dnow
+-
+-Commit 0fc29f2708a "swscale: simplify selection of optimizations to
+-compile." (25 Aug 2010) changed the behaviour so that with
+---enable-runtime-cpudetect --disable-mmx/mmx2/amd3dnow the instruction
+-sets are actually disabled.
+-
+-However, ff_getSwsFunc() still calls the respective initialization
+-functions which no longer exist, causing a build failure.
+-
+-Fix that by putting those calls under #if as well.
+----
+- libswscale/swscale.c |   15 +++++++++++----
+- 1 files changed, 11 insertions(+), 4 deletions(-)
+-
+-diff --git a/libswscale/swscale.c b/libswscale/swscale.c
+-index 375171f..8d7bb73 100644
+---- a/libswscale/swscale.c
+-+++ b/libswscale/swscale.c
+-@@ -1262,19 +1262,26 @@ SwsFunc ff_getSwsFunc(SwsContext *c)
+- 
+- #if ARCH_X86
+-     // ordered per speed fastest first
+-+#if COMPILE_MMX2
+-     if (flags & SWS_CPU_CAPS_MMX2) {
+-         sws_init_swScale_MMX2(c);
+-         return swScale_MMX2;
+--    } else if (flags & SWS_CPU_CAPS_3DNOW) {
+-+    }
+-+#endif
+-+#if COMPILE_3DNOW
+-+    if (flags & SWS_CPU_CAPS_3DNOW) {
+-         sws_init_swScale_3DNow(c);
+-         return swScale_3DNow;
+--    } else if (flags & SWS_CPU_CAPS_MMX) {
+-+    }
+-+#endif
+-+#if COMPILE_MMX
+-+    if (flags & SWS_CPU_CAPS_MMX) {
+-         sws_init_swScale_MMX(c);
+-         return swScale_MMX;
+--    } else {
+-+    }
+-+#endif
+-         sws_init_swScale_C(c);
+-         return swScale_C;
+--    }
+- 
+- #else
+- #if COMPILE_ALTIVEC
+--- 
+-1.7.3
+-
+diff --git a/lib/ffmpeg/patches/0038-rtsp-Don-t-store-RTSPStream-in-AVStream-priv_data.patch b/lib/ffmpeg/patches/0038-rtsp-Don-t-store-RTSPStream-in-AVStream-priv_data.patch
+deleted file mode 100644
+index d87a1cf..0000000
+--- a/lib/ffmpeg/patches/0038-rtsp-Don-t-store-RTSPStream-in-AVStream-priv_data.patch
++++ /dev/null
+@@ -1,108 +0,0 @@
+-From b1eb9860a582ec9459e871c00f23b5fc2500aaf4 Mon Sep 17 00:00:00 2001
+-From: =?UTF-8?q?Martin=20Storsj=C3=B6?= <martin@martin.st>
+-Date: Wed, 2 Feb 2011 11:08:01 +0200
+-Subject: [PATCH] rtsp: Don't store RTSPStream in AVStream->priv_data
+-
+-For mpegts in RTP, there isn't a direct mapping between RTSPStreams
+-and AVStreams, and the RTSPStream isn't ever stored in
+-AVStream->priv_data, which was earlier leaked. The fix for this
+-leak, in ea7f080749d68a431226ce196014da38761a0d82, lead to
+-double frees for other, normal RTP streams.
+-
+-This patch avoids storing RTSPStreams in AVStream->priv_data, thus
+-avoiding the double free. The RTSPStreams are always available via
+-RTSPState->rtsp_streams anyway.
+-
+-Tested with MS-RTSP, RealRTSP, DSS and mpegts/RTP.
+-
+-Signed-off-by: Luca Barbato <lu_zero@gentoo.org>
+-(cherry picked from commit d9c0510e22821baa364306d867ffac45da0620c8)
+----
+- libavformat/rtsp.c    |   16 ++++++----------
+- libavformat/rtspenc.c |    2 --
+- 2 files changed, 6 insertions(+), 12 deletions(-)
+-
+-diff --git a/libavformat/rtsp.c b/libavformat/rtsp.c
+-index 09e2f1e..e1d7503 100644
+---- a/libavformat/rtsp.c
+-+++ b/libavformat/rtsp.c
+-@@ -273,8 +273,7 @@ static void sdp_parse_line(AVFormatContext *s, SDPParseState *s1,
+-             s1->default_ip = sdp_ip;
+-             s1->default_ttl = ttl;
+-         } else {
+--            st = s->streams[s->nb_streams - 1];
+--            rtsp_st = st->priv_data;
+-+            rtsp_st = rt->rtsp_streams[rt->nb_rtsp_streams - 1];
+-             rtsp_st->sdp_ip = sdp_ip;
+-             rtsp_st->sdp_ttl = ttl;
+-         }
+-@@ -326,7 +325,6 @@ static void sdp_parse_line(AVFormatContext *s, SDPParseState *s1,
+-             st = av_new_stream(s, 0);
+-             if (!st)
+-                 return;
+--            st->priv_data = rtsp_st;
+-             rtsp_st->stream_index = st->index;
+-             st->codec->codec_type = codec_type;
+-             if (rtsp_st->sdp_payload_type < RTP_PT_PRIVATE) {
+-@@ -355,8 +353,7 @@ static void sdp_parse_line(AVFormatContext *s, SDPParseState *s1,
+-             } else {
+-                 char proto[32];
+-                 /* get the control url */
+--                st = s->streams[s->nb_streams - 1];
+--                rtsp_st = st->priv_data;
+-+                rtsp_st = rt->rtsp_streams[rt->nb_rtsp_streams - 1];
+- 
+-                 /* XXX: may need to add full url resolution */
+-                 av_url_split(proto, sizeof(proto), NULL, 0, NULL, 0,
+-@@ -377,7 +374,7 @@ static void sdp_parse_line(AVFormatContext *s, SDPParseState *s1,
+-             get_word(buf1, sizeof(buf1), &p);
+-             payload_type = atoi(buf1);
+-             st = s->streams[s->nb_streams - 1];
+--            rtsp_st = st->priv_data;
+-+            rtsp_st = rt->rtsp_streams[rt->nb_rtsp_streams - 1];
+-             sdp_parse_rtpmap(s, st, rtsp_st, payload_type, p);
+-         } else if (av_strstart(p, "fmtp:", &p) ||
+-                    av_strstart(p, "framesize:", &p)) {
+-@@ -385,9 +382,8 @@ static void sdp_parse_line(AVFormatContext *s, SDPParseState *s1,
+-             // let dynamic protocol handlers have a stab at the line.
+-             get_word(buf1, sizeof(buf1), &p);
+-             payload_type = atoi(buf1);
+--            for (i = 0; i < s->nb_streams; i++) {
+--                st      = s->streams[i];
+--                rtsp_st = st->priv_data;
+-+            for (i = 0; i < rt->nb_rtsp_streams; i++) {
+-+                rtsp_st = rt->rtsp_streams[i];
+-                 if (rtsp_st->sdp_payload_type == payload_type &&
+-                     rtsp_st->dynamic_handler &&
+-                     rtsp_st->dynamic_handler->parse_sdp_a_line)
+-@@ -417,7 +413,7 @@ static void sdp_parse_line(AVFormatContext *s, SDPParseState *s1,
+-                 if (rt->server_type == RTSP_SERVER_REAL)
+-                     ff_real_parse_sdp_a_line(s, s->nb_streams - 1, p);
+- 
+--                rtsp_st = s->streams[s->nb_streams - 1]->priv_data;
+-+                rtsp_st = rt->rtsp_streams[rt->nb_rtsp_streams - 1];
+-                 if (rtsp_st->dynamic_handler &&
+-                     rtsp_st->dynamic_handler->parse_sdp_a_line)
+-                     rtsp_st->dynamic_handler->parse_sdp_a_line(s,
+-diff --git a/libavformat/rtspenc.c b/libavformat/rtspenc.c
+-index d54be1a..34deeeb 100644
+---- a/libavformat/rtspenc.c
+-+++ b/libavformat/rtspenc.c
+-@@ -79,14 +79,12 @@ int ff_rtsp_setup_output_streams(AVFormatContext *s, const char *addr)
+-     /* Set up the RTSPStreams for each AVStream */
+-     for (i = 0; i < s->nb_streams; i++) {
+-         RTSPStream *rtsp_st;
+--        AVStream *st = s->streams[i];
+- 
+-         rtsp_st = av_mallocz(sizeof(RTSPStream));
+-         if (!rtsp_st)
+-             return AVERROR(ENOMEM);
+-         dynarray_add(&rt->rtsp_streams, &rt->nb_rtsp_streams, rtsp_st);
+- 
+--        st->priv_data = rtsp_st;
+-         rtsp_st->stream_index = i;
+- 
+-         av_strlcpy(rtsp_st->control_url, rt->control_uri, sizeof(rtsp_st->control_url));
+--- 
+-1.7.3
+-
+diff --git a/lib/ffmpeg/patches/0039-spdifenc-fix-byte-order-on-big-endian-systems.patch b/lib/ffmpeg/patches/0039-spdifenc-fix-byte-order-on-big-endian-systems.patch
+deleted file mode 100644
+index fb8bc68..0000000
+--- a/lib/ffmpeg/patches/0039-spdifenc-fix-byte-order-on-big-endian-systems.patch
++++ /dev/null
+@@ -1,121 +0,0 @@
+-From a8dd9e056114a80d11c77efbdfe4b22610f452db Mon Sep 17 00:00:00 2001
+-From: Anssi Hannula <anssi.hannula@iki.fi>
+-Date: Mon, 27 Dec 2010 05:16:54 +0200
+-Subject: [PATCH] spdifenc: fix byte order on big-endian systems
+-
+-There is a check for HAVE_BIGENDIAN when outputting the IEC 61937
+-stream. On big-endian systems the payload data is not byteswapped,
+-causing in effect the outputted payload data to be in a different byte
+-order on big-endian than on little-endian systems.
+-
+-However, the IEC 61937 preamble (and the final odd byte if present) is
+-always outputted in the same byte order. This means that on big-endian
+-systems the headers have a different byte order than the payload,
+-preventing useful use of the output.
+-
+-Fix that by outputting the data in a format suitable for sending to an
+-audio device in S16LE format by default. Output as big-endian (S16BE)
+-is added as an AVOption. This makes the muxer output the same on all
+-archs by default.
+-
+----
+-
+-Other ways to fix this would be to
+-a) simply always output in little-endian format, or
+-b) always output in native-endian format (i.e. different muxer output
+-depending on arch), or
+-c) have two different logical muxers.
+----
+- libavformat/spdifenc.c |   35 +++++++++++++++++++++++++++++------
+- 1 files changed, 29 insertions(+), 6 deletions(-)
+-
+-diff --git a/libavformat/spdifenc.c b/libavformat/spdifenc.c
+-index 3eea31e..9b0001c 100644
+---- a/libavformat/spdifenc.c
+-+++ b/libavformat/spdifenc.c
+-@@ -49,6 +49,7 @@
+- #include "libavcodec/ac3.h"
+- #include "libavcodec/dca.h"
+- #include "libavcodec/aacadtsdec.h"
+-+#include "libavutil/opt.h"
+- 
+- typedef struct IEC61937Context {
+-     enum IEC61937DataType data_type;///< burst info - reference to type of payload of the data-burst
+-@@ -68,11 +69,22 @@ typedef struct IEC61937Context {
+-     int hd_buf_count;               ///< number of frames in the hd audio buffer
+-     int hd_buf_filled;              ///< amount of bytes in the hd audio buffer
+- 
+-+    /* AVOptions: */
+-+#define SPDIF_FLAG_BIGENDIAN    0x01
+-+    int spdif_flags;
+-+
+-     /// function, which generates codec dependent header information.
+-     /// Sets data_type and pkt_offset, and length_code, out_bytes, out_buf if necessary
+-     int (*header_info) (AVFormatContext *s, AVPacket *pkt);
+- } IEC61937Context;
+- 
+-+static const AVOption options[] = {
+-+{ "spdif_flags", "IEC 61937 encapsulation flags", offsetof(IEC61937Context, spdif_flags), FF_OPT_TYPE_FLAGS, 0, 0, INT_MAX, AV_OPT_FLAG_ENCODING_PARAM, "spdif_flags" },
+-+{ "be", "output in big-endian format (for use as s16be)", 0, FF_OPT_TYPE_CONST, SPDIF_FLAG_BIGENDIAN, 0, INT_MAX, AV_OPT_FLAG_ENCODING_PARAM, "spdif_flags" },
+-+{ NULL },
+-+};
+-+
+-+static const AVClass class = { "spdif", av_default_item_name, options, LIBAVUTIL_VERSION_INT };
+- 
+- static int spdif_header_ac3(AVFormatContext *s, AVPacket *pkt)
+- {
+-@@ -330,6 +342,15 @@ static int spdif_write_trailer(AVFormatContext *s)
+-     return 0;
+- }
+- 
+-+static void spdif_put_16(struct AVFormatContext *s, unsigned int val)
+-+{
+-+    IEC61937Context *ctx = s->priv_data;
+-+    if (ctx->spdif_flags & SPDIF_FLAG_BIGENDIAN)
+-+        put_be16(s->pb, val);
+-+    else
+-+        put_le16(s->pb, val);
+-+}
+-+
+- static int spdif_write_packet(struct AVFormatContext *s, AVPacket *pkt)
+- {
+-     IEC61937Context *ctx = s->priv_data;
+-@@ -354,13 +375,13 @@ static int spdif_write_packet(struct AVFormatContext *s, AVPacket *pkt)
+-     }
+- 
+-     if (ctx->use_preamble) {
+--        put_le16(s->pb, SYNCWORD1);       //Pa
+--        put_le16(s->pb, SYNCWORD2);       //Pb
+--        put_le16(s->pb, ctx->data_type);  //Pc
+--        put_le16(s->pb, ctx->length_code);//Pd
+-+        spdif_put_16(s, SYNCWORD1);       //Pa
+-+        spdif_put_16(s, SYNCWORD2);       //Pb
+-+        spdif_put_16(s, ctx->data_type);  //Pc
+-+        spdif_put_16(s, ctx->length_code);//Pd
+-     }
+- 
+--    if (HAVE_BIGENDIAN ^ ctx->extra_bswap) {
+-+    if (ctx->extra_bswap ^ (ctx->spdif_flags & SPDIF_FLAG_BIGENDIAN)) {
+-     put_buffer(s->pb, ctx->out_buf, ctx->out_bytes & ~1);
+-     } else {
+-     av_fast_malloc(&ctx->buffer, &ctx->buffer_size, ctx->out_bytes + FF_INPUT_BUFFER_PADDING_SIZE);
+-@@ -370,8 +391,9 @@ static int spdif_write_packet(struct AVFormatContext *s, AVPacket *pkt)
+-     put_buffer(s->pb, ctx->buffer, ctx->out_bytes & ~1);
+-     }
+- 
+-+    /* a final lone byte has to be MSB aligned */
+-     if (ctx->out_bytes & 1)
+--        put_be16(s->pb, ctx->out_buf[ctx->out_bytes - 1]);
+-+        spdif_put_16(s, ctx->out_buf[ctx->out_bytes - 1] << 8);
+- 
+-     put_nbyte(s->pb, 0, padding);
+- 
+-@@ -393,4 +415,5 @@ AVOutputFormat ff_spdif_muxer = {
+-     spdif_write_header,
+-     spdif_write_packet,
+-     spdif_write_trailer,
+-+    .priv_class = &class,
+- };
+--- 
+-1.7.3
+-
+diff --git a/lib/ffmpeg/patches/0040-Add-our-MAX_STREAMS-hack-back-it-was-lost-after-the-.patch b/lib/ffmpeg/patches/0040-Add-our-MAX_STREAMS-hack-back-it-was-lost-after-the-.patch
+deleted file mode 100644
+index 25b0541..0000000
+--- a/lib/ffmpeg/patches/0040-Add-our-MAX_STREAMS-hack-back-it-was-lost-after-the-.patch
++++ /dev/null
+@@ -1,28 +0,0 @@
+-From 03e5595ec1d5a87d61a67443634b0c56af7cd22c Mon Sep 17 00:00:00 2001
+-From: theuni <theuni-nospam-@xbmc.org>
+-Date: Mon, 7 Feb 2011 16:00:50 -0500
+-Subject: [PATCH] Add our MAX_STREAMS hack back, it was lost after the ffmpeg update.
+-
+-Fixes playback of some streams (one of my test mkvs).
+-
+-This should be removed on ffmpeg major version bump.
+----
+- lib/ffmpeg/libavformat/avformat.h |    2 +-
+- 1 files changed, 1 insertions(+), 1 deletions(-)
+-
+-diff --git a/lib/ffmpeg/libavformat/avformat.h b/lib/ffmpeg/libavformat/avformat.h
+-index f9f9be5..dec8091 100644
+---- a/lib/ffmpeg/libavformat/avformat.h
+-+++ b/lib/ffmpeg/libavformat/avformat.h
+-@@ -667,7 +667,7 @@ typedef struct AVChapter {
+- } AVChapter;
+- 
+- #if FF_API_MAX_STREAMS
+--#define MAX_STREAMS 20
+-+#define MAX_STREAMS 100
+- #endif
+- 
+- /**
+--- 
+-1.7.3
+-
+diff --git a/lib/ffmpeg/patches/0041-lavf-update-ff_probe_input_buffer-documentation.patch b/lib/ffmpeg/patches/0041-lavf-update-ff_probe_input_buffer-documentation.patch
+deleted file mode 100644
+index 392fdab..0000000
+--- a/lib/ffmpeg/patches/0041-lavf-update-ff_probe_input_buffer-documentation.patch
++++ /dev/null
+@@ -1,29 +0,0 @@
+-From acdac292f7c1691d21e19c1e9a993e501883fd6b Mon Sep 17 00:00:00 2001
+-From: Anssi Hannula <anssi.hannula@iki.fi>
+-Date: Tue, 8 Feb 2011 00:46:51 +0200
+-Subject: [PATCH 41/43] lavf: update ff_probe_input_buffer documentation
+-
+-It never reopens the bytestream anymore.
+-
+-Signed-off-by: Ronald S. Bultje <rsbultje@gmail.com>
+-(cherry picked from commit 4d016dd4e5b288b3c0c7396935326cb07a289ac2)
+----
+- libavformat/internal.h |    2 +-
+- 1 files changed, 1 insertions(+), 1 deletions(-)
+-
+-diff --git a/libavformat/internal.h b/libavformat/internal.h
+-index b401d35..a17d9c6 100644
+---- a/libavformat/internal.h
+-+++ b/libavformat/internal.h
+-@@ -88,7 +88,7 @@ uint64_t ff_ntp_time(void);
+-  * attempt is made. When the maximum probe size is reached, the input format
+-  * with the highest score is returned.
+-  *
+-- * @param pb the bytestream to probe, it may be closed and opened again
+-+ * @param pb the bytestream to probe
+-  * @param fmt the input format is put here
+-  * @param filename the filename of the stream
+-  * @param logctx the log context
+--- 
+-1.7.3
+-
+diff --git a/lib/ffmpeg/patches/0042-lavf-simplify-pb-parameter-of-ff_probe_input_buffer.patch b/lib/ffmpeg/patches/0042-lavf-simplify-pb-parameter-of-ff_probe_input_buffer.patch
+deleted file mode 100644
+index f2b8baf..0000000
+--- a/lib/ffmpeg/patches/0042-lavf-simplify-pb-parameter-of-ff_probe_input_buffer.patch
++++ /dev/null
+@@ -1,71 +0,0 @@
+-From c0cbd02d3bcd49f4258a9ba86004e70a56bb3a64 Mon Sep 17 00:00:00 2001
+-From: Anssi Hannula <anssi.hannula@iki.fi>
+-Date: Tue, 8 Feb 2011 00:46:52 +0200
+-Subject: [PATCH 42/43] lavf: simplify pb parameter of ff_probe_input_buffer
+-
+-There is no need to pass the ByteIOContext via a pointer to a pointer
+-anymore.
+-
+-Signed-off-by: Ronald S. Bultje <rsbultje@gmail.com>
+-(cherry picked from commit aad216fd7e3209fe0a865d8751e680925f6654d3)
+----
+- libavformat/internal.h |    2 +-
+- libavformat/utils.c    |    8 ++++----
+- 2 files changed, 5 insertions(+), 5 deletions(-)
+-
+-diff --git a/libavformat/internal.h b/libavformat/internal.h
+-index a17d9c6..f2f3ddc 100644
+---- a/libavformat/internal.h
+-+++ b/libavformat/internal.h
+-@@ -97,7 +97,7 @@ uint64_t ff_ntp_time(void);
+-  * @return 0 in case of success, a negative value corresponding to an
+-  * AVERROR code otherwise
+-  */
+--int ff_probe_input_buffer(ByteIOContext **pb, AVInputFormat **fmt,
+-+int ff_probe_input_buffer(ByteIOContext *pb, AVInputFormat **fmt,
+-                           const char *filename, void *logctx,
+-                           unsigned int offset, unsigned int max_probe_size);
+- 
+-diff --git a/libavformat/utils.c b/libavformat/utils.c
+-index e2881ba..f5b22a2 100644
+---- a/libavformat/utils.c
+-+++ b/libavformat/utils.c
+-@@ -524,7 +524,7 @@ int av_open_input_stream(AVFormatContext **ic_ptr,
+- #define PROBE_BUF_MIN 2048
+- #define PROBE_BUF_MAX (1<<20)
+- 
+--int ff_probe_input_buffer(ByteIOContext **pb, AVInputFormat **fmt,
+-+int ff_probe_input_buffer(ByteIOContext *pb, AVInputFormat **fmt,
+-                           const char *filename, void *logctx,
+-                           unsigned int offset, unsigned int max_probe_size)
+- {
+-@@ -555,7 +555,7 @@ int ff_probe_input_buffer(ByteIOContext **pb, AVInputFormat **fmt,
+- 
+-         /* read probe data */
+-         buf = av_realloc(buf, probe_size + AVPROBE_PADDING_SIZE);
+--        if ((ret = get_buffer(*pb, buf + buf_offset, probe_size - buf_offset)) < 0) {
+-+        if ((ret = get_buffer(pb, buf + buf_offset, probe_size - buf_offset)) < 0) {
+-             /* fail if error was not end of file, otherwise, lower score */
+-             if (ret != AVERROR_EOF) {
+-                 av_free(buf);
+-@@ -585,7 +585,7 @@ int ff_probe_input_buffer(ByteIOContext **pb, AVInputFormat **fmt,
+-     }
+- 
+-     /* rewind. reuse probe buffer to avoid seeking */
+--    if ((ret = ff_rewind_with_probe_data(*pb, buf, pd.buf_size)) < 0)
+-+    if ((ret = ff_rewind_with_probe_data(pb, buf, pd.buf_size)) < 0)
+-         av_free(buf);
+- 
+-     return ret;
+-@@ -622,7 +622,7 @@ int av_open_input_file(AVFormatContext **ic_ptr, const char *filename,
+-         if (buf_size > 0) {
+-             url_setbufsize(pb, buf_size);
+-         }
+--        if (!fmt && (err = ff_probe_input_buffer(&pb, &fmt, filename, logctx, 0, logctx ? (*ic_ptr)->probesize : 0)) < 0) {
+-+        if (!fmt && (err = ff_probe_input_buffer(pb, &fmt, filename, logctx, 0, logctx ? (*ic_ptr)->probesize : 0)) < 0) {
+-             goto fail;
+-         }
+-     }
+--- 
+-1.7.3
+-
+diff --git a/lib/ffmpeg/patches/0043-lavf-rename-ff_probe_input_buffer-to-make-it-public.patch b/lib/ffmpeg/patches/0043-lavf-rename-ff_probe_input_buffer-to-make-it-public.patch
+deleted file mode 100644
+index d70e272..0000000
+--- a/lib/ffmpeg/patches/0043-lavf-rename-ff_probe_input_buffer-to-make-it-public.patch
++++ /dev/null
+@@ -1,100 +0,0 @@
+-From 90a931ab9378be64cdffb33f8490b6891ebb9ad8 Mon Sep 17 00:00:00 2001
+-From: Anssi Hannula <anssi.hannula@iki.fi>
+-Date: Tue, 8 Feb 2011 00:46:53 +0200
+-Subject: [PATCH 43/43] lavf: rename ff_probe_input_buffer to make it public
+-
+-It is useful for applications that hand input data directly to lavf via
+-a ByteIOContext.
+-
+-Signed-off-by: Ronald S. Bultje <rsbultje@gmail.com>
+----
+- libavformat/avformat.h |   19 +++++++++++++++++++
+- libavformat/internal.h |   19 -------------------
+- libavformat/utils.c    |    4 ++--
+- 3 files changed, 21 insertions(+), 21 deletions(-)
+-
+-diff --git a/libavformat/avformat.h b/libavformat/avformat.h
+-index dec8091..a08d843 100644
+---- a/libavformat/avformat.h
+-+++ b/libavformat/avformat.h
+-@@ -1039,6 +1039,25 @@ AVInputFormat *av_probe_input_format(AVProbeData *pd, int is_opened);
+- AVInputFormat *av_probe_input_format2(AVProbeData *pd, int is_opened, int *score_max);
+- 
+- /**
+-+ * Probe a bytestream to determine the input format. Each time a probe returns
+-+ * with a score that is too low, the probe buffer size is increased and another
+-+ * attempt is made. When the maximum probe size is reached, the input format
+-+ * with the highest score is returned.
+-+ *
+-+ * @param pb the bytestream to probe
+-+ * @param fmt the input format is put here
+-+ * @param filename the filename of the stream
+-+ * @param logctx the log context
+-+ * @param offset the offset within the bytestream to probe from
+-+ * @param max_probe_size the maximum probe buffer size (zero for default)
+-+ * @return 0 in case of success, a negative value corresponding to an
+-+ * AVERROR code otherwise
+-+ */
+-+int av_probe_input_buffer(ByteIOContext *pb, AVInputFormat **fmt,
+-+                          const char *filename, void *logctx,
+-+                          unsigned int offset, unsigned int max_probe_size);
+-+
+-+/**
+-  * Allocate all the structures needed to read an input stream.
+-  *        This does not open the needed codecs for decoding the stream[s].
+-  */
+-diff --git a/libavformat/internal.h b/libavformat/internal.h
+-index f2f3ddc..738b59d 100644
+---- a/libavformat/internal.h
+-+++ b/libavformat/internal.h
+-@@ -82,25 +82,6 @@ void ff_read_frame_flush(AVFormatContext *s);
+- /** Get the current time since NTP epoch in microseconds. */
+- uint64_t ff_ntp_time(void);
+- 
+--/**
+-- * Probe a bytestream to determine the input format. Each time a probe returns
+-- * with a score that is too low, the probe buffer size is increased and another
+-- * attempt is made. When the maximum probe size is reached, the input format
+-- * with the highest score is returned.
+-- *
+-- * @param pb the bytestream to probe
+-- * @param fmt the input format is put here
+-- * @param filename the filename of the stream
+-- * @param logctx the log context
+-- * @param offset the offset within the bytestream to probe from
+-- * @param max_probe_size the maximum probe buffer size (zero for default)
+-- * @return 0 in case of success, a negative value corresponding to an
+-- * AVERROR code otherwise
+-- */
+--int ff_probe_input_buffer(ByteIOContext *pb, AVInputFormat **fmt,
+--                          const char *filename, void *logctx,
+--                          unsigned int offset, unsigned int max_probe_size);
+--
+- #if FF_API_URL_SPLIT
+- /**
+-  * @deprecated use av_url_split() instead
+-diff --git a/libavformat/utils.c b/libavformat/utils.c
+-index f5b22a2..bee0475 100644
+---- a/libavformat/utils.c
+-+++ b/libavformat/utils.c
+-@@ -524,7 +524,7 @@ int av_open_input_stream(AVFormatContext **ic_ptr,
+- #define PROBE_BUF_MIN 2048
+- #define PROBE_BUF_MAX (1<<20)
+- 
+--int ff_probe_input_buffer(ByteIOContext *pb, AVInputFormat **fmt,
+-+int av_probe_input_buffer(ByteIOContext *pb, AVInputFormat **fmt,
+-                           const char *filename, void *logctx,
+-                           unsigned int offset, unsigned int max_probe_size)
+- {
+-@@ -622,7 +622,7 @@ int av_open_input_file(AVFormatContext **ic_ptr, const char *filename,
+-         if (buf_size > 0) {
+-             url_setbufsize(pb, buf_size);
+-         }
+--        if (!fmt && (err = ff_probe_input_buffer(pb, &fmt, filename, logctx, 0, logctx ? (*ic_ptr)->probesize : 0)) < 0) {
+-+        if (!fmt && (err = av_probe_input_buffer(pb, &fmt, filename, logctx, 0, logctx ? (*ic_ptr)->probesize : 0)) < 0) {
+-             goto fail;
+-         }
+-     }
+--- 
+-1.7.3
+-
+diff --git a/lib/ffmpeg/patches/0044-MMS-also-discover-streams-in-extended-stream-propert.patch b/lib/ffmpeg/patches/0044-MMS-also-discover-streams-in-extended-stream-propert.patch
+deleted file mode 100644
+index 287b1fe..0000000
+--- a/lib/ffmpeg/patches/0044-MMS-also-discover-streams-in-extended-stream-propert.patch
++++ /dev/null
+@@ -1,56 +0,0 @@
+-From 91861ce25c7f19c38afdb0f115bf90118fc19428 Mon Sep 17 00:00:00 2001
+-From: Marton Balint <cus@passwd.hu>
+-Date: Sat, 19 Feb 2011 17:33:15 +0100
+-Subject: [PATCH] MMS: also discover streams in extended stream properties object
+-
+-Allows playback of nonprimary audio streams in multiple bitrate sources,
+-such as mmsh://wmscr1.dr.dk/e02ch03m
+-
+-Signed-off-by: Ronald S. Bultje <rsbultje@gmail.com>
+-(cherry picked from commit 74d6871d6244865b5863a01c3dab16a2f06a1706)
+----
+- libavformat/mms.c |   28 ++++++++++++++++++++++++++++
+- 1 files changed, 28 insertions(+), 0 deletions(-)
+-
+-diff --git a/lib/ffmpeg/libavformat/mms.c b/lib/ffmpeg/libavformat/mms.c
+-index d995a43..b541208 100644
+---- a/lib/ffmpeg/libavformat/mms.c
+-+++ b/lib/ffmpeg/libavformat/mms.c
+-@@ -115,6 +115,34 @@ int ff_mms_asf_header_parser(MMSContext *mms)
+-                        "Corrupt stream (too many A/V streams)\n");
+-                 return AVERROR_INVALIDDATA;
+-             }
+-+        } else if (!memcmp(p, ff_asf_ext_stream_header, sizeof(ff_asf_guid))) {
+-+            if (end - p >= 88) {
+-+                int stream_count = AV_RL16(p + 84), ext_len_count = AV_RL16(p + 86);
+-+                uint64_t skip_bytes = 88;
+-+                while (stream_count--) {
+-+                    if (end - p < skip_bytes + 4) {
+-+                        av_log(NULL, AV_LOG_ERROR,
+-+                               "Corrupt stream (next stream name length is not in the buffer)\n");
+-+                        return AVERROR_INVALIDDATA;
+-+                    }
+-+                    skip_bytes += 4 + AV_RL16(p + skip_bytes + 2);
+-+                }
+-+                while (ext_len_count--) {
+-+                    if (end - p < skip_bytes + 22) {
+-+                        av_log(NULL, AV_LOG_ERROR,
+-+                               "Corrupt stream (next extension system info length is not in the buffer)\n");
+-+                        return AVERROR_INVALIDDATA;
+-+                    }
+-+                    skip_bytes += 22 + AV_RL32(p + skip_bytes + 18);
+-+                }
+-+                if (end - p < skip_bytes) {
+-+                    av_log(NULL, AV_LOG_ERROR,
+-+                           "Corrupt stream (the last extension system info length is invalid)\n");
+-+                    return AVERROR_INVALIDDATA;
+-+                }
+-+                if (chunksize - skip_bytes > 24)
+-+                    chunksize = skip_bytes;
+-+            }
+-         } else if (!memcmp(p, ff_asf_head1_guid, sizeof(ff_asf_guid))) {
+-             chunksize = 46; // see references [2] section 3.4. This should be set 46.
+-         }
+--- 
+-1.7.0.4
+-
+diff --git a/lib/ffmpeg/patches/0046-os_support-fix-poll-implementation.patch b/lib/ffmpeg/patches/0046-os_support-fix-poll-implementation.patch
+deleted file mode 100644
+index 262a086..0000000
+--- a/lib/ffmpeg/patches/0046-os_support-fix-poll-implementation.patch
++++ /dev/null
+@@ -1,29 +0,0 @@
+-From 9ac2085dbf1821b7995fe360038c1bf0f3940032 Mon Sep 17 00:00:00 2001
+-From: Max Shakhmetov <shakhmetov.max@gmail.com>
+-Date: Tue, 15 Feb 2011 17:49:27 +0100
+-Subject: [PATCH] os_support: fix poll() implementation
+-
+-Our poll implementation does not iterate over the pollfd array properly
+-while setting the revents.
+-
+-Signed-off-by: Luca Barbato <lu_zero@gentoo.org>
+----
+- libavformat/os_support.c |    2 +-
+- 1 files changed, 1 insertions(+), 1 deletions(-)
+-
+-diff --git a/lib/ffmpeg/libavformat/os_support.c b/lib/ffmpeg/libavformat/os_support.c
+-index 4f73011..0b7b59e 100644
+---- a/lib/ffmpeg/libavformat/os_support.c
+-+++ b/lib/ffmpeg/libavformat/os_support.c
+-@@ -292,7 +292,7 @@ int poll(struct pollfd *fds, nfds_t numfds, int timeout)
+-     if (rc < 0)
+-         return rc;
+- 
+--    for(i = 0; i < (nfds_t) n; i++) {
+-+    for(i = 0; i < numfds; i++) {
+-         fds[i].revents = 0;
+- 
+-         if (FD_ISSET(fds[i].fd, &read_set))      fds[i].revents |= POLLIN;
+--- 
+-1.7.0.4
+-
+diff --git a/lib/ffmpeg/patches/0047-Backporting-ffmpeg-feature-to-parse-flv-fileposition.patch b/lib/ffmpeg/patches/0047-Backporting-ffmpeg-feature-to-parse-flv-fileposition.patch
+deleted file mode 100644
+index 500aa47..0000000
+--- a/lib/ffmpeg/patches/0047-Backporting-ffmpeg-feature-to-parse-flv-fileposition.patch
++++ /dev/null
+@@ -1,105 +0,0 @@
+-From 7f608129d581ce028033e399a412cde7f37bc938 Mon Sep 17 00:00:00 2001
+-From: Dani <dani@INCOGNITO.(none)>
+-Date: Fri, 3 Jun 2011 00:02:06 -0400
+-Subject: [PATCH] Backporting ffmpeg feature to parse flv filepositions so we can seek to certain points in the stream without waiting to buffer, aka pseudostreaming
+-
+----
+- lib/ffmpeg/libavformat/flvdec.c |   68 +++++++++++++++++++++++++++++++++++++++
+- 1 files changed, 68 insertions(+), 0 deletions(-)
+-
+-diff --git a/lib/ffmpeg/libavformat/flvdec.c b/lib/ffmpeg/libavformat/flvdec.c
+-index e6081d9..f1c9eda 100644
+---- a/lib/ffmpeg/libavformat/flvdec.c
+-+++ b/lib/ffmpeg/libavformat/flvdec.c
+-@@ -30,6 +30,10 @@
+- #include "avformat.h"
+- #include "flv.h"
+- 
+-+#define KEYFRAMES_TAG            "keyframes"
+-+#define KEYFRAMES_TIMESTAMP_TAG  "times"
+-+#define KEYFRAMES_BYTEOFFSET_TAG "filepositions"
+-+
+- typedef struct {
+-     int wrong_dts; ///< wrong dts due to negative cts
+- } FLVContext;
+-@@ -124,6 +128,66 @@ static int amf_get_string(ByteIOContext *ioc, char *buffer, int buffsize) {
+-     return length;
+- }
+- 
+-+static int parse_keyframes_index(AVFormatContext *s, ByteIOContext *ioc, AVStream *vstream, int64_t max_pos) {
+-+    unsigned int timeslen = 0, fileposlen = 0, i;
+-+    char str_val[256];
+-+    int64_t *times = NULL;
+-+    int64_t *filepositions = NULL;
+-+    int ret = AVERROR(ENOSYS);
+-+    int64_t initial_pos = url_ftell(ioc);
+-+
+-+    while (url_ftell(ioc) < max_pos - 2 && amf_get_string(ioc, str_val, sizeof(str_val)) > 0) {
+-+        int64_t** current_array;
+-+        unsigned int arraylen;
+-+
+-+        // Expect array object in context
+-+        if (get_byte(ioc) != AMF_DATA_TYPE_ARRAY)
+-+            break;
+-+
+-+        arraylen = get_be32(ioc);
+-+        if(arraylen>>28)
+-+            break;
+-+
+-+        if       (!strcmp(KEYFRAMES_TIMESTAMP_TAG , str_val) && !times){
+-+            current_array= &times;
+-+            timeslen= arraylen;
+-+        }else if (!strcmp(KEYFRAMES_BYTEOFFSET_TAG, str_val) && !filepositions){
+-+            current_array= &filepositions;
+-+            fileposlen= arraylen;
+-+        }else // unexpected metatag inside keyframes, will not use such metadata for indexing
+-+            break;
+-+
+-+        if (!(*current_array = av_mallocz(sizeof(**current_array) * arraylen))) {
+-+            ret = AVERROR(ENOMEM);
+-+            goto finish;
+-+        }
+-+
+-+        for (i = 0; i < arraylen && url_ftell(ioc) < max_pos - 1; i++) {
+-+            if (get_byte(ioc) != AMF_DATA_TYPE_NUMBER)
+-+                goto finish;
+-+            current_array[0][i] = av_int2dbl(get_be64(ioc));
+-+        }
+-+        if (times && filepositions) {
+-+            // All done, exiting at a position allowing amf_parse_object
+-+            // to finish parsing the object
+-+            ret = 0;
+-+            break;
+-+        }
+-+    }
+-+
+-+    if (timeslen == fileposlen) {
+-+         for(i = 0; i < timeslen; i++)
+-+             av_add_index_entry(vstream, filepositions[i], times[i]*1000, 0, 0, AVINDEX_KEYFRAME);
+-+    } else
+-+        av_log(s, AV_LOG_WARNING, "Invalid keyframes object, skipping.\n");
+-+
+-+finish:
+-+    av_freep(&times);
+-+    av_freep(&filepositions);
+-+    url_fseek(ioc, initial_pos, SEEK_SET);
+-+    return ret;
+-+}
+-+
+- static int amf_parse_object(AVFormatContext *s, AVStream *astream, AVStream *vstream, const char *key, int64_t max_pos, int depth) {
+-     AVCodecContext *acodec, *vcodec;
+-     ByteIOContext *ioc;
+-@@ -148,6 +212,10 @@ static int amf_parse_object(AVFormatContext *s, AVStream *astream, AVStream *vst
+-         case AMF_DATA_TYPE_OBJECT: {
+-             unsigned int keylen;
+- 
+-+	    if (!url_is_streamed(s->pb) && key && !strcmp(KEYFRAMES_TAG, key) && depth == 1)
+-+                if (parse_keyframes_index(s, ioc, vstream, max_pos) < 0)
+-+                    av_log(s, AV_LOG_ERROR, "Keyframe index parsing failed\n");
+-+
+-             while(url_ftell(ioc) < max_pos - 2 && (keylen = get_be16(ioc))) {
+-                 url_fskip(ioc, keylen); //skip key string
+-                 if(amf_parse_object(s, NULL, NULL, NULL, max_pos, depth + 1) < 0)
+--- 
+-1.7.0.4
+-
+diff --git a/lib/ffmpeg/patches/0048-Dont-mark-genereted-dummy-frame-as-keyframe.patch b/lib/ffmpeg/patches/0048-Dont-mark-genereted-dummy-frame-as-keyframe.patch
+deleted file mode 100644
+index 39e92bf..0000000
+--- a/lib/ffmpeg/patches/0048-Dont-mark-genereted-dummy-frame-as-keyframe.patch
++++ /dev/null
+@@ -1,31 +0,0 @@
+-From fdf7deeb66155a71acf2e34766d376d50f81b43a Mon Sep 17 00:00:00 2001
+-From: elupus <elupus@xbmc.org>
+-Date: Fri, 22 Apr 2011 15:42:51 +0200
+-Subject: Don't mark generated dummy frame output from mpeg1/2 decoder as keyframe.
+-
+-We use this flag to tell when to assume decoded data is free
+-from artifacts after a seek. The mpeg1/2 decoder will generate
+-a dummy frame if decoding is started on a non keyframe. This
+-will sadly be output from decoder to player and displayed
+-as a gray screen.
+-
+-diff --git a/lib/ffmpeg/libavcodec/mpegvideo.c b/lib/ffmpeg/libavcodec/mpegvideo.c
+-index c8706bc..a0acda1 100644
+---- a/lib/ffmpeg/libavcodec/mpegvideo.c
+-+++ b/lib/ffmpeg/libavcodec/mpegvideo.c
+-@@ -996,6 +996,7 @@ int MPV_frame_start(MpegEncContext *s, AVCodecContext *avctx)
+-             /* Allocate a dummy frame */
+-             i= ff_find_unused_picture(s, 0);
+-             s->last_picture_ptr= &s->picture[i];
+-+            s->last_picture_ptr->key_frame = 0;
+-             if(ff_alloc_picture(s, s->last_picture_ptr, 0) < 0)
+-                 return -1;
+-         }
+-@@ -1003,6 +1004,7 @@ int MPV_frame_start(MpegEncContext *s, AVCodecContext *avctx)
+-             /* Allocate a dummy frame */
+-             i= ff_find_unused_picture(s, 0);
+-             s->next_picture_ptr= &s->picture[i];
+-+            s->next_picture_ptr->key_frame = 0;
+-             if(ff_alloc_picture(s, s->next_picture_ptr, 0) < 0)
+-                 return -1;
+-         }
+diff --git a/lib/ffmpeg/patches/0049-Added-ability-to-enable-workaround-for-dxva2-decodin.patch b/lib/ffmpeg/patches/0049-Added-ability-to-enable-workaround-for-dxva2-decodin.patch
+deleted file mode 100644
+index e649057..0000000
+--- a/lib/ffmpeg/patches/0049-Added-ability-to-enable-workaround-for-dxva2-decodin.patch
++++ /dev/null
+@@ -1,70 +0,0 @@
+-From f4a0791e9ee825ef54d370b82fce97c9cac92d26 Mon Sep 17 00:00:00 2001
+-From: Joakim Plate <elupus@ecce.se>
+-Date: Sun, 3 Jul 2011 17:18:50 +0200
+-Subject: [PATCH] Added ability to enable workaround for dxva2 decoding using older ATI cards
+-
+-The workaround need to be enabled per pci id which can not
+-be detected inside ffmpeg. So this adds a flag that enabled
+-the alternate behavior.
+----
+- libavcodec/avcodec.h    |    1 +
+- libavcodec/dxva2_h264.c |   14 ++++++++++++--
+- 2 files changed, 13 insertions(+), 2 deletions(-)
+-
+-diff --git a/lib/ffmpeg/libavcodec/avcodec.h b/lib/ffmpeg/libavcodec/avcodec.h
+-index 1eb10ab..d642203 100644
+---- a/lib/ffmpeg/libavcodec/avcodec.h
+-+++ b/lib/ffmpeg/libavcodec/avcodec.h
+-@@ -1441,6 +1441,7 @@ typedef struct AVCodecContext {
+- #define FF_BUG_DC_CLIP          4096
+- #define FF_BUG_MS               8192 ///< Work around various bugs in Microsoft's broken decoders.
+- #define FF_BUG_TRUNCATED       16384
+-+#define FF_BUG_DXVA2_SCALING_LIST_ZIGZAG 32768 ///< Work around for DXVA2 and old UVD/UVD+ ATI video cards
+- //#define FF_BUG_FAKE_SCALABILITY 16 //Autodetection should work 100%.
+- 
+-     /**
+-diff --git a/lib/ffmpeg/libavcodec/dxva2_h264.c b/lib/ffmpeg/libavcodec/dxva2_h264.c
+-index bc80e98..3ad8fcf 100644
+---- a/lib/ffmpeg/libavcodec/dxva2_h264.c
+-+++ b/lib/ffmpeg/libavcodec/dxva2_h264.c
+-@@ -150,10 +150,19 @@ static void fill_picture_parameters(struct dxva_context *ctx, const H264Context
+-     //pp->SliceGroupMap[810];               /* XXX not implemented by FFmpeg */
+- }
+- 
+--static void fill_scaling_lists(const H264Context *h, DXVA_Qmatrix_H264 *qm)
+-+static void fill_scaling_lists(AVCodecContext *avctx, const H264Context *h, DXVA_Qmatrix_H264 *qm)
+- {
+-     unsigned i, j;
+-     memset(qm, 0, sizeof(*qm));
+-+    if (avctx->workaround_bugs & FF_BUG_DXVA2_SCALING_LIST_ZIGZAG) {  // For old UVD/UVD+ ATI cards
+-+    for (i = 0; i < 6; i++)
+-+        for (j = 0; j < 16; j++)
+-+            qm->bScalingLists4x4[i][j] = h->pps.scaling_matrix4[i][j];
+-+
+-+    for (i = 0; i < 2; i++)
+-+        for (j = 0; j < 64; j++)
+-+            qm->bScalingLists8x8[i][j] = h->pps.scaling_matrix8[i][j];
+-+    } else {
+-     for (i = 0; i < 6; i++)
+-         for (j = 0; j < 16; j++)
+-             qm->bScalingLists4x4[i][j] = h->pps.scaling_matrix4[i][zigzag_scan[j]];
+-@@ -161,6 +170,7 @@ static void fill_scaling_lists(const H264Context *h, DXVA_Qmatrix_H264 *qm)
+-     for (i = 0; i < 2; i++)
+-         for (j = 0; j < 64; j++)
+-             qm->bScalingLists8x8[i][j] = h->pps.scaling_matrix8[i][ff_zigzag_direct[j]];
+-+    }
+- }
+- 
+- static int is_slice_short(struct dxva_context *ctx)
+-@@ -370,7 +380,7 @@ static int start_frame(AVCodecContext *avctx,
+-     fill_picture_parameters(ctx, h, &ctx_pic->pp);
+- 
+-     /* Fill up DXVA_Qmatrix_H264 */
+--    fill_scaling_lists(h, &ctx_pic->qm);
+-+    fill_scaling_lists(avctx, h, &ctx_pic->qm);
+- 
+-     ctx_pic->slice_count    = 0;
+-     ctx_pic->bitstream_size = 0;
+--- 
+-1.7.4.msysgit.0
+-
+diff --git a/lib/ffmpeg/patches/0050-Patch-for-memory-leaks-in-DVB-subtitles-decoder.patch b/lib/ffmpeg/patches/0050-Patch-for-memory-leaks-in-DVB-subtitles-decoder.patch
+deleted file mode 100644
+index 654a514..0000000
+--- a/lib/ffmpeg/patches/0050-Patch-for-memory-leaks-in-DVB-subtitles-decoder.patch
++++ /dev/null
+@@ -1,25 +0,0 @@
+-From 078e7b14d4a44073dddebc6a0a544f648e69a9cb Mon Sep 17 00:00:00 2001
+-From: =?UTF-8?q?Jernej=20Fija=C4=8Dko?= <jernej@jernej-ThinkCentre-M91p.(none)>
+-Date: Mon, 11 Jul 2011 10:11:04 +0200
+-Subject: [PATCH] Patch for memory leaks in DVB subtitles decoder
+-
+-Signed-off-by: Joakim Plate <elupus@ecce.se>
+----
+- lib/ffmpeg/libavcodec/dvbsubdec.c |    1 +
+- 1 files changed, 1 insertions(+), 0 deletions(-)
+-
+-diff --git a/lib/ffmpeg/libavcodec/dvbsubdec.c b/lib/ffmpeg/libavcodec/dvbsubdec.c
+-index e68a0b3..7c37915 100644
+---- a/lib/ffmpeg/libavcodec/dvbsubdec.c
+-+++ b/lib/ffmpeg/libavcodec/dvbsubdec.c
+-@@ -1457,6 +1457,7 @@ static int dvbsub_decode(AVCodecContext *avctx,
+-                 break;
+-             case DVBSUB_DISPLAYDEFINITION_SEGMENT:
+-                 dvbsub_parse_display_definition_segment(avctx, p, segment_length);
+-+                break;
+-             case DVBSUB_DISPLAY_SEGMENT:
+-                 *data_size = dvbsub_display_end_segment(avctx, p, segment_length, sub);
+-                 break;
+--- 
+-1.7.4.msysgit.0
+-
+diff --git a/lib/ffmpeg/patches/0058-fixed-seeks-in-mmsh.patch b/lib/ffmpeg/patches/0058-fixed-seeks-in-mmsh.patch
+deleted file mode 100644
+index c8a630c..0000000
+--- a/lib/ffmpeg/patches/0058-fixed-seeks-in-mmsh.patch
++++ /dev/null
+@@ -1,124 +0,0 @@
+-From 4e8274d070a598e60a953c6aed2dd9f4710cd2b4 Mon Sep 17 00:00:00 2001
+-From: spiff <spiff@xbmc.org>
+-Date: Tue, 1 Nov 2011 13:14:09 +0100
+-Subject: [PATCH] fixed: seeks in mmsh
+-
+-this backports upstream commits aedb87c57, 86a4e55e6, 8475ec190,
+-60fcc19bff (partially), 237bcaa27518, 33789862, 8af4ac5272, 26b64550d6
+-
+-thanks a million to michael niedermayer for giving this priority!
+----
+- lib/ffmpeg/libavformat/mmsh.c |   53 ++++++++++++++++++++++++++++++++++++----
+- 1 files changed, 47 insertions(+), 6 deletions(-)
+-
+-diff --git a/lib/ffmpeg/libavformat/mmsh.c b/lib/ffmpeg/libavformat/mmsh.c
+-index 257b973..3ae886f 100644
+---- a/lib/ffmpeg/libavformat/mmsh.c
+-+++ b/lib/ffmpeg/libavformat/mmsh.c
+-@@ -54,6 +54,7 @@ typedef enum {
+- 
+- typedef struct {
+-     MMSContext mms;
+-+    uint8_t location[1024];
+-     int request_seq;  ///< request packet sequence
+-     int chunk_seq;    ///< data packet sequence
+- } MMSHContext;
+-@@ -210,10 +211,10 @@ static int get_http_header_data(MMSHContext *mmsh)
+-     return 0;
+- }
+- 
+--static int mmsh_open(URLContext *h, const char *uri, int flags)
+-+static int mmsh_open_internal(URLContext *h, const char *uri, int flags, int timestamp, int64_t pos)
+- {
+-     int i, port, err;
+--    char httpname[256], path[256], host[128], location[1024];
+-+    char httpname[256], path[256], host[128];
+-     char *stream_selection = NULL;
+-     char headers[1024];
+-     MMSHContext *mmsh;
+-@@ -224,10 +225,10 @@ static int mmsh_open(URLContext *h, const char *uri, int flags)
+-         return AVERROR(ENOMEM);
+-     mmsh->request_seq = h->is_streamed = 1;
+-     mms = &mmsh->mms;
+--    av_strlcpy(location, uri, sizeof(location));
+-+    av_strlcpy(mmsh->location, uri, sizeof(mmsh->location));
+- 
+-     av_url_split(NULL, 0, NULL, 0,
+--        host, sizeof(host), &port, path, sizeof(path), location);
+-+        host, sizeof(host), &port, path, sizeof(path), mmsh->location);
+-     if (port<0)
+-         port = 80; // default mmsh protocol port
+-     ff_url_join(httpname, sizeof(httpname), "http", NULL, host, port, path);
+-@@ -283,8 +284,9 @@ static int mmsh_open(URLContext *h, const char *uri, int flags)
+-                    CLIENTGUID
+-                    "Pragma: stream-switch-count=%d\r\n"
+-                    "Pragma: stream-switch-entry=%s\r\n"
+-+                   "Pragma: no-cache,rate)1.000000,stream-time=%u"
+-                    "Connection: Close\r\n\r\n",
+--                   host, port, mmsh->request_seq++, mms->stream_num, stream_selection);
+-+                   host, port, mmsh->request_seq++, mms->stream_num, stream_selection, timestamp);
+-     av_freep(&stream_selection);
+-     if (err < 0) {
+-         av_log(NULL, AV_LOG_ERROR, "Build play request failed!\n");
+-@@ -313,6 +315,11 @@ fail:
+-     return err;
+- }
+- 
+-+static int mmsh_open(URLContext *h, const char *uri, int flags)
+-+{
+-+    return mmsh_open_internal(h, uri, flags, 0, 0);
+-+}
+-+
+- static int handle_chunk_type(MMSHContext *mmsh)
+- {
+-     MMSContext *mms = &mmsh->mms;
+-@@ -359,11 +366,45 @@ static int mmsh_read(URLContext *h, uint8_t *buf, int size)
+-     return res;
+- }
+- 
+-+static int64_t mmsh_read_seek(URLContext *h, int stream_index,
+-+                        int64_t timestamp, int flags)
+-+{
+-+    MMSHContext *mmsh = h->priv_data;
+-+    MMSContext *mms   = &mmsh->mms;
+-+    int ret;
+-+
+-+    ret= mmsh_open_internal(h, mmsh->location, 0, FFMAX(timestamp, 0), 0);
+-+
+-+    if(ret>=0){
+-+        if (mms->mms_hd)
+-+            url_close(mms->mms_hd);
+-+        av_freep(&mms->streams);
+-+        av_freep(&mms->asf_header);
+-+        av_free(mmsh);
+-+        mmsh = h->priv_data;
+-+        mms   = &mmsh->mms;
+-+        mms->asf_header_read_size= mms->asf_header_size;
+-+    }else
+-+        h->priv_data= mmsh;
+-+    return ret;
+-+}
+-+
+-+static int64_t mmsh_seek(URLContext *h, int64_t pos, int whence)
+-+{
+-+    MMSHContext *mmsh = h->priv_data;
+-+    MMSContext *mms   = &mmsh->mms;
+-+
+-+    if(pos == 0 && whence == SEEK_CUR)
+-+        return mms->asf_header_read_size + mms->remaining_in_len + mmsh->chunk_seq * mms->asf_packet_len;
+-+    return AVERROR(ENOSYS);
+-+}
+-+
+- URLProtocol ff_mmsh_protocol = {
+-     .name      = "mmsh",
+-     .url_open  = mmsh_open,
+-     .url_read  = mmsh_read,
+-     .url_write = NULL,
+--    .url_seek  = NULL,
+-+    .url_seek  = mmsh_seek,
+-     .url_close = mmsh_close,
+-+    .url_read_seek  = mmsh_read_seek,
+- };
+--- 
+-1.7.5
+-
+diff --git a/lib/ffmpeg/patches/0059-fix-h264-decode-size.patch b/lib/ffmpeg/patches/0059-fix-h264-decode-size.patch
+deleted file mode 100644
+index 9328ac6..0000000
+--- a/lib/ffmpeg/patches/0059-fix-h264-decode-size.patch
++++ /dev/null
+@@ -1,43 +0,0 @@
+-backport of upstream commits 23acfcd9 and 29a29226
+-
+-Slightly modified because of differences between upstream code and ours.
+-
+----
+-
+-diff --git a/lib/ffmpeg/libavcodec/h264.c b/lib/ffmpeg/libavcodec/h264.c
+-index 31d43df..47b0073 100644
+---- a/lib/ffmpeg/libavcodec/h264.c
+-+++ b/lib/ffmpeg/libavcodec/h264.c
+-@@ -1797,15 +1797,11 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
+-     s->mb_height= h->sps.mb_height * (2 - h->sps.frame_mbs_only_flag);
+- 
+-     h->b_stride=  s->mb_width*4;
+--
+--    s->width = 16*s->mb_width - 2*FFMIN(h->sps.crop_right, 7);
+--    if(h->sps.frame_mbs_only_flag)
+--        s->height= 16*s->mb_height - 2*FFMIN(h->sps.crop_bottom, 7);
+--    else
+--        s->height= 16*s->mb_height - 4*FFMIN(h->sps.crop_bottom, 7);
+-+    s->width = 16*s->mb_width;
+-+    s->height= 16*s->mb_height;
+- 
+-     if (s->context_initialized
+--        && (   s->width != s->avctx->width || s->height != s->avctx->height
+-+        && (   s->width != s->avctx->coded_width || s->height != s->avctx->coded_height
+-             || av_cmp_q(h->sps.sar, s->avctx->sample_aspect_ratio))) {
+-         if(h != h0)
+-             return -1;   // width / height changed during parallelized decoding
+-@@ -1818,6 +1814,13 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
+-             return -1;  // we cant (re-)initialize context during parallel decoding
+- 
+-         avcodec_set_dimensions(s->avctx, s->width, s->height);
+-+
+-+        s->avctx->width -= 2*FFMIN(h->sps.crop_right, 7);
+-+        if(h->sps.frame_mbs_only_flag)
+-+            s->avctx->height-=2*FFMIN(h->sps.crop_bottom, 7);
+-+        else
+-+            s->avctx->height-=4*FFMIN(h->sps.crop_bottom, 7);
+-+
+-         s->avctx->sample_aspect_ratio= h->sps.sar;
+-         av_assert0(s->avctx->sample_aspect_ratio.den);
+- 
+diff --git a/lib/ffmpeg/patches/0061-fix-vc1-vaapi-intel-sandy-bridge.patch b/lib/ffmpeg/patches/0061-fix-vc1-vaapi-intel-sandy-bridge.patch
+deleted file mode 100644
+index 8739f41..0000000
+--- a/lib/ffmpeg/patches/0061-fix-vc1-vaapi-intel-sandy-bridge.patch
++++ /dev/null
+@@ -1,48 +0,0 @@
+-This patch backports 53efb758c045900f512c947074900c0dbc988685 and a18e7b4fb77d3799cf21110b5e6dda4691a295b3
+-
+-Written by Gwenole Beauchesne <gwenole.beauchesne@intel.com>
+-and fixes vc1 decoding with vaapi on Intel Sandy Bridge GPUs.
+-
+-
+-diff --git a/lib/ffmpeg/libavcodec/vaapi_vc1.c b/lib/ffmpeg/libavcodec/vaapi_vc1.c
+-index c61a5bd..a9bcd7b 100644
+---- a/lib/ffmpeg/libavcodec/vaapi_vc1.c
+-+++ b/lib/ffmpeg/libavcodec/vaapi_vc1.c
+-@@ -116,6 +116,18 @@ static inline VAMvModeVC1 vc1_get_MVMODE2(VC1Context *v)
+-     return 0;
+- }
+- 
+-+/** Reconstruct bitstream TTFRM (7.1.1.41, Table-53) */
+-+static inline int vc1_get_TTFRM(VC1Context *v)
+-+{
+-+    switch (v->ttfrm) {
+-+    case TT_8X8: return 0;
+-+    case TT_8X4: return 1;
+-+    case TT_4X8: return 2;
+-+    case TT_4X4: return 3;
+-+    }
+-+    return 0;
+-+}
+-+
+- /** Pack FFmpeg bitplanes into a VABitPlaneBuffer element */
+- static inline void vc1_pack_bitplanes(uint8_t *bitplane, int n, const uint8_t *ff_bp[3], int x, int y, int stride)
+- {
+-@@ -160,6 +172,9 @@ static int vaapi_vc1_start_frame(AVCodecContext *avctx, av_unused const uint8_t
+-     pic_param->sequence_fields.bits.syncmarker                      = s->resync_marker;
+-     pic_param->sequence_fields.bits.rangered                        = v->rangered;
+-     pic_param->sequence_fields.bits.max_b_frames                    = s->avctx->max_b_frames;
+-+#if VA_CHECK_VERSION(0,32,0)
+-+    pic_param->sequence_fields.bits.profile                         = v->profile;
+-+#endif
+-     pic_param->coded_width                                          = s->avctx->coded_width;
+-     pic_param->coded_height                                         = s->avctx->coded_height;
+-     pic_param->entrypoint_fields.value                              = 0; /* reset all bits */
+-@@ -236,7 +251,7 @@ static int vaapi_vc1_start_frame(AVCodecContext *avctx, av_unused const uint8_t
+-     pic_param->transform_fields.value                               = 0; /* reset all bits */
+-     pic_param->transform_fields.bits.variable_sized_transform_flag  = v->vstransform;
+-     pic_param->transform_fields.bits.mb_level_transform_type_flag   = v->ttmbf;
+--    pic_param->transform_fields.bits.frame_level_transform_type     = v->ttfrm;
+-+    pic_param->transform_fields.bits.frame_level_transform_type     = vc1_get_TTFRM(v);
+-     pic_param->transform_fields.bits.transform_ac_codingset_idx1    = v->c_ac_table_index;
+-     pic_param->transform_fields.bits.transform_ac_codingset_idx2    = v->y_ac_table_index;
+-     pic_param->transform_fields.bits.intra_transform_dc_table       = v->s.dc_table_index;
+diff --git a/lib/ffmpeg/patches/0062-fixed-crash-in-ffmpeg-matroskadec-with-some-files-fi.patch b/lib/ffmpeg/patches/0062-fixed-crash-in-ffmpeg-matroskadec-with-some-files-fi.patch
+deleted file mode 100644
+index 00260c7..0000000
+--- a/lib/ffmpeg/patches/0062-fixed-crash-in-ffmpeg-matroskadec-with-some-files-fi.patch
++++ /dev/null
+@@ -1,50 +0,0 @@
+-From e138f82d2b066a47262ce0f06df106665761ac43 Mon Sep 17 00:00:00 2001
+-From: Anssi Hannula <anssi@xbmc.org>
+-Date: Wed, 7 Mar 2012 15:08:41 +0200
+-Subject: [PATCH] fixed: crash in ffmpeg matroskadec with some files (fixes
+- #12741)
+-
+-Backport 2851b1f6566580485dceb67cbb6b93f64ee9a9bd from upstream FFmpeg,
+-it fixes a rare matroskadec crash:
+-
+-matroskadec: check that pointers were initialized before accessing them
+-
+-fix ticket #14
+-
+-Signed-off-by: Aurelien Jacobs <aurel@gnuage.org>
+----
+- lib/ffmpeg/libavformat/matroskadec.c |    8 +++++---
+- 1 files changed, 5 insertions(+), 3 deletions(-)
+-
+-diff --git a/lib/ffmpeg/libavformat/matroskadec.c b/lib/ffmpeg/libavformat/matroskadec.c
+-index 14b96d4..70489e8 100644
+---- a/lib/ffmpeg/libavformat/matroskadec.c
+-+++ b/lib/ffmpeg/libavformat/matroskadec.c
+-@@ -1066,19 +1066,21 @@ static void matroska_convert_tags(AVFormatContext *s)
+-         if (tags[i].target.attachuid) {
+-             MatroskaAttachement *attachment = matroska->attachments.elem;
+-             for (j=0; j<matroska->attachments.nb_elem; j++)
+--                if (attachment[j].uid == tags[i].target.attachuid)
+-+                if (attachment[j].uid == tags[i].target.attachuid
+-+                    && attachment[j].stream)
+-                     matroska_convert_tag(s, &tags[i].tag,
+-                                          &attachment[j].stream->metadata, NULL);
+-         } else if (tags[i].target.chapteruid) {
+-             MatroskaChapter *chapter = matroska->chapters.elem;
+-             for (j=0; j<matroska->chapters.nb_elem; j++)
+--                if (chapter[j].uid == tags[i].target.chapteruid)
+-+                if (chapter[j].uid == tags[i].target.chapteruid
+-+                    && chapter[j].chapter)
+-                     matroska_convert_tag(s, &tags[i].tag,
+-                                          &chapter[j].chapter->metadata, NULL);
+-         } else if (tags[i].target.trackuid) {
+-             MatroskaTrack *track = matroska->tracks.elem;
+-             for (j=0; j<matroska->tracks.nb_elem; j++)
+--                if (track[j].uid == tags[i].target.trackuid)
+-+                if (track[j].uid == tags[i].target.trackuid && track[j].stream)
+-                     matroska_convert_tag(s, &tags[i].tag,
+-                                          &track[j].stream->metadata, NULL);
+-         } else {
+--- 
+-1.7.7.2
+-
+diff --git a/lib/ffmpeg/patches/0065-changed-allow-yadif-deinterlacer-to-enable-and-disab.patch b/lib/ffmpeg/patches/0065-changed-allow-yadif-deinterlacer-to-enable-and-disab.patch
+deleted file mode 100644
+index 30b27f4..0000000
+--- a/lib/ffmpeg/patches/0065-changed-allow-yadif-deinterlacer-to-enable-and-disab.patch
++++ /dev/null
+@@ -1,106 +0,0 @@
+-From c174f74181bcfa169aa8284f9524cd9db0f4cdda Mon Sep 17 00:00:00 2001
+-From: elupus <elupus@xbmc.org>
+-Date: Fri, 24 Jun 2011 01:23:48 +0200
+-Subject: [PATCH] changed: allow yadif deinterlacer to enable and disable
+- based on input interlaced flag
+-
+----
+- lib/ffmpeg/libavfilter/vf_yadif.c                  |   34 ++++++++++++++++++--
+- .../DVDCodecs/Video/DVDVideoCodecFFmpeg.cpp        |    4 ++
+- 2 files changed, 35 insertions(+), 3 deletions(-)
+-
+-diff --git a/lib/ffmpeg/libavfilter/vf_yadif.c b/lib/ffmpeg/libavfilter/vf_yadif.c
+-index bd0a9de..28b1d3e 100644
+---- a/lib/ffmpeg/libavfilter/vf_yadif.c
+-+++ b/lib/ffmpeg/libavfilter/vf_yadif.c
+-@@ -43,6 +43,13 @@ typedef struct {
+-     int parity;
+- 
+-     int frame_pending;
+-+    int skip;
+-+
+-+    /**
+-+     *  0: deinterlace all frames
+-+     *  1: only deinterlace frames marked as interlaced
+-+     */
+-+    int auto_enable;
+- 
+-     AVFilterBufferRef *cur;
+-     AVFilterBufferRef *next;
+-@@ -212,10 +219,21 @@ static void start_frame(AVFilterLink *link, AVFilterBufferRef *picref)
+-     yadif->prev = yadif->cur;
+-     yadif->cur  = yadif->next;
+-     yadif->next = picref;
+-+    yadif->skip = 0;
+- 
+-     if (!yadif->cur)
+-         return;
+- 
+-+    if (yadif->auto_enable && !yadif->cur->video->interlaced) {
+-+        yadif->out  = yadif->cur;
+-+        avfilter_unref_buffer(yadif->prev);
+-+        yadif->cur  = NULL;
+-+        yadif->prev = NULL;
+-+        yadif->skip = 1;
+-+        avfilter_start_frame(ctx->outputs[0], yadif->out);
+-+        return;
+-+    }
+-+
+-     if (!yadif->prev)
+-         yadif->prev = avfilter_ref_buffer(yadif->cur, AV_PERM_READ);
+- 
+-@@ -232,6 +250,12 @@ static void end_frame(AVFilterLink *link)
+-     AVFilterContext *ctx = link->dst;
+-     YADIFContext *yadif = ctx->priv;
+- 
+-+    if (yadif->skip) {
+-+        avfilter_draw_slice(ctx->outputs[0], 0, link->h, 1);
+-+        avfilter_end_frame(ctx->outputs[0]);
+-+        return;
+-+    }
+-+
+-     if (!yadif->out)
+-         return;
+- 
+-@@ -253,7 +277,7 @@ static int request_frame(AVFilterLink *link)
+- 
+-         if ((ret = avfilter_request_frame(link->src->inputs[0])))
+-             return ret;
+--    } while (!yadif->cur);
+-+    } while (!yadif->out);
+- 
+-     return 0;
+- }
+-@@ -275,6 +299,9 @@ static int poll_frame(AVFilterLink *link)
+-     }
+-     assert(yadif->next);
+- 
+-+    if (yadif->skip)
+-+        return val;
+-+
+-     return val * ((yadif->mode&1)+1);
+- }
+- 
+-@@ -307,8 +334,9 @@ static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
+- 
+-     yadif->mode = 0;
+-     yadif->parity = -1;
+-+    yadif->auto_enable = 0;
+- 
+--    if (args) sscanf(args, "%d:%d", &yadif->mode, &yadif->parity);
+-+    if (args) sscanf(args, "%d:%d:%d", &yadif->mode, &yadif->parity, &yadif->auto_enable);
+- 
+-     yadif->filter_line = filter_line_c;
+-     if (HAVE_SSSE3 && cpu_flags & AV_CPU_FLAG_SSSE3)
+-@@ -318,7 +346,7 @@ static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
+-     else if (HAVE_MMX && cpu_flags & AV_CPU_FLAG_MMX)
+-         yadif->filter_line = ff_yadif_filter_line_mmx;
+- 
+--    av_log(ctx, AV_LOG_INFO, "mode:%d parity:%d\n", yadif->mode, yadif->parity);
+-+    av_log(ctx, AV_LOG_INFO, "mode:%d parity:%d auto_enable:%d\n", yadif->mode, yadif->parity, yadif->auto_enable);
+- 
+-     return 0;
+- }
+--- 
+-1.7.7.2
+-
+diff --git a/lib/ffmpeg/patches/0066-changed-updated-yadif-patch-to-same-as-will-be-appli.patch b/lib/ffmpeg/patches/0066-changed-updated-yadif-patch-to-same-as-will-be-appli.patch
+deleted file mode 100644
+index e5c3113..0000000
+--- a/lib/ffmpeg/patches/0066-changed-updated-yadif-patch-to-same-as-will-be-appli.patch
++++ /dev/null
+@@ -1,82 +0,0 @@
+-From 91efb0af6f80d82b104a810a1ccdc0ae6702d022 Mon Sep 17 00:00:00 2001
+-From: elupus <elupus@xbmc.org>
+-Date: Sun, 3 Jul 2011 17:06:42 +0200
+-Subject: [PATCH] changed: updated yadif patch to same as will be applied
+- upstream
+-
+----
+- lib/ffmpeg/libavfilter/vf_yadif.c |   18 +++++++-----------
+- 1 files changed, 7 insertions(+), 11 deletions(-)
+-
+-diff --git a/lib/ffmpeg/libavfilter/vf_yadif.c b/lib/ffmpeg/libavfilter/vf_yadif.c
+-index 28b1d3e..d7bed90 100644
+---- a/lib/ffmpeg/libavfilter/vf_yadif.c
+-+++ b/lib/ffmpeg/libavfilter/vf_yadif.c
+-@@ -43,7 +43,6 @@ typedef struct {
+-     int parity;
+- 
+-     int frame_pending;
+--    int skip;
+- 
+-     /**
+-      *  0: deinterlace all frames
+-@@ -219,17 +218,14 @@ static void start_frame(AVFilterLink *link, AVFilterBufferRef *picref)
+-     yadif->prev = yadif->cur;
+-     yadif->cur  = yadif->next;
+-     yadif->next = picref;
+--    yadif->skip = 0;
+- 
+-     if (!yadif->cur)
+-         return;
+- 
+-     if (yadif->auto_enable && !yadif->cur->video->interlaced) {
+--        yadif->out  = yadif->cur;
+-+        yadif->out  = avfilter_ref_buffer(yadif->cur, AV_PERM_READ);
+-         avfilter_unref_buffer(yadif->prev);
+--        yadif->cur  = NULL;
+-         yadif->prev = NULL;
+--        yadif->skip = 1;
+-         avfilter_start_frame(ctx->outputs[0], yadif->out);
+-         return;
+-     }
+-@@ -250,15 +246,15 @@ static void end_frame(AVFilterLink *link)
+-     AVFilterContext *ctx = link->dst;
+-     YADIFContext *yadif = ctx->priv;
+- 
+--    if (yadif->skip) {
+-+    if (!yadif->out)
+-+        return;
+-+
+-+    if (yadif->auto_enable && !yadif->cur->video->interlaced) {
+-         avfilter_draw_slice(ctx->outputs[0], 0, link->h, 1);
+-         avfilter_end_frame(ctx->outputs[0]);
+-         return;
+-     }
+- 
+--    if (!yadif->out)
+--        return;
+--
+-     return_frame(ctx, 0);
+- }
+- 
+-@@ -277,7 +273,7 @@ static int request_frame(AVFilterLink *link)
+- 
+-         if ((ret = avfilter_request_frame(link->src->inputs[0])))
+-             return ret;
+--    } while (!yadif->out);
+-+    } while (!yadif->cur);
+- 
+-     return 0;
+- }
+-@@ -299,7 +295,7 @@ static int poll_frame(AVFilterLink *link)
+-     }
+-     assert(yadif->next);
+- 
+--    if (yadif->skip)
+-+    if (yadif->auto_enable && yadif->next && !yadif->next->video->interlaced)
+-         return val;
+- 
+-     return val * ((yadif->mode&1)+1);
+--- 
+-1.7.7.2
+-
+diff --git a/lib/ffmpeg/patches/0067-changed-updated-dxva-zigzag-workaround-for-ATI-based.patch b/lib/ffmpeg/patches/0067-changed-updated-dxva-zigzag-workaround-for-ATI-based.patch
+deleted file mode 100644
+index 8854f7a..0000000
+--- a/lib/ffmpeg/patches/0067-changed-updated-dxva-zigzag-workaround-for-ATI-based.patch
++++ /dev/null
+@@ -1,92 +0,0 @@
+-From 321c5e668f2c213a33cef6c7c9fe11ee2850665f Mon Sep 17 00:00:00 2001
+-From: elupus <elupus@xbmc.org>
+-Date: Tue, 5 Jul 2011 00:14:52 +0200
+-Subject: [PATCH] changed: updated dxva zigzag workaround for ATI based on
+- comments on xbmc.org and ffmpeg.org
+-
+----
+- lib/ffmpeg/libavcodec/avcodec.h               |    1 -
+- lib/ffmpeg/libavcodec/dxva2.h                 |    2 ++
+- lib/ffmpeg/libavcodec/dxva2_h264.c            |   23 +++++++++++++----------
+- xbmc/cores/dvdplayer/DVDCodecs/Video/DXVA.cpp |   14 +++-----------
+- 4 files changed, 18 insertions(+), 22 deletions(-)
+-
+-diff --git a/lib/ffmpeg/libavcodec/avcodec.h b/lib/ffmpeg/libavcodec/avcodec.h
+-index cb96c6f..4745980 100644
+---- a/lib/ffmpeg/libavcodec/avcodec.h
+-+++ b/lib/ffmpeg/libavcodec/avcodec.h
+-@@ -1429,7 +1429,6 @@ typedef struct AVCodecContext {
+- #define FF_BUG_DC_CLIP          4096
+- #define FF_BUG_MS               8192 ///< Work around various bugs in Microsoft's broken decoders.
+- #define FF_BUG_TRUNCATED       16384
+--#define FF_BUG_DXVA2_SCALING_LIST_ZIGZAG 32768 ///< Work around for DXVA2 and old UVD/UVD+ ATI video cards
+- //#define FF_BUG_FAKE_SCALABILITY 16 //Autodetection should work 100%.
+- 
+-     /**
+-diff --git a/lib/ffmpeg/libavcodec/dxva2.h b/lib/ffmpeg/libavcodec/dxva2.h
+-index 5c5fe21..6eb494b 100644
+---- a/lib/ffmpeg/libavcodec/dxva2.h
+-+++ b/lib/ffmpeg/libavcodec/dxva2.h
+-@@ -27,6 +27,8 @@
+- 
+- #include <dxva2api.h>
+- 
+-+#define FF_DXVA2_WORKAROUND_SCALING_LIST_ZIGZAG 1 ///< Work around for DXVA2 and old UVD/UVD+ ATI video cards
+-+
+- /**
+-  * This structure is used to provides the necessary configurations and data
+-  * to the DXVA2 FFmpeg HWAccel implementation.
+-diff --git a/lib/ffmpeg/libavcodec/dxva2_h264.c b/lib/ffmpeg/libavcodec/dxva2_h264.c
+-index 7b81c8e..4e3370c 100644
+---- a/lib/ffmpeg/libavcodec/dxva2_h264.c
+-+++ b/lib/ffmpeg/libavcodec/dxva2_h264.c
+-@@ -113,6 +113,9 @@ static void fill_picture_parameters(struct dxva_context *ctx, const H264Context
+- 
+-     pp->bit_depth_luma_minus8         = h->sps.bit_depth_luma - 8;
+-     pp->bit_depth_chroma_minus8       = h->sps.bit_depth_chroma - 8;
+-+    if (ctx->workaround & FF_DXVA2_WORKAROUND_SCALING_LIST_ZIGZAG)
+-+        pp->Reserved16Bits            = 0;
+-+    else
+-     pp->Reserved16Bits                = 3; /* FIXME is there a way to detect the right mode ? */
+-     pp->StatusReportFeedbackNumber    = 1 + ctx->report_id++;
+-     pp->CurrFieldOrderCnt[0] = 0;
+-@@ -150,18 +153,18 @@ static void fill_picture_parameters(struct dxva_context *ctx, const H264Context
+-     //pp->SliceGroupMap[810];               /* XXX not implemented by FFmpeg */
+- }
+- 
+--static void fill_scaling_lists(AVCodecContext *avctx, const H264Context *h, DXVA_Qmatrix_H264 *qm)
+-+static void fill_scaling_lists(struct dxva_context *ctx, const H264Context *h, DXVA_Qmatrix_H264 *qm)
+- {
+-     unsigned i, j;
+-     memset(qm, 0, sizeof(*qm));
+--    if (avctx->workaround_bugs & FF_BUG_DXVA2_SCALING_LIST_ZIGZAG) {  // For old UVD/UVD+ ATI cards
+--    for (i = 0; i < 6; i++)
+--        for (j = 0; j < 16; j++)
+--            qm->bScalingLists4x4[i][j] = h->pps.scaling_matrix4[i][j];
+--
+--    for (i = 0; i < 2; i++)
+--        for (j = 0; j < 64; j++)
+--            qm->bScalingLists8x8[i][j] = h->pps.scaling_matrix8[i][j];
+-+    if (ctx->workaround & FF_DXVA2_WORKAROUND_SCALING_LIST_ZIGZAG) {
+-+        for (i = 0; i < 6; i++)
+-+            for (j = 0; j < 16; j++)
+-+                qm->bScalingLists4x4[i][j] = h->pps.scaling_matrix4[i][j];
+-+
+-+        for (i = 0; i < 2; i++)
+-+            for (j = 0; j < 64; j++)
+-+                qm->bScalingLists8x8[i][j] = h->pps.scaling_matrix8[i][j];
+-     } else {
+-     for (i = 0; i < 6; i++)
+-         for (j = 0; j < 16; j++)
+-@@ -380,7 +383,7 @@ static int start_frame(AVCodecContext *avctx,
+-     fill_picture_parameters(ctx, h, &ctx_pic->pp);
+- 
+-     /* Fill up DXVA_Qmatrix_H264 */
+--    fill_scaling_lists(avctx, h, &ctx_pic->qm);
+-+    fill_scaling_lists(ctx, h, &ctx_pic->qm);
+- 
+-     ctx_pic->slice_count    = 0;
+-     ctx_pic->bitstream_size = 0;
+--- 
+-1.7.7.2
+-
+diff --git a/lib/ffmpeg/patches/0068-fixed-yadif-should-copy-frame-properties-of-second-f.patch b/lib/ffmpeg/patches/0068-fixed-yadif-should-copy-frame-properties-of-second-f.patch
+deleted file mode 100644
+index a5b3a7c..0000000
+--- a/lib/ffmpeg/patches/0068-fixed-yadif-should-copy-frame-properties-of-second-f.patch
++++ /dev/null
+@@ -1,31 +0,0 @@
+-From 793f3e0bfcaadaccd0b5db2a37a60da42a6b207e Mon Sep 17 00:00:00 2001
+-From: elupus <elupus@xbmc.org>
+-Date: Thu, 14 Jul 2011 22:07:22 +0200
+-Subject: [PATCH] fixed: yadif should copy frame properties of second frame as
+- well
+-
+----
+- lib/ffmpeg/libavfilter/vf_yadif.c |    5 ++++-
+- 1 files changed, 4 insertions(+), 1 deletions(-)
+-
+-diff --git a/lib/ffmpeg/libavfilter/vf_yadif.c b/lib/ffmpeg/libavfilter/vf_yadif.c
+-index d7bed90..da91600 100644
+---- a/lib/ffmpeg/libavfilter/vf_yadif.c
+-+++ b/lib/ffmpeg/libavfilter/vf_yadif.c
+-@@ -182,9 +182,12 @@ static void return_frame(AVFilterContext *ctx, int is_second)
+-         tff = yadif->parity^1;
+-     }
+- 
+--    if (is_second)
+-+    if (is_second) {
+-         yadif->out = avfilter_get_video_buffer(link, AV_PERM_WRITE | AV_PERM_PRESERVE |
+-                                                AV_PERM_REUSE, link->w, link->h);
+-+        avfilter_copy_buffer_ref_props(yadif->out, yadif->cur);
+-+        yadif->out->video->interlaced = 0;
+-+    }
+- 
+-     filter(ctx, yadif->out, tff ^ !is_second, tff);
+- 
+--- 
+-1.7.7.2
+-
+diff --git a/lib/ffmpeg/patches/0070-matroskadec-use-correct-compression-parameters-for-c.patch b/lib/ffmpeg/patches/0070-matroskadec-use-correct-compression-parameters-for-c.patch
+deleted file mode 100644
+index 6042ffa..0000000
+--- a/lib/ffmpeg/patches/0070-matroskadec-use-correct-compression-parameters-for-c.patch
++++ /dev/null
+@@ -1,33 +0,0 @@
+-From 8efe4d01dcd2f89ad012b8f1dd71192e09fa3e82 Mon Sep 17 00:00:00 2001
+-From: CrystalP <CrystalP@xbmc.org>
+-Date: Sun, 16 Oct 2011 03:16:26 -0400
+-Subject: [PATCH] matroskadec: use correct compression parameters for current
+- track CodecPrivate
+-
+-backport of ffmpeg dc6c36ce46d4c4d7cb63503afc2ee44f00bf3725 on 2011-08-17
+-
+-fixes a bitmap sub color problem exposed by mkclean --optimize foo.mkv.
+-The compressed private data could not be extracted, resulting in a bad color
+-palette and wrong colors on screen.
+-
+-problem described in forum thread http://forum.xbmc.org/showthread.php?t=108942
+----
+- lib/ffmpeg/libavformat/matroskadec.c |    2 +-
+- 1 files changed, 1 insertions(+), 1 deletions(-)
+-
+-diff --git a/lib/ffmpeg/libavformat/matroskadec.c b/lib/ffmpeg/libavformat/matroskadec.c
+-index 1a87f4a..14b96d4 100644
+---- a/lib/ffmpeg/libavformat/matroskadec.c
+-+++ b/lib/ffmpeg/libavformat/matroskadec.c
+-@@ -1220,7 +1220,7 @@ static int matroska_read_header(AVFormatContext *s, AVFormatParameters *ap)
+-     for (i=0; i < matroska->tracks.nb_elem; i++) {
+-         MatroskaTrack *track = &tracks[i];
+-         enum CodecID codec_id = CODEC_ID_NONE;
+--        EbmlList *encodings_list = &tracks->encodings;
+-+        EbmlList *encodings_list = &track->encodings;
+-         MatroskaTrackEncoding *encodings = encodings_list->elem;
+-         uint8_t *extradata = NULL;
+-         int extradata_size = 0;
+--- 
+-1.7.7.2
+-
+diff --git a/lib/ffmpeg/patches/0071-fixed-Typo.patch b/lib/ffmpeg/patches/0071-fixed-Typo.patch
+deleted file mode 100644
+index dcb5eda..0000000
+--- a/lib/ffmpeg/patches/0071-fixed-Typo.patch
++++ /dev/null
+@@ -1,25 +0,0 @@
+-From dc0509f7a6341a72ca4399fee37e30c91fddc222 Mon Sep 17 00:00:00 2001
+-From: arnova <nospam@void.org>
+-Date: Tue, 8 Nov 2011 08:35:59 +0100
+-Subject: [PATCH] fixed: Typo
+-
+----
+- lib/ffmpeg/libavformat/mmsh.c |    2 +-
+- 1 files changed, 1 insertions(+), 1 deletions(-)
+-
+-diff --git a/lib/ffmpeg/libavformat/mmsh.c b/lib/ffmpeg/libavformat/mmsh.c
+-index 3ae886f..cc6efa3 100644
+---- a/lib/ffmpeg/libavformat/mmsh.c
+-+++ b/lib/ffmpeg/libavformat/mmsh.c
+-@@ -284,7 +284,7 @@ static int mmsh_open_internal(URLContext *h, const char *uri, int flags, int tim
+-                    CLIENTGUID
+-                    "Pragma: stream-switch-count=%d\r\n"
+-                    "Pragma: stream-switch-entry=%s\r\n"
+--                   "Pragma: no-cache,rate)1.000000,stream-time=%u"
+-+                   "Pragma: no-cache,rate=1.000000,stream-time=%u"
+-                    "Connection: Close\r\n\r\n",
+-                    host, port, mmsh->request_seq++, mms->stream_num, stream_selection, timestamp);
+-     av_freep(&stream_selection);
+--- 
+-1.7.7.2
+-
+diff --git a/lib/ffmpeg/patches/0072-h264-Use-mismatching-frame-numbers-in-fields-to-sync.patch b/lib/ffmpeg/patches/0072-h264-Use-mismatching-frame-numbers-in-fields-to-sync.patch
+deleted file mode 100644
+index a05dfff..0000000
+--- a/lib/ffmpeg/patches/0072-h264-Use-mismatching-frame-numbers-in-fields-to-sync.patch
++++ /dev/null
+@@ -1,33 +0,0 @@
+-From 2ac62404c2f833d5aa64947819538ac354966ef0 Mon Sep 17 00:00:00 2001
+-From: Michael Niedermayer <michaelni@gmx.at>
+-Date: Sat, 12 Nov 2011 21:10:15 +0100
+-Subject: [PATCH] h264: Use mismatching frame numbers in fields to synchronize
+- the first/second field state independant of them being
+- reference or not. Fixes Ticket354
+-
+-Signed-off-by: Michael Niedermayer <michaelni@gmx.at>
+----
+- lib/ffmpeg/libavcodec/h264.c |    6 ++----
+- 1 files changed, 2 insertions(+), 4 deletions(-)
+-
+-diff --git a/lib/ffmpeg/libavcodec/h264.c b/lib/ffmpeg/libavcodec/h264.c
+-index 47b0073..87ec292 100644
+---- a/lib/ffmpeg/libavcodec/h264.c
+-+++ b/lib/ffmpeg/libavcodec/h264.c
+-@@ -1936,11 +1936,9 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
+-                 s0->first_field = FIELD_PICTURE;
+- 
+-             } else {
+--                if (h->nal_ref_idc &&
+--                        s0->current_picture_ptr->reference &&
+--                        s0->current_picture_ptr->frame_num != h->frame_num) {
+-+                if (s0->current_picture_ptr->frame_num != h->frame_num) {
+-                     /*
+--                     * This and previous field were reference, but had
+-+                     * This and previous field had
+-                      * different frame_nums. Consider this field first in
+-                      * pair. Throw away previous field except for reference
+-                      * purposes.
+--- 
+-1.7.7.2
+-
+diff --git a/lib/ffmpeg/patches/0073-Don-t-fill-in-frame-gaps-with-copied-refs-after-flus.patch b/lib/ffmpeg/patches/0073-Don-t-fill-in-frame-gaps-with-copied-refs-after-flus.patch
+deleted file mode 100644
+index d919336..0000000
+--- a/lib/ffmpeg/patches/0073-Don-t-fill-in-frame-gaps-with-copied-refs-after-flus.patch
++++ /dev/null
+@@ -1,36 +0,0 @@
+-From 46d99a89aa16db1981441bf7103a30e7d28e5e26 Mon Sep 17 00:00:00 2001
+-From: Joakim Plate <elupus@ecce.se>
+-Date: Fri, 18 Nov 2011 20:36:13 +0100
+-Subject: [PATCH] Don't fill in frame gaps with copied refs after flush
+-
+-The filled in refs cause corruptions in the video frame
+-for a long time after it should have recovered.
+----
+- lib/ffmpeg/libavcodec/h264.c |    4 ++--
+- 1 files changed, 2 insertions(+), 2 deletions(-)
+-
+-diff --git a/lib/ffmpeg/libavcodec/h264.c b/lib/ffmpeg/libavcodec/h264.c
+-index 87ec292..0e002ce 100644
+---- a/lib/ffmpeg/libavcodec/h264.c
+-+++ b/lib/ffmpeg/libavcodec/h264.c
+-@@ -1464,7 +1464,7 @@ static void implicit_weight_table(H264Context *h, int field){
+-  */
+- static void idr(H264Context *h){
+-     ff_h264_remove_all_refs(h);
+--    h->prev_frame_num= 0;
+-+    h->prev_frame_num= -1;
+-     h->prev_frame_num_offset= 0;
+-     h->prev_poc_msb=
+-     h->prev_poc_lsb= 0;
+-@@ -1892,7 +1892,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
+-     h->mb_field_decoding_flag= s->picture_structure != PICT_FRAME;
+- 
+-     if(h0->current_slice == 0){
+--        while(h->frame_num !=  h->prev_frame_num &&
+-+        while(h->frame_num !=  h->prev_frame_num && h->prev_frame_num >= 0 &&
+-               h->frame_num != (h->prev_frame_num+1)%(1<<h->sps.log2_max_frame_num)){
+-             Picture *prev = h->short_ref_count ? h->short_ref[0] : NULL;
+-             av_log(h->s.avctx, AV_LOG_DEBUG, "Frame num gap %d %d\n", h->frame_num, h->prev_frame_num);
+--- 
+-1.7.7.2
+-
+diff --git a/lib/ffmpeg/patches/0074-vaapi-do-not-assert-on-value-read-from-input-bitstre.patch b/lib/ffmpeg/patches/0074-vaapi-do-not-assert-on-value-read-from-input-bitstre.patch
+deleted file mode 100644
+index d7b2285..0000000
+--- a/lib/ffmpeg/patches/0074-vaapi-do-not-assert-on-value-read-from-input-bitstre.patch
++++ /dev/null
+@@ -1,41 +0,0 @@
+-From 425b9a373384813d2fe513d42b1d585ecbea6ca5 Mon Sep 17 00:00:00 2001
+-From: Diego Biurrun <diego@biurrun.de>
+-Date: Fri, 15 Jul 2011 01:06:16 +0200
+-Subject: [PATCH] vaapi: do not assert on value read from input bitstream
+-
+-User-provided data should never trigger an assert; return error instead.
+-Also fix an instance of get_bits where get_bits_long should have been used.
+-
+-This eliminates the following warning:
+-libavcodec/vaapi_mpeg2.c:112:14: warning: variable 'start_code' set but not used
+-
+-Signed-off-by: elupus <elupus@xbmc.org>
+----
+- lib/ffmpeg/libavcodec/vaapi_mpeg2.c |    6 +++---
+- 1 files changed, 3 insertions(+), 3 deletions(-)
+-
+-diff --git a/lib/ffmpeg/libavcodec/vaapi_mpeg2.c b/lib/ffmpeg/libavcodec/vaapi_mpeg2.c
+-index 17d82b7..8d456ba 100644
+---- a/lib/ffmpeg/libavcodec/vaapi_mpeg2.c
+-+++ b/lib/ffmpeg/libavcodec/vaapi_mpeg2.c
+-@@ -109,14 +109,14 @@ static int vaapi_mpeg2_decode_slice(AVCodecContext *avctx, const uint8_t *buffer
+-     MpegEncContext * const s = avctx->priv_data;
+-     VASliceParameterBufferMPEG2 *slice_param;
+-     GetBitContext gb;
+--    uint32_t start_code, quantiser_scale_code, intra_slice_flag, macroblock_offset;
+-+    uint32_t quantiser_scale_code, intra_slice_flag, macroblock_offset;
+- 
+-     av_dlog(avctx, "vaapi_mpeg2_decode_slice(): buffer %p, size %d\n", buffer, size);
+- 
+-     /* Determine macroblock_offset */
+-     init_get_bits(&gb, buffer, 8 * size);
+--    start_code = get_bits(&gb, 32);
+--    assert((start_code & 0xffffff00) == 0x00000100);
+-+    if (get_bits_long(&gb, 32) >> 8 != 1) /* start code */
+-+        return AVERROR_INVALIDDATA;
+-     quantiser_scale_code = get_bits(&gb, 5);
+-     intra_slice_flag = get_bits1(&gb);
+-     if (intra_slice_flag) {
+--- 
+-1.7.7.2
+-
+diff --git a/lib/ffmpeg/patches/0075-fixed-playback-from-mmst-urls-would-halt-after-some-.patch b/lib/ffmpeg/patches/0075-fixed-playback-from-mmst-urls-would-halt-after-some-.patch
+deleted file mode 100644
+index cd5412b..0000000
+--- a/lib/ffmpeg/patches/0075-fixed-playback-from-mmst-urls-would-halt-after-some-.patch
++++ /dev/null
+@@ -1,30 +0,0 @@
+-From 919a875b4bc4ea2a8ddc0aab98ea74c6475f9525 Mon Sep 17 00:00:00 2001
+-From: spiff <spiff@xbmc.org>
+-Date: Tue, 17 Jan 2012 22:47:36 +0100
+-Subject: [PATCH] fixed: playback from mmst:// urls would halt after some
+- time.
+-
+-this backports upstream 275189a2bd71cf49d66374c44d3de2262d323460
+-
+-thanks to johoja for doing the ground work
+----
+- lib/ffmpeg/libavformat/mmst.c |    3 +--
+- 1 files changed, 1 insertions(+), 2 deletions(-)
+-
+-diff --git a/lib/ffmpeg/libavformat/mmst.c b/lib/ffmpeg/libavformat/mmst.c
+-index 8464d3b..385f017 100644
+---- a/lib/ffmpeg/libavformat/mmst.c
+-+++ b/lib/ffmpeg/libavformat/mmst.c
+-@@ -290,8 +290,7 @@ static MMSSCPacketType get_tcp_server_response(MMSTContext *mmst)
+-                 return read_result < 0 ? read_result : AVERROR_IO;
+-             }
+-             packet_type= AV_RL16(mms->in_buffer+36);
+--            hr = AV_RL32(mms->in_buffer + 40);
+--            if (hr) {
+-+            if (read_result >= 44 && (hr = AV_RL32(mms->in_buffer + 40))) {
+-                 av_log(NULL, AV_LOG_ERROR,
+-                        "Server sent an error status code: 0x%08x\n", hr);
+-                 return AVERROR_UNKNOWN;
+--- 
+-1.7.7.2
+-
+diff --git a/lib/ffmpeg/patches/0077-Change-yadif-to-not-use-out-of-picture-lines.-Fixes-.patch b/lib/ffmpeg/patches/0077-Change-yadif-to-not-use-out-of-picture-lines.-Fixes-.patch
+deleted file mode 100644
+index d7d4ec9..0000000
+--- a/lib/ffmpeg/patches/0077-Change-yadif-to-not-use-out-of-picture-lines.-Fixes-.patch
++++ /dev/null
+@@ -1,133 +0,0 @@
+-From 42bedafe92b2921ec63024a825d4297ba39888e9 Mon Sep 17 00:00:00 2001
+-From: Michael Niedermayer <michaelni@gmx.at>
+-Date: Fri, 18 Feb 2011 19:10:33 +0100
+-Subject: [PATCH] Change yadif to not use out of picture lines. Fixes
+- issue2272.
+-
+-Signed-off-by: Michael Niedermayer <michaelni@gmx.at>
+----
+- lib/ffmpeg/libavfilter/vf_yadif.c           |   31 ++++++++++++++-------------
+- lib/ffmpeg/libavfilter/x86/yadif_template.c |    6 ++--
+- lib/ffmpeg/libavfilter/yadif.h              |    6 ++--
+- 3 files changed, 22 insertions(+), 21 deletions(-)
+-
+-diff --git a/lib/ffmpeg/libavfilter/vf_yadif.c b/lib/ffmpeg/libavfilter/vf_yadif.c
+-index da91600..1ed8807 100644
+---- a/lib/ffmpeg/libavfilter/vf_yadif.c
+-+++ b/lib/ffmpeg/libavfilter/vf_yadif.c
+-@@ -56,42 +56,42 @@ typedef struct {
+-     AVFilterBufferRef *out;
+-     void (*filter_line)(uint8_t *dst,
+-                         uint8_t *prev, uint8_t *cur, uint8_t *next,
+--                        int w, int refs, int parity, int mode);
+-+                        int w, int prefs, int mrefs, int parity, int mode);
+- } YADIFContext;
+- 
+- static void filter_line_c(uint8_t *dst,
+-                           uint8_t *prev, uint8_t *cur, uint8_t *next,
+--                          int w, int refs, int parity, int mode)
+-+                          int w, int prefs, int mrefs, int parity, int mode)
+- {
+-     int x;
+-     uint8_t *prev2 = parity ? prev : cur ;
+-     uint8_t *next2 = parity ? cur  : next;
+-     for (x = 0;  x < w; x++) {
+--        int c = cur[-refs];
+-+        int c = cur[mrefs];
+-         int d = (prev2[0] + next2[0])>>1;
+--        int e = cur[+refs];
+-+        int e = cur[prefs];
+-         int temporal_diff0 = FFABS(prev2[0] - next2[0]);
+--        int temporal_diff1 =(FFABS(prev[-refs] - c) + FFABS(prev[+refs] - e) )>>1;
+--        int temporal_diff2 =(FFABS(next[-refs] - c) + FFABS(next[+refs] - e) )>>1;
+-+        int temporal_diff1 =(FFABS(prev[mrefs] - c) + FFABS(prev[prefs] - e) )>>1;
+-+        int temporal_diff2 =(FFABS(next[mrefs] - c) + FFABS(next[prefs] - e) )>>1;
+-         int diff = FFMAX3(temporal_diff0>>1, temporal_diff1, temporal_diff2);
+-         int spatial_pred = (c+e)>>1;
+--        int spatial_score = FFABS(cur[-refs-1] - cur[+refs-1]) + FFABS(c-e)
+--                          + FFABS(cur[-refs+1] - cur[+refs+1]) - 1;
+-+        int spatial_score = FFABS(cur[mrefs-1] - cur[prefs-1]) + FFABS(c-e)
+-+                          + FFABS(cur[mrefs+1] - cur[prefs+1]) - 1;
+- 
+- #define CHECK(j)\
+--    {   int score = FFABS(cur[-refs-1+j] - cur[+refs-1-j])\
+--                  + FFABS(cur[-refs  +j] - cur[+refs  -j])\
+--                  + FFABS(cur[-refs+1+j] - cur[+refs+1-j]);\
+-+    {   int score = FFABS(cur[mrefs-1+j] - cur[prefs-1-j])\
+-+                  + FFABS(cur[mrefs  +j] - cur[prefs  -j])\
+-+                  + FFABS(cur[mrefs+1+j] - cur[prefs+1-j]);\
+-         if (score < spatial_score) {\
+-             spatial_score= score;\
+--            spatial_pred= (cur[-refs  +j] + cur[+refs  -j])>>1;\
+-+            spatial_pred= (cur[mrefs  +j] + cur[prefs  -j])>>1;\
+- 
+-         CHECK(-1) CHECK(-2) }} }}
+-         CHECK( 1) CHECK( 2) }} }}
+- 
+-         if (mode < 2) {
+--            int b = (prev2[-2*refs] + next2[-2*refs])>>1;
+--            int f = (prev2[+2*refs] + next2[+2*refs])>>1;
+-+            int b = (prev2[2*mrefs] + next2[2*mrefs])>>1;
+-+            int f = (prev2[2*prefs] + next2[2*prefs])>>1;
+- #if 0
+-             int a = cur[-3*refs];
+-             int g = cur[+3*refs];
+-@@ -139,7 +139,8 @@ static void filter(AVFilterContext *ctx, AVFilterBufferRef *dstpic,
+-                 uint8_t *cur  = &yadif->cur ->data[i][y*refs];
+-                 uint8_t *next = &yadif->next->data[i][y*refs];
+-                 uint8_t *dst  = &dstpic->data[i][y*dstpic->linesize[i]];
+--                yadif->filter_line(dst, prev, cur, next, w, refs, parity ^ tff, yadif->mode);
+-+                int     mode  = y==1 || y+2==h ? 2 : yadif->mode;
+-+                yadif->filter_line(dst, prev, cur, next, w, y+1<h ? refs : -refs, y ? -refs : refs, parity ^ tff, mode);
+-             } else {
+-                 memcpy(&dstpic->data[i][y*dstpic->linesize[i]],
+-                        &yadif->cur->data[i][y*refs], w);
+-diff --git a/lib/ffmpeg/libavfilter/x86/yadif_template.c b/lib/ffmpeg/libavfilter/x86/yadif_template.c
+-index 3e520cb..50ea843 100644
+---- a/lib/ffmpeg/libavfilter/x86/yadif_template.c
+-+++ b/lib/ffmpeg/libavfilter/x86/yadif_template.c
+-@@ -105,7 +105,7 @@
+- 
+- void RENAME(ff_yadif_filter_line)(uint8_t *dst,
+-                                   uint8_t *prev, uint8_t *cur, uint8_t *next,
+--                                  int w, int refs, int parity, int mode)
+-+                                  int w, int prefs, int mrefs, int parity, int mode)
+- {
+-     DECLARE_ALIGNED(16, uint8_t, tmp0[16]);
+-     DECLARE_ALIGNED(16, uint8_t, tmp1[16]);
+-@@ -226,8 +226,8 @@ void RENAME(ff_yadif_filter_line)(uint8_t *dst,
+-             :[prev] "r"(prev),\
+-              [cur]  "r"(cur),\
+-              [next] "r"(next),\
+--             [prefs]"r"((x86_reg)refs),\
+--             [mrefs]"r"((x86_reg)-refs),\
+-+             [prefs]"r"((x86_reg)prefs),\
+-+             [mrefs]"r"((x86_reg)mrefs),\
+-              [mode] "g"(mode)\
+-         );\
+-         __asm__ volatile(MOV" "MM"1, %0" :"=m"(*dst));\
+-diff --git a/lib/ffmpeg/libavfilter/yadif.h b/lib/ffmpeg/libavfilter/yadif.h
+-index 072812c..ff574da 100644
+---- a/lib/ffmpeg/libavfilter/yadif.h
+-+++ b/lib/ffmpeg/libavfilter/yadif.h
+-@@ -23,14 +23,14 @@
+- 
+- void ff_yadif_filter_line_mmx(uint8_t *dst,
+-                               uint8_t *prev, uint8_t *cur, uint8_t *next,
+--                              int w, int refs, int parity, int mode);
+-+                              int w, int prefs, int mrefs, int parity, int mode);
+- 
+- void ff_yadif_filter_line_sse2(uint8_t *dst,
+-                                uint8_t *prev, uint8_t *cur, uint8_t *next,
+--                               int w, int refs, int parity, int mode);
+-+                               int w, int prefs, int mrefs, int parity, int mode);
+- 
+- void ff_yadif_filter_line_ssse3(uint8_t *dst,
+-                                 uint8_t *prev, uint8_t *cur, uint8_t *next,
+--                                int w, int refs, int parity, int mode);
+-+                                int w, int prefs, int mrefs, int parity, int mode);
+- 
+- #endif /* AVFILTER_YADIF_H */
+--- 
+-1.7.7.2
+-
+diff --git a/lib/ffmpeg/patches/0078-fixed-ffmpeg-build-with-gcc-4.7-on-x86.patch b/lib/ffmpeg/patches/0078-fixed-ffmpeg-build-with-gcc-4.7-on-x86.patch
+deleted file mode 100644
+index 6fe3958..0000000
+--- a/lib/ffmpeg/patches/0078-fixed-ffmpeg-build-with-gcc-4.7-on-x86.patch
++++ /dev/null
+@@ -1,68 +0,0 @@
+-From 400b84bb8d3d2a9c202fa3da4fb01279230a87ce Mon Sep 17 00:00:00 2001
+-From: Anssi Hannula <anssi@xbmc.org>
+-Date: Wed, 7 Mar 2012 23:08:54 +0200
+-Subject: [PATCH] fixed: ffmpeg build with gcc 4.7 on x86
+-
+-Backport da4c7cce2100a4e4f9276b4f17e260be47b53f41 from FFmpeg git:
+-
+-> From: Mans Rullgard <mans@mansr.com>
+-> Date: Tue, 26 Jul 2011 11:23:43 +0000 (+0100)
+->
+-> x86: fix build with gcc 4.7
+->
+-> The upcoming gcc 4.7 has more advanced constant propagation
+-> resulting some inline asm operands becoming constants and thus
+-> emitted as literals, sometimes in contexts where this results
+-> in invalid instructions.
+->
+-> This patch changes the constraints of the relevant operands
+-> to "rm" thus forcing a valid type.  While obviously suboptimal,
+-> this is what older gcc versions already did, and there is no
+-> change to the code generated with these.
+----
+- lib/ffmpeg/libavcodec/x86/h264_qpel_mmx.c |    8 ++++----
+- 1 files changed, 4 insertions(+), 4 deletions(-)
+-
+-diff --git a/lib/ffmpeg/libavcodec/x86/h264_qpel_mmx.c b/lib/ffmpeg/libavcodec/x86/h264_qpel_mmx.c
+-index d8ceca1..f5af44e 100644
+---- a/lib/ffmpeg/libavcodec/x86/h264_qpel_mmx.c
+-+++ b/lib/ffmpeg/libavcodec/x86/h264_qpel_mmx.c
+-@@ -398,7 +398,7 @@ static av_noinline void OPNAME ## h264_qpel8or16_v_lowpass_ ## MMX(uint8_t *dst,
+-             "2:                         \n\t"\
+-             \
+-             : "+a"(src), "+c"(dst)\
+--            : "S"((x86_reg)srcStride), "D"((x86_reg)dstStride), "g"(h)\
+-+            : "S"((x86_reg)srcStride), "D"((x86_reg)dstStride), "rm"(h)\
+-             : "memory"\
+-         );\
+-         src += 4-(h+5)*srcStride;\
+-@@ -446,7 +446,7 @@ static av_always_inline void OPNAME ## h264_qpel8or16_hv1_lowpass_ ## MMX(int16_
+-             QPEL_H264HV(%%mm3, %%mm4, %%mm5, %%mm0, %%mm1, %%mm2, 15*48)\
+-             "2:                     \n\t"\
+-             : "+a"(src)\
+--            : "c"(tmp), "S"((x86_reg)srcStride), "g"(size)\
+-+            : "c"(tmp), "S"((x86_reg)srcStride), "rm"(size)\
+-             : "memory"\
+-             );\
+-         tmp += 4;\
+-@@ -823,7 +823,7 @@ static av_noinline void OPNAME ## h264_qpel8or16_v_lowpass_ ## MMX(uint8_t *dst,
+-         "2:                          \n\t"\
+-         \
+-         : "+a"(src), "+c"(dst)\
+--        : "S"((x86_reg)srcStride), "D"((x86_reg)dstStride), "g"(h)\
+-+        : "S"((x86_reg)srcStride), "D"((x86_reg)dstStride), "rm"(h)\
+-         : XMM_CLOBBERS("%xmm0", "%xmm1", "%xmm2", "%xmm3", \
+-                        "%xmm4", "%xmm5", "%xmm6", "%xmm7",)\
+-           "memory"\
+-@@ -878,7 +878,7 @@ static av_always_inline void put_h264_qpel8or16_hv1_lowpass_sse2(int16_t *tmp, u
+-             QPEL_H264HV_XMM(%%xmm3, %%xmm4, %%xmm5, %%xmm0, %%xmm1, %%xmm2, 15*48)
+-             "2:                         \n\t"
+-             : "+a"(src)
+--            : "c"(tmp), "S"((x86_reg)srcStride), "g"(size)
+-+            : "c"(tmp), "S"((x86_reg)srcStride), "rm"(size)
+-             : XMM_CLOBBERS("%xmm0", "%xmm1", "%xmm2", "%xmm3",
+-                            "%xmm4", "%xmm5", "%xmm6", "%xmm7",)
+-               "memory"
+--- 
+-1.7.7.2
+-
+-- 
+1.7.10
+

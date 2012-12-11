@@ -6,7 +6,7 @@ diff -Nurpa -x '*~' -x '*.orig' -x '*.rej' -x '*.swp' xbmc-11.0-Eden_rc2/addons/
  <addon
    id="skin.confluence"
 -  version="2.1.0"
-+  version="9.mdv-pvr.1.1.0"
++  version="9.mga-pvr.1.1.0"
    name="Confluence"
    provider-name="Jezz_X, Team XBMC">
    <requires>

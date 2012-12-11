@@ -1,0 +1,31 @@
+From 3bb942aaa87ca1f6dd074c5bd1bf863e7acd84ed Mon Sep 17 00:00:00 2001
+From: elupus <elupus@xbmc.org>
+Date: Wed, 4 Apr 2012 20:22:19 +0200
+Subject: [PATCH 140/145] {dvdplayer] avoid crashing if ffmpeg contains more
+ than 100 streams (cherry picked from commit
+ 3a43c68349c6516b7c7bd50f7f89033fe9434c64)
+
+---
+ xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxFFmpeg.cpp |    6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxFFmpeg.cpp b/xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxFFmpeg.cpp
+index caae1c8..d13f044 100644
+--- a/xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxFFmpeg.cpp
++++ b/xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxFFmpeg.cpp
+@@ -934,6 +934,12 @@ static double SelectAspect(AVStream* st, bool* forced)
+ 
+ void CDVDDemuxFFmpeg::AddStream(int iId)
+ {
++  if(iId >= MAX_STREAMS)
++  {
++    CLog::Log(LOGWARNING, "%s - streams id %d exeeds maximum supported", __FUNCTION__, iId);
++    return;
++  }
++
+   AVStream* pStream = m_pFormatContext->streams[iId];
+   if (pStream)
+   {
+-- 
+1.7.10
+

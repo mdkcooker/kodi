@@ -1,0 +1,560 @@
+From 1dfeb656f7ae23aa0c40ff236c5de4bac05a45a3 Mon Sep 17 00:00:00 2001
+From: Memphiz <memphis@machzwo.de>
+Date: Mon, 26 Mar 2012 22:22:46 +0200
+Subject: [PATCH 135/145] [osx/ios/atv2] - build and link static libs for
+ ffmpeg because of build issues on ios (cherry
+ picked from commit
+ 32016958723f5d58d7bfb36e18dd6c4b9307d4fd)
+
+---
+ XBMC-ATV2.xcodeproj/project.pbxproj |   32 +++++++++++
+ XBMC-IOS.xcodeproj/project.pbxproj  |   32 +++++++++++
+ XBMC.xcodeproj/project.pbxproj      |   64 +++++++++++++++++++++
+ configure.in                        |    4 +-
+ lib/DllAvCodec.h                    |    2 +-
+ lib/DllAvFilter.h                   |    2 +-
+ lib/DllAvFormat.h                   |    4 +-
+ lib/DllAvUtil.h                     |    3 +-
+ lib/DllPostProc.h                   |    2 +-
+ lib/DllSwResample.h                 |    2 +-
+ lib/DllSwScale.h                    |    2 +-
+ lib/Makefile.in                     |  105 +++++------------------------------
+ 12 files changed, 151 insertions(+), 103 deletions(-)
+
+diff --git a/XBMC-ATV2.xcodeproj/project.pbxproj b/XBMC-ATV2.xcodeproj/project.pbxproj
+index c606ca0..bf11be3 100644
+--- a/XBMC-ATV2.xcodeproj/project.pbxproj
++++ b/XBMC-ATV2.xcodeproj/project.pbxproj
+@@ -7018,6 +7018,14 @@
+ 					"\"$(SRCROOT)/lib/SlingboxLib\"",
+ 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
+ 					"\"$(SRCROOT)/xbmc/interfaces/http-api\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavcodec\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavutil\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavformat\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavfilter\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavdevice\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libswresample\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libpostproc\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libswscale\"",
+ 				);
+ 				OTHER_LDFLAGS = (
+ 					"-Wl,-headerpad_max_install_names",
+@@ -7041,6 +7049,14 @@
+ 					"-lyajl",
+ 					"-ljpeg",
+ 					"-lgcrypt",
++					"-lavdevice",
++					"-lavfilter",
++					"-lavcodec",
++					"-lavformat",
++					"-lpostproc",
++					"-lavutil",
++					"-lswresample",
++					"-lswscale",
+ 					"-lcrypto",
+ 					"-L$XBMC_DEPENDS/lib/mysql",
+ 					"-lmysqlclient",
+@@ -7115,6 +7131,14 @@
+ 					"\"$(SRCROOT)/lib/SlingboxLib\"",
+ 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
+ 					"\"$(SRCROOT)/xbmc/interfaces/http-api\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavcodec\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavutil\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavformat\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavfilter\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavdevice\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libswresample\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libpostproc\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libswscale\"",
+ 				);
+ 				OTHER_LDFLAGS = (
+ 					"-Wl,-headerpad_max_install_names",
+@@ -7139,6 +7163,14 @@
+ 					"-ljpeg",
+ 					"-lgcrypt",
+ 					"-lcrypto",
++					"-lavdevice",
++					"-lavfilter",
++					"-lavcodec",
++					"-lavformat",
++					"-lpostproc",
++					"-lavutil",
++					"-lswresample",
++					"-lswscale",
+ 					"-L$XBMC_DEPENDS/lib/mysql",
+ 					"-lmysqlclient",
+ 				);
+diff --git a/XBMC-IOS.xcodeproj/project.pbxproj b/XBMC-IOS.xcodeproj/project.pbxproj
+index 9ba2d9f..4a4be84 100644
+--- a/XBMC-IOS.xcodeproj/project.pbxproj
++++ b/XBMC-IOS.xcodeproj/project.pbxproj
+@@ -7030,6 +7030,14 @@
+ 					"\"$(SRCROOT)/lib/SlingboxLib\"",
+ 					"\"$(SRCROOT)/xbmc/interfaces/http-api\"",
+ 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavcodec\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavutil\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavformat\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavfilter\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavdevice\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libswresample\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libpostproc\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libswscale\"",
+ 				);
+ 				OTHER_LDFLAGS = (
+ 					"-Wl,-headerpad_max_install_names",
+@@ -7052,6 +7060,14 @@
+ 					"-ljpeg",
+ 					"-lcrypto",
+ 					"-lgcrypt",
++					"-lavdevice",
++					"-lavfilter",
++					"-lavcodec",
++					"-lavformat",
++					"-lpostproc",
++					"-lavutil",
++					"-lswresample",
++					"-lswscale",
+ 					"-L$XBMC_DEPENDS/lib/mysql",
+ 					"-lmysqlclient",
+ 				);
+@@ -7126,6 +7142,14 @@
+ 					"\"$(SRCROOT)/lib/SlingboxLib\"",
+ 					"\"$(SRCROOT)/xbmc/interfaces/http-api\"",
+ 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavcodec\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavutil\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavformat\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavfilter\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavdevice\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libswresample\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libpostproc\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libswscale\"",
+ 				);
+ 				OTHER_LDFLAGS = (
+ 					"-Wl,-headerpad_max_install_names",
+@@ -7148,6 +7172,14 @@
+ 					"-ljpeg",
+ 					"-lcrypto",
+ 					"-lgcrypt",
++					"-lavdevice",
++					"-lavfilter",
++					"-lavcodec",
++					"-lavformat",
++					"-lpostproc",
++					"-lavutil",
++					"-lswresample",
++					"-lswscale",
+ 					"-L$XBMC_DEPENDS/lib/mysql",
+ 					"-lmysqlclient",
+ 				);
+diff --git a/XBMC.xcodeproj/project.pbxproj b/XBMC.xcodeproj/project.pbxproj
+index 114d104..7ce481a 100644
+--- a/XBMC.xcodeproj/project.pbxproj
++++ b/XBMC.xcodeproj/project.pbxproj
+@@ -9048,6 +9048,14 @@
+ 					"$(SRCROOT)/lib/SlingboxLib",
+ 					"$(SRCROOT)/xbmc/interfaces/http-api",
+ 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
++					"\"$(SRCROOT)/lib/ffmpeg/libavcodec\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavutil\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavformat\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavfilter\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavdevice\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libswresample\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libpostproc\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libswscale\"",
+ 				);
+ 				LINK_WITH_STANDARD_LIBRARIES = YES;
+ 				OTHER_LDFLAGS = (
+@@ -9069,6 +9077,14 @@
+ 					"-ljpeg",
+ 					"-lcrypto",
+ 					"-lgcrypt",
++					"-lavdevice",
++					"-lavfilter",
++					"-lavcodec",
++					"-lavformat",
++					"-lpostproc",
++					"-lavutil",
++					"-lswresample",
++					"-lswscale",
+ 					"-lGLEW",
+ 					"-lSDL",
+ 					"-lSDL_mixer",
+@@ -9146,6 +9162,14 @@
+ 					"$(SRCROOT)/lib/SlingboxLib",
+ 					"$(SRCROOT)/xbmc/interfaces/http-api",
+ 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
++					"\"$(SRCROOT)/lib/ffmpeg/libavcodec\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavutil\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavformat\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavfilter\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavdevice\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libswresample\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libpostproc\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libswscale\"",
+ 				);
+ 				LINK_WITH_STANDARD_LIBRARIES = YES;
+ 				OTHER_LDFLAGS = (
+@@ -9167,6 +9191,14 @@
+ 					"-ljpeg",
+ 					"-lcrypto",
+ 					"-lgcrypt",
++					"-lavdevice",
++					"-lavfilter",
++					"-lavcodec",
++					"-lavformat",
++					"-lpostproc",
++					"-lavutil",
++					"-lswresample",
++					"-lswscale",
+ 					"-lGLEW",
+ 					"-lSDL",
+ 					"-lSDL_mixer",
+@@ -9306,6 +9338,14 @@
+ 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
+ 					"$(SRCROOT)/lib/SlingboxLib",
+ 					"\"$(SRCROOT)/lib/shairport\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavcodec\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavutil\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavformat\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavfilter\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavdevice\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libswresample\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libpostproc\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libswscale\"",
+ 				);
+ 				LINK_WITH_STANDARD_LIBRARIES = YES;
+ 				OTHER_LDFLAGS = (
+@@ -9327,6 +9367,14 @@
+ 					"-ljpeg",
+ 					"-lcrypto",
+ 					"-lgcrypt",
++					"-lavdevice",
++					"-lavfilter",
++					"-lavcodec",
++					"-lavformat",
++					"-lpostproc",
++					"-lavutil",
++					"-lswresample",
++					"-lswscale",
+ 					"-lGLEW",
+ 					"-lSDL",
+ 					"-lSDL_mixer",
+@@ -9407,6 +9455,14 @@
+ 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
+ 					"$(SRCROOT)/lib/SlingboxLib",
+ 					"\"$(SRCROOT)/lib/shairport\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavcodec\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavutil\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavformat\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavfilter\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libavdevice\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libswresample\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libpostproc\"",
++					"\"$(SRCROOT)/lib/ffmpeg/libswscale\"",
+ 				);
+ 				LINK_WITH_STANDARD_LIBRARIES = YES;
+ 				OTHER_LDFLAGS = (
+@@ -9428,6 +9484,14 @@
+ 					"-ljpeg",
+ 					"-lcrypto",
+ 					"-lgcrypt",
++					"-lavdevice",
++					"-lavfilter",
++					"-lavcodec",
++					"-lavformat",
++					"-lpostproc",
++					"-lavutil",
++					"-lswresample",
++					"-lswscale",
+ 					"-lGLEW",
+ 					"-lSDL",
+ 					"-lSDL_mixer",
+diff --git a/configure.in b/configure.in
+index bca9239..79ed9fc 100755
+--- a/configure.in
++++ b/configure.in
+@@ -2024,7 +2024,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
+       --disable-amd3dnow \
+       --disable-armv5te \
+       --disable-armv6t2 \
+-      --disable-static \
++      --enable-static \
+       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
+       --disable-muxers \
+       --enable-muxer=spdif \
+@@ -2038,7 +2038,6 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
+       --disable-ffplay \
+       --disable-ffserver \
+       --disable-ffmpeg \
+-      --enable-shared \
+       --disable-doc \
+       --disable-decoder=mpeg_xvmc \
+       --enable-postproc \
+@@ -2046,6 +2045,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
+       --enable-protocol=http \
+       --enable-pthreads \
+       --enable-runtime-cpudetect \
++      --disable-openmp \
+       --cc="$CC" &&
+     sed -ie "s#YASM=yasm#YASM=${prefix}/bin/yasm#" config.mak &&
+     sed -ie "s#YASMDEP=yasm#YASMDEP=${prefix}/bin/yasm#" config.mak &&
+diff --git a/lib/DllAvCodec.h b/lib/DllAvCodec.h
+index 9a4164a..1ab00ea 100644
+--- a/lib/DllAvCodec.h
++++ b/lib/DllAvCodec.h
+@@ -128,7 +128,7 @@ public:
+   virtual int64_t avcodec_guess_channel_layout(int nb_channels, enum CodecID codec_id, const char *fmt_name)=0;
+ };
+ 
+-#if (defined USE_EXTERNAL_FFMPEG)
++#if (defined USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN)
+ 
+ // Use direct layer
+ class DllAvCodec : public DllDynamic, DllAvCodecInterface
+diff --git a/lib/DllAvFilter.h b/lib/DllAvFilter.h
+index a6ce6d0..45b9637 100644
+--- a/lib/DllAvFilter.h
++++ b/lib/DllAvFilter.h
+@@ -84,7 +84,7 @@ public:
+   virtual int av_buffersink_poll_frame(AVFilterContext *ctx)=0;
+ };
+ 
+-#if (defined USE_EXTERNAL_FFMPEG)
++#if (defined USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN)
+ // Use direct mapping
+ class DllAvFilter : public DllDynamic, DllAvFilterInterface
+ {
+diff --git a/lib/DllAvFormat.h b/lib/DllAvFormat.h
+index 725f5be..72b8866 100644
+--- a/lib/DllAvFormat.h
++++ b/lib/DllAvFormat.h
+@@ -69,7 +69,7 @@ public:
+   virtual int av_read_play(AVFormatContext *s)=0;
+   virtual int av_read_pause(AVFormatContext *s)=0;
+   virtual int av_seek_frame(AVFormatContext *s, int stream_index, int64_t timestamp, int flags)=0;
+-#if (!defined USE_EXTERNAL_FFMPEG)
++#if (!defined USE_EXTERNAL_FFMPEG) && (!defined TARGET_DARWIN)
+   virtual int avformat_find_stream_info_dont_call(AVFormatContext *ic, AVDictionary **options)=0;
+ #endif
+   virtual int avformat_open_input(AVFormatContext **ps, const char *filename, AVInputFormat *fmt, AVDictionary **options)=0;
+@@ -100,7 +100,7 @@ public:
+   virtual int av_write_frame  (AVFormatContext *s, AVPacket *pkt)=0;
+ };
+ 
+-#if (defined USE_EXTERNAL_FFMPEG)
++#if (defined USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN) 
+ 
+ // Use direct mapping
+ class DllAvFormat : public DllDynamic, DllAvFormatInterface
+diff --git a/lib/DllAvUtil.h b/lib/DllAvUtil.h
+index ad41a14..0c8e8c5 100644
+--- a/lib/DllAvUtil.h
++++ b/lib/DllAvUtil.h
+@@ -104,8 +104,7 @@ public:
+   virtual int av_samples_get_buffer_size (int *linesize, int nb_channels, int nb_samples, enum AVSampleFormat sample_fmt, int align) = 0;
+ };
+ 
+-#if (defined USE_EXTERNAL_FFMPEG)
+-
++#if defined (USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN)
+ // Use direct layer
+ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
+ {
+diff --git a/lib/DllPostProc.h b/lib/DllPostProc.h
+index b09a3f6..5465601 100644
+--- a/lib/DllPostProc.h
++++ b/lib/DllPostProc.h
+@@ -87,7 +87,7 @@ public:
+   virtual void pp_free_context(pp_context *ppContext)=0;
+ };
+ 
+-#if (defined USE_EXTERNAL_FFMPEG)
++#if (defined USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN) 
+ 
+ // We call directly.
+ class DllPostProc : public DllDynamic, DllPostProcInterface
+diff --git a/lib/DllSwResample.h b/lib/DllSwResample.h
+index a097387..8a99072 100644
+--- a/lib/DllSwResample.h
++++ b/lib/DllSwResample.h
+@@ -43,7 +43,7 @@ extern "C" {
+ }
+ 
+ 
+-#if (defined USE_EXTERNAL_FFMPEG)
++#if (defined USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN) 
+ 
+ // Use direct mapping
+ class DllSwResample : public DllDynamic
+diff --git a/lib/DllSwScale.h b/lib/DllSwScale.h
+index 0cfb654..0fe8184 100644
+--- a/lib/DllSwScale.h
++++ b/lib/DllSwScale.h
+@@ -92,7 +92,7 @@ public:
+    virtual void sws_freeContext(struct SwsContext *context)=0;
+ };
+ 
+-#if (defined USE_EXTERNAL_FFMPEG)
++#if (defined USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN) 
+ 
+ // We call into this library directly.
+ class DllSwScale : public DllDynamic, public DllSwScaleInterface
+diff --git a/lib/Makefile.in b/lib/Makefile.in
+index 6b3da12..2ea47fb 100644
+--- a/lib/Makefile.in
++++ b/lib/Makefile.in
+@@ -1,21 +1,10 @@
+ ARCH=@ARCH@
+ 
++AR=@AR@
+ LD=@LD@
+ CC=@CC@
+ CXX=@CXX@
+-SHELL=@SHELL@
+-ifeq ($(findstring osx,$(ARCH)),osx)
+-ifeq ($(findstring arm,$(ARCH)),arm)
+-LDFLAGS=-arch armv7 -iphoneos_version_min 4.1 -bundle -undefined dynamic_lookup -read_only_relocs suppress
+-else
+-LDFLAGS=-bundle -undefined dynamic_lookup -read_only_relocs suppress
+-endif
+-else
+-LDFLAGS=-shared -fPIC -rdynamic
+-endif
+ SYSDIR=@abs_top_srcdir@/system/players/dvdplayer
+-WRAPPER=@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o
+-WRAPPER_MACH_ALIAS=@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper_mach_alias
+ 
+ AVFORMAT_SO=avformat-53-$(ARCH).so
+ AVCODEC_SO=avcodec-53-$(ARCH).so
+@@ -41,102 +30,31 @@ ifneq (@USE_EXTERNAL_FFMPEG@,1)
+ 	$(SWRESAMPLE_SO)
+ endif
+ 
+-ifneq (,$(findstring powerpc,$(ARCH)))
+-  ARCH_DIR=ppc
+-else
+-ifeq ($(findstring arm,$(ARCH)),arm)
+-  ARCH_DIR=arm
+-else
+-  ARCH_DIR=x86
+-endif
+-endif
+-
+ .PHONY: $(DIRS) codecs
+ 
+-codecs: $(addprefix $(SYSDIR)/, $(LIBS));
+-
+-
+-ifeq ($(findstring osx,$(ARCH)), osx)
+-# Add -lbundle1.o for powerpc-osx
+-ifeq ($(ARCH), powerpc-osx)
+-BUNDLE1_O = -lbundle1.o
+-endif
+-
+-$(SYSDIR)/$(AVUTIL_SO): $(WRAPPER) ffmpeg/libavutil/libavutil.dylib
+-	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS) -o $@ \
+-		$(WRAPPER) ffmpeg/libavutil/*.o \
+-		ffmpeg/libavutil/$(ARCH_DIR)/*.o $(BUNDLE1_O)
+-
+-$(SYSDIR)/$(AVCODEC_SO): $(WRAPPER) ffmpeg/libavcodec/libavcodec.dylib
+-	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS) -o $@ \
+-		$(WRAPPER) ffmpeg/libavcodec/*.o \
+-		ffmpeg/libavcodec/$(ARCH_DIR)/*.o $(BUNDLE1_O)
+-
+-$(SYSDIR)/$(AVFORMAT_SO): $(WRAPPER) ffmpeg/libavformat/libavformat.dylib
+-	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
+-		$(WRAPPER) ffmpeg/libavformat/*.o $(BUNDLE1_O)
+-
+-ifeq ($(findstring x86,$(ARCH_DIR)), x86)
+-$(SYSDIR)/$(AVFILTER_SO): $(WRAPPER) ffmpeg/libavfilter/libavfilter.dylib
+-	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
+-		$(WRAPPER) ffmpeg/libavfilter/$(ARCH_DIR)/*.o \
+-		ffmpeg/libavfilter/*.o $(BUNDLE1_O)
+-else # No libavfilter/ppc or libavfilter/arm
+-$(SYSDIR)/$(AVFILTER_SO): $(WRAPPER) ffmpeg/libavfilter/libavfilter.dylib
+-	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
+-		$(WRAPPER) ffmpeg/libavfilter/*.o $(BUNDLE1_O)
+-endif
+-
+-ifneq ($(findstring arm,$(ARCH)), arm)
+-$(SYSDIR)/$(SWSCALE_SO): $(WRAPPER) ffmpeg/libswscale/libswscale.dylib
+-	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
+-		$(WRAPPER) ffmpeg/libswscale/*.o \
+-		ffmpeg/libswscale/$(ARCH_DIR)/*.o $(BUNDLE1_O)
+-else # No ARM version of swscale available yet.
+-$(SYSDIR)/$(SWSCALE_SO): $(WRAPPER) ffmpeg/libswscale/libswscale.dylib
+-	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
+-		$(WRAPPER) ffmpeg/libswscale/*.o
+-endif
+-
+-$(SYSDIR)/$(POSTPROC_SO): $(WRAPPER) ffmpeg/libpostproc/libpostproc.dylib
+-	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
+-		$(WRAPPER) ffmpeg/libpostproc/*.o $(BUNDLE1_O)
+-
+-$(SYSDIR)/$(SWRESAMPLE_SO): $(WRAPPER) ffmpeg/libswresample/libswresample.dylib
+-	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
+-		$(WRAPPER) ffmpeg/libswresample/*.o $(BUNDLE1_O)
+-
+-ffmpeg/libavutil/libavutil.dylib     : ffmpeg;
+-ffmpeg/libavcodec/libavcodec.dylib   : ffmpeg;
+-ffmpeg/libavformat/libavformat.dylib : ffmpeg;
+-ffmpeg/libavformat/libavfilter.dylib : ffmpeg;
+-ffmpeg/libswscale/libswscale.dylib   : ffmpeg;
+-ffmpeg/libpostproc/libpostproc.dylib : ffmpeg;
+-ffmpeg/libswresample/libswresample.dylib : ffmpeg;
+-ffmpeg:
+-	$(MAKE) -C $@
++ifneq ($(findstring osx,$(ARCH)), osx)
+ 
+-else
++codecs: $(addprefix $(SYSDIR)/, $(LIBS));
+ 
+ $(SYSDIR)/$(AVUTIL_SO): ffmpeg/libavutil/libavutil.so
+ 	cp ffmpeg/libavutil/libavutil.so $@
+ 
+-$(SYSDIR)/$(AVCODEC_SO): $(WRAPPER) ffmpeg/libavcodec/libavcodec.so
++$(SYSDIR)/$(AVCODEC_SO): ffmpeg/libavcodec/libavcodec.so
+ 	cp ffmpeg/libavcodec/libavcodec.so $@
+ 
+-$(SYSDIR)/$(AVFORMAT_SO): $(WRAPPER) ffmpeg/libavformat/libavformat.so
++$(SYSDIR)/$(AVFORMAT_SO): ffmpeg/libavformat/libavformat.so
+ 	cp ffmpeg/libavformat/libavformat.so $@
+ 
+-$(SYSDIR)/$(AVFILTER_SO): $(WRAPPER) ffmpeg/libavfilter/libavfilter.so
++$(SYSDIR)/$(AVFILTER_SO): ffmpeg/libavfilter/libavfilter.so
+ 	cp ffmpeg/libavfilter/libavfilter.so $@
+ 
+-$(SYSDIR)/$(SWSCALE_SO): $(WRAPPER) ffmpeg/libswscale/libswscale.so
++$(SYSDIR)/$(SWSCALE_SO): ffmpeg/libswscale/libswscale.so
+ 	cp ffmpeg/libswscale/libswscale.so $@
+ 
+-$(SYSDIR)/$(POSTPROC_SO): $(WRAPPER) ffmpeg/libpostproc/libpostproc.so
++$(SYSDIR)/$(POSTPROC_SO): ffmpeg/libpostproc/libpostproc.so
+ 	cp ffmpeg/libpostproc/libpostproc.so $@
+ 
+-$(SYSDIR)/$(SWRESAMPLE_SO): $(WRAPPER) ffmpeg/libswresample/libswresample.so
++$(SYSDIR)/$(SWRESAMPLE_SO): ffmpeg/libswresample/libswresample.so
+ 	cp ffmpeg/libswresample/libswresample.so $@
+ 
+ ffmpeg/libavutil/libavutil.so     : ffmpeg;
+@@ -146,9 +64,12 @@ ffmpeg/libavfilter/libavfilter.so : ffmpeg;
+ ffmpeg/libswscale/libswscale.so   : ffmpeg;
+ ffmpeg/libpostproc/libpostproc.so : ffmpeg;
+ ffmpeg/libswresample/libswresample.so : ffmpeg;
++endif
++
+ ffmpeg:
+ 	$(MAKE) -C $@
+-
++ifeq ($(findstring osx,$(ARCH)), osx)
++	$(AR) d ffmpeg/libavcodec/libavcodec.a inverse.o
+ endif
+ 
+ clean:
+-- 
+1.7.10
+
