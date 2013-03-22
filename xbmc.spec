@@ -33,6 +33,7 @@ BuildRequires:	python-devel
 BuildRequires:	rtmp-devel
 BuildRequires:	ssh-devel
 BuildRequires:	tiff-devel
+BuildRequires:	tinyxml-devel
 BuildRequires:	yajl-devel
 BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(avahi-client)
