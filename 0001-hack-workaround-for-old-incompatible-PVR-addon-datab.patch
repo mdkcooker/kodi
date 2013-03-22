@@ -12,15 +12,9 @@ old db.
 Bugfixes to sqlitedataset.cpp should be separated and drop() needs to
 be called in generic UpdateVersion() on failure to prevent continuing
 failure.
----
- xbmc/addons/AddonDatabase.cpp     |   26 +++++++++++++++++++++++++-
- xbmc/dbwrappers/sqlitedataset.cpp |    5 ++++-
- 2 files changed, 29 insertions(+), 2 deletions(-)
-
-diff --git a/xbmc/addons/AddonDatabase.cpp b/xbmc/addons/AddonDatabase.cpp
-index fe4e7b4..b0df1c8 100644
---- a/xbmc/addons/AddonDatabase.cpp
-+++ b/xbmc/addons/AddonDatabase.cpp
+diff -Nurpa -x '*~' -x '*.orig' -x '*.rej' -x '*.swp' xbmc-Frodo_rc3/xbmc/addons/AddonDatabase.cpp xbmc-Frodo_rc3/xbmc/addons/AddonDatabase.cpp
+--- xbmc-Frodo_rc3/xbmc/addons/AddonDatabase.cpp	2013-01-03 05:29:19.000000000 +0200
++++ xbmc-Frodo_rc3/xbmc/addons/AddonDatabase.cpp	2013-01-09 15:08:57.509707610 +0200
 @@ -40,7 +40,24 @@ CAddonDatabase::~CAddonDatabase()
  
  bool CAddonDatabase::Open()
@@ -47,30 +41,35 @@ index fe4e7b4..b0df1c8 100644
  }
  
  bool CAddonDatabase::CreateTables()
-@@ -119,11 +136,18 @@ bool CAddonDatabase::UpdateOldVersion(int version)
-       m_pDS->exec("CREATE TABLE blacklist (id integer primary key, addonID text, version text)\n");
-       m_pDS->exec("CREATE UNIQUE INDEX idxBlack ON blacklist(addonID)");
-     }
-+
-+    // hack for old PVR databases - this will fail and prevent an incorrect update
-+    // TODO: proper validation when upgrading databases
-+    m_pDS->exec("select addon,version,optional from dependencies limit 1");
-   }
-   catch (...)
+@@ -101,6 +118,7 @@ bool CAddonDatabase::CreateTables()
+ 
+ bool CAddonDatabase::UpdateOldVersion(int version)
+ {
++  try {
+   if (version < 13)
    {
-     CLog::Log(LOGERROR, "Error attempting to upgrade an old addon database!");
-     RollbackTransaction();
+     m_pDS->exec("CREATE TABLE dependencies (id integer, addon text, version text, optional boolean)\n");
+@@ -115,6 +133,16 @@ bool CAddonDatabase::UpdateOldVersion(in
+     m_pDS->exec("CREATE TABLE blacklist (id integer primary key, addonID text, version text)\n");
+     m_pDS->exec("CREATE UNIQUE INDEX idxBlack ON blacklist(addonID)");
+   }
++  }
++  catch (...)
++  {
++    CLog::Log(LOGERROR, "Error attempting to upgrade an old addon database!");
++    RollbackTransaction();
 +    // hack - drop db or the unupgraded db will be left around and next upgrade will
 +    // fail as well:
 +    try { m_pDB->drop(); } catch (...) { }
-     return false;
-   }
-   CommitTransaction();
-diff --git a/xbmc/dbwrappers/sqlitedataset.cpp b/xbmc/dbwrappers/sqlitedataset.cpp
-index 1833d6f..670167d 100644
---- a/xbmc/dbwrappers/sqlitedataset.cpp
-+++ b/xbmc/dbwrappers/sqlitedataset.cpp
-@@ -317,7 +317,10 @@ int SqliteDatabase::copy(const char *backup_name) {
++    return false;
++  }
+   return true;
+ }
+ 
+diff -Nurpa -x '*~' -x '*.orig' -x '*.rej' -x '*.swp' xbmc-Frodo_rc3/xbmc/dbwrappers/sqlitedataset.cpp xbmc-Frodo_rc3/xbmc/dbwrappers/sqlitedataset.cpp
+--- xbmc-Frodo_rc3/xbmc/dbwrappers/sqlitedataset.cpp	2013-01-03 05:29:19.000000000 +0200
++++ xbmc-Frodo_rc3/xbmc/dbwrappers/sqlitedataset.cpp	2013-01-09 15:05:41.851381387 +0200
+@@ -317,7 +317,10 @@ int SqliteDatabase::copy(const char *bac
  int SqliteDatabase::drop() {
    if (active == false) throw DbErrors("Can't drop database: no active connection...");
    disconnect();
@@ -82,6 +81,3 @@ index 1833d6f..670167d 100644
       throw DbErrors("Can't drop database: can't unlink the file %s,\nError: %s",db.c_str(),strerror(errno));
       }
    return DB_COMMAND_OK;
--- 
-1.7.9.3
-
