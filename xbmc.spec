@@ -18,6 +18,7 @@ Source:		http://mirrors.xbmc.org/releases/source/%{name}-%{version}.tar.gz
 # Hack to workaround upgrading from our old hack... see patch header for more
 # details and an upstreaming plan.
 Patch0:		0001-hack-workaround-for-old-incompatible-PVR-addon-datab.patch
+Patch1:		xbmc-12.1-samba4.patch
 BuildRequires:	afpclient-devel
 BuildRequires:	avahi-common-devel
 BuildRequires:	boost-devel
@@ -230,7 +231,12 @@ This package contains the xbmc-send eventclient.
 
 %prep
 %setup -q
-%apply_patches
+%patch0 -p1
+# Support for Samba 4
+%if %{mdvver} >= 201300
+%patch1 -p1
+%endif
+
 # otherwise backups end up in binary rpms
 find -type f \( -name '*.00??' -o -name '*.00??~' \) -print -delete
 
