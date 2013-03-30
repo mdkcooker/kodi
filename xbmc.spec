@@ -14,7 +14,7 @@ Group:		Video
 # as allowed by a license exception
 License:	GPLv2+ and GPLv2 and (LGPLv3+ with exceptions)
 URL:		http://xbmc.org/
-Source:		http://mirrors.xbmc.org/releases/source/%{name}-%{version}.tar.gz
+Source0:	http://mirrors.xbmc.org/releases/source/%{name}-%{version}.tar.gz
 # Hack to workaround upgrading from our old hack... see patch header for more
 # details and an upstreaming plan.
 Patch0:		0001-hack-workaround-for-old-incompatible-PVR-addon-datab.patch
@@ -265,6 +265,9 @@ export ac_cv_prog_HAVE_GIT="no"
 %configure2_5x \
 	--disable-debug \
 	--disable-ccache \
+%ifarch %arm
+	--enable-neon	\
+%endif
 	--enable-external-libraries \
 	--disable-non-free \
 	--disable-dvdcss \
@@ -354,20 +357,20 @@ ok=1
 %{_libdir}/xbmc/addons/*/*.so
 %{_libdir}/xbmc/addons/*/*.vis
 %{_libdir}/xbmc/addons/*/*.xbs
-%{_libdir}/xbmc/system/ImageLib-*-linux.so
-%{_libdir}/xbmc/system/hdhomerun-*-linux.so
-%{_libdir}/xbmc/system/libcmyth-*-linux.so
-%{_libdir}/xbmc/system/libcpluff-*-linux.so
-%{_libdir}/xbmc/system/libexif-*-linux.so
-%{_libdir}/xbmc/system/players/dvdplayer/libdvdnav-*-linux.so
-%{_libdir}/xbmc/system/players/paplayer/adpcm-*-linux.so
-%{_libdir}/xbmc/system/players/paplayer/libsidplay2-*-linux.so
-%{_libdir}/xbmc/system/players/paplayer/nosefart-*-linux.so
-%{_libdir}/xbmc/system/players/paplayer/stsoundlibrary-*-linux.so
-%{_libdir}/xbmc/system/players/paplayer/timidity-*-linux.so
-%{_libdir}/xbmc/system/players/paplayer/vgmstream-*-linux.so
+%{_libdir}/xbmc/system/ImageLib-*.so
+%{_libdir}/xbmc/system/hdhomerun-*.so
+%{_libdir}/xbmc/system/libcmyth-*.so
+%{_libdir}/xbmc/system/libcpluff-*.so
+%{_libdir}/xbmc/system/libexif-*.so
+%{_libdir}/xbmc/system/players/dvdplayer/libdvdnav-*.so
+%{_libdir}/xbmc/system/players/paplayer/adpcm-*.so
+%{_libdir}/xbmc/system/players/paplayer/libsidplay2-*.so
+%{_libdir}/xbmc/system/players/paplayer/nosefart-*.so
+%{_libdir}/xbmc/system/players/paplayer/stsoundlibrary-*.so
+%{_libdir}/xbmc/system/players/paplayer/timidity-*.so
+%{_libdir}/xbmc/system/players/paplayer/vgmstream-*.so
 %ifarch %{ix86}
-%{_libdir}/xbmc/system/players/paplayer/SNESAPU-*-linux.so
+%{_libdir}/xbmc/system/players/paplayer/SNESAPU-*.so
 %endif
 %dir %{_datadir}/xbmc
 %{_datadir}/xbmc/addons
