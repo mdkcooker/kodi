@@ -3,7 +3,7 @@
 Summary:	XBMC Media Center - media player and home entertainment system
 Name:		xbmc
 Version:	12.1
-Release:	1
+Release:	2
 Group:		Video
 # nosefart audio plugin and RSXS-0.9 based screensavers are GPLv2 only
 # several eventclients are GPLv3+ (in subpackages)
@@ -19,6 +19,10 @@ Source0:	http://mirrors.xbmc.org/releases/source/%{name}-%{version}.tar.gz
 # details and an upstreaming plan.
 Patch0:		0001-hack-workaround-for-old-incompatible-PVR-addon-datab.patch
 Patch1:		xbmc-12.1-samba4.patch
+# Display Music Videos in "Artist - Name" format instead of just "Name"
+Patch2:		xbmc-12.1-upnp-musicvideos-artist.patch
+# Fix bug with UPnP playback for Music Videos when UPnP client requests video tags
+Patch3:		xbmc-12.1-upnp-musicvideos-infotag.patch
 BuildRequires:	afpclient-devel
 BuildRequires:	avahi-common-devel
 BuildRequires:	boost-devel
@@ -236,6 +240,8 @@ This package contains the xbmc-send eventclient.
 %if %{mdvver} >= 201300
 %patch1 -p1
 %endif
+%patch2 -p1
+%patch3 -p1
 
 # otherwise backups end up in binary rpms
 find -type f \( -name '*.00??' -o -name '*.00??~' \) -print -delete
@@ -265,7 +271,7 @@ export ac_cv_prog_HAVE_GIT="no"
 %configure2_5x \
 	--disable-debug \
 	--disable-ccache \
-%ifarch %arm
+%ifarch %{arm}
 	--enable-neon	\
 %endif
 	--enable-external-libraries \

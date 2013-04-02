@@ -1,0 +1,12 @@
+diff -urN xbmc-12.1/xbmc/network/upnp/UPnPServer.cpp xbmc-12.1-patched/xbmc/network/upnp/UPnPServer.cpp
+--- xbmc-12.1/xbmc/network/upnp/UPnPServer.cpp	2013-03-21 03:14:42.000000000 +1100
++++ xbmc-12.1-patched/xbmc/network/upnp/UPnPServer.cpp	2013-04-03 03:22:07.464619867 +1100
+@@ -307,6 +307,8 @@
+ 
+                     if (params.GetMovieId() >= 0 )
+                         db.GetMovieInfo((const char*)path, *item->GetVideoInfoTag(), params.GetMovieId());
++                    if (params.GetMVideoId() >= 0 )
++                        db.GetMusicVideoInfo((const char*)path, *item->GetVideoInfoTag(), params.GetMVideoId());
+                     else if (params.GetEpisodeId() >= 0 )
+                         db.GetEpisodeInfo((const char*)path, *item->GetVideoInfoTag(), params.GetEpisodeId());
+                     else if (params.GetTvShowId() >= 0 )
