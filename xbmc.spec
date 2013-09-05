@@ -276,6 +276,7 @@ export ac_cv_prog_HAVE_GIT="no"
 	--enable-neon	\
 %endif
 	--enable-external-libraries \
+	--enable-external-ffmpeg \
 	--disable-non-free \
 	--disable-dvdcss \
 	--enable-goom \
