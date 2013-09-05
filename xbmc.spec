@@ -38,7 +38,7 @@ BuildRequires:	cwiid-devel
 BuildRequires:	ffmpeg-devel
 BuildRequires:	gettext-devel
 BuildRequires:	jpeg-devel
-BuildRequires:	liblzo2-devel
+BuildRequires:	lzo-devel
 BuildRequires:	mysql-devel
 BuildRequires:	python-devel
 BuildRequires:	rtmp-devel
