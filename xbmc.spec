@@ -281,7 +281,8 @@ export ac_cv_prog_HAVE_GIT="no"
 	--enable-goom \
 	--enable-pulse \
 	--with-lirc-device=/var/run/lirc/lircd \
-	--enable-libcap
+	--enable-libcap \
+	--enable-asap-codec
 
 # non-free = unrar
 # dvdcss is handled via dlopen when disabled
