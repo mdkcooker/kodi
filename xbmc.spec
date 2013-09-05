@@ -26,6 +26,7 @@ Patch3:		xbmc-12.2-upnp-playlists.patch
 BuildRequires:	afpclient-devel
 BuildRequires:	avahi-common-devel
 BuildRequires:	boost-devel
+BuildRequires:	cap-devel
 BuildRequires:	bzip2-devel
 BuildRequires:	crystalhd-devel
 BuildRequires:	cwiid-devel
@@ -279,7 +280,8 @@ export ac_cv_prog_HAVE_GIT="no"
 	--disable-dvdcss \
 	--enable-goom \
 	--enable-pulse \
-	--with-lirc-device=/var/run/lirc/lircd
+	--with-lirc-device=/var/run/lirc/lircd \
+	--enable-libcap
 
 # non-free = unrar
 # dvdcss is handled via dlopen when disabled
