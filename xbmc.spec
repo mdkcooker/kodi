@@ -3,7 +3,7 @@
 Summary:	XBMC Media Center - media player and home entertainment system
 Name:		xbmc
 Version:	12.2
-Release:	1
+Release:	2
 Group:		Video
 # nosefart audio plugin and RSXS-0.9 based screensavers are GPLv2 only
 # several eventclients are GPLv3+ (in subpackages)
@@ -15,6 +15,10 @@ Group:		Video
 License:	GPLv2+ and GPLv2 and (LGPLv3+ with exceptions)
 URL:		http://xbmc.org/
 Source0:	http://mirrors.xbmc.org/releases/source/%{name}-%{version}.tar.gz
+# (cg) From https://github.com/opdenkamp/xbmc-pvr-addons
+# git archive --format=tar --prefix=pvr-addons/ origin/frodo | xz
+Source1:	xbmc-pvr-addons-5b20fa5ce1922d91b71b64565a50c8f79cbec2d0.tar.xz
+
 # Hack to workaround upgrading from our old hack... see patch header for more
 # details and an upstreaming plan.
 Patch0:		0001-hack-workaround-for-old-incompatible-PVR-addon-datab.patch
@@ -23,6 +27,7 @@ Patch1:		xbmc-12.1-samba4.patch
 Patch2:		xbmc-12.1-upnp-musicvideos-artist.patch
 # Fix bug with UPnP playback for Playlists
 Patch3:		xbmc-12.2-upnp-playlists.patch
+
 BuildRequires:	afpclient-devel
 BuildRequires:	avahi-common-devel
 BuildRequires:	boost-devel
@@ -235,14 +240,8 @@ and entertainment hub for digital media.
 This package contains the xbmc-send eventclient.
 
 %prep
-%setup -q
-%patch0 -p1
-# Support for Samba 4
-%if %{mdvver} >= 201300
-%patch1 -p1
-%endif
-%patch2 -p1
-%patch3 -p1
+%setup -q -a 1
+%apply_patches
 
 # otherwise backups end up in binary rpms
 find -type f \( -name '*.00??' -o -name '*.00??~' \) -print -delete
@@ -257,6 +256,10 @@ rm -r xbmc/cores/DllLoader/exports/emu_socket
 
 # win32 only
 rm -rf system/players/dvdplayer/etc/fonts
+
+pushd pvr-addons
+./bootstrap
+popd
 
 %build
 export GIT_REV="tarball"
@@ -282,11 +285,17 @@ export ac_cv_prog_HAVE_GIT="no"
 	--enable-goom \
 	--enable-pulse \
 	--with-lirc-device=/var/run/lirc/lircd \
-	--enable-libcap \
-	--enable-asap-codec
+	--enable-libcap
 
 # non-free = unrar
 # dvdcss is handled via dlopen when disabled
+# (cg) We cannot enable MythTV support easily via a passthrough configure from above
+#      so re-run configure here and explicitly pass the --enable-addons-with-dependencies option
+pushd pvr-addons
+%configure2_5x \
+	--enable-external-ffmpeg \
+	--enable-addons-with-dependencies
+popd
 
 %make
 %make -C tools/EventClients wiimote
@@ -367,6 +376,7 @@ ok=1
 %{_libdir}/xbmc/addons/*/*.so
 %{_libdir}/xbmc/addons/*/*.vis
 %{_libdir}/xbmc/addons/*/*.xbs
+%{_libdir}/xbmc/addons/*/*.pvr
 %{_libdir}/xbmc/system/ImageLib-*.so
 %{_libdir}/xbmc/system/hdhomerun-*.so
 %{_libdir}/xbmc/system/libcmyth-*.so
