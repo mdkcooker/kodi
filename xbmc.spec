@@ -283,7 +283,7 @@ export ac_cv_prog_HAVE_GIT="no"
 	--disable-non-free \
 	--disable-dvdcss \
 	--enable-goom \
-	--enable-pulse \
+	--disable-pulse \
 	--with-lirc-device=/var/run/lirc/lircd \
 	--enable-libcap
 
