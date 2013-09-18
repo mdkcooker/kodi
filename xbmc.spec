@@ -32,7 +32,7 @@ BuildRequires:	cwiid-devel
 BuildRequires:	ffmpeg-devel
 BuildRequires:	gettext-devel
 BuildRequires:	jpeg-devel
-BuildRequires:	liblzo2-devel
+BuildRequires:	liblzo-devel
 BuildRequires:	mysql-devel
 BuildRequires:	python-devel
 BuildRequires:	rtmp-devel
