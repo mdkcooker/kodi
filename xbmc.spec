@@ -161,7 +161,6 @@ Support for RAR files is not included due to license issues.
 Summary:	Common files for XBMC eventclients
 Group:		Video
 License:	GPLv2+
-%py_requires
 
 %description	eventclients-common
 XBMC is an award-winning free and open source software media player
