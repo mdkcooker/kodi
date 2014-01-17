@@ -2,8 +2,9 @@
 
 Summary:	XBMC Media Center - media player and home entertainment system
 Name:		xbmc
-Version:	12.2
-Release:	2
+Version:	12.3
+%global	codenam	Frodo
+Release:	1
 Group:		Video
 # nosefart audio plugin and RSXS-0.9 based screensavers are GPLv2 only
 # several eventclients are GPLv3+ (in subpackages)
@@ -16,8 +17,10 @@ License:	GPLv2+ and GPLv2 and (LGPLv3+ with exceptions)
 URL:		http://xbmc.org/
 Source0:	http://mirrors.xbmc.org/releases/source/%{name}-%{version}.tar.gz
 # (cg) From https://github.com/opdenkamp/xbmc-pvr-addons
-# git archive --format=tar --prefix=pvr-addons/ origin/frodo | xz
-Source1:	xbmc-pvr-addons-5b20fa5ce1922d91b71b64565a50c8f79cbec2d0.tar.xz
+# ./bootstrap && ./configure && make dist-xz
+# commit eaefeffaee16216fd12fc3178c33d850dd6305ea
+# 20140103
+Source1:	xbmc-pvr-addons-1:0:0.tar.xz
 
 # Hack to workaround upgrading from our old hack... see patch header for more
 # details and an upstreaming plan.
@@ -27,6 +30,16 @@ Patch1:		xbmc-12.1-samba4.patch
 Patch2:		xbmc-12.1-upnp-musicvideos-artist.patch
 # Fix bug with UPnP playback for Playlists
 Patch3:		xbmc-12.2-upnp-playlists.patch
+# debian patches
+Patch101:	01-Compile-against-system-libavcodec.patch
+Patch102:	02-Fix-avcodec-vdpau-detection.patch
+Patch103:	03-configure-use-pkgconfig-to-detect-samba.patch
+Patch104:	04-differentiate-from-vanilla-XBMC.patch
+Patch105:	05-Fix-GLES-with-X11.patch
+Patch106:	06-use-external-libraries.patch
+Patch107:	07-use-system-groovy.patch
+Patch108:	http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/media-tv/xbmc/files/xbmc-12.3-no-sse2.patch?revision=1.1
+
 
 BuildRequires:	afpclient-devel
 BuildRequires:	avahi-common-devel
@@ -39,9 +52,9 @@ BuildRequires:	ffmpeg-devel
 BuildRequires:	gettext-devel
 BuildRequires:	jpeg-devel
 BuildRequires:	lzo-devel
-BuildRequires:	mysql-devel
-BuildRequires:	python-devel
+BuildRequires:	mariadb-devel
 BuildRequires:	rtmp-devel
+BuildRequires:	sidplay-devel
 BuildRequires:	ssh-devel
 BuildRequires:	tiff-devel
 BuildRequires:	tinyxml-devel
@@ -82,6 +95,7 @@ BuildRequires:	pkgconfig(libpulse)
 BuildRequires:	pkgconfig(libshairport)
 BuildRequires:	pkgconfig(libva)
 BuildRequires:	pkgconfig(mad)
+BuildRequires:	pkgconfig(python2)
 BuildRequires:	pkgconfig(ogg)
 BuildRequires:	pkgconfig(openssl)
 BuildRequires:	pkgconfig(samplerate)
@@ -240,7 +254,7 @@ and entertainment hub for digital media.
 This package contains the xbmc-send eventclient.
 
 %prep
-%setup -q -a 1
+%setup -q -a 1 -n %{name}-%{version}%{?codenam:-%{codenam}}
 %apply_patches
 
 # otherwise backups end up in binary rpms
@@ -257,13 +271,18 @@ rm -r xbmc/cores/DllLoader/exports/emu_socket
 # win32 only
 rm -rf system/players/dvdplayer/etc/fonts
 
-pushd pvr-addons
-./bootstrap
-popd
-
-%build
+pushd xbmc/interfaces/python/
+doxygen -u
+#pushd xbmc-pvr-addons-1*
+#./bootstrap
+#popd
+export PKG_CONFIG_PATH=%{_libdir}/pkgconfig
 export GIT_REV="tarball"
 ./bootstrap
+
+%build
+export PKG_CONFIG_PATH=%{_libdir}/pkgconfig
+export GIT_REV="tarball"
 
 # due to xbmc modules that use symbols from xbmc binary
 # and are not using libtool
@@ -280,18 +299,41 @@ export ac_cv_prog_HAVE_GIT="no"
 %endif
 	--enable-external-libraries \
 	--enable-external-ffmpeg \
+%if "%{disttag}" == "mdk"
+	--enable-non-free \
+%else
 	--disable-non-free \
 	--disable-dvdcss \
+%endif
 	--enable-goom \
-	--disable-pulse \
+	--enable-pulse \
 	--with-lirc-device=/var/run/lirc/lircd \
-	--enable-libcap
+	--enable-libcap \
+	--enable-textirepacker \
+	--enable-libusb \
+	--enable-libmp3lame \
+	--enable-avahi \
+	--disable-hal \
+	--enable-mid \
+	--enable-ffmpeg-libvorbis \
+	--enable-nfs \
+	--enable-upnp \
+	--enable-x11 \
+	--enable-projectm \
+	--enable-rsxs \
+	--enable-xrandr \
+	--enable-gl \
+	--enable-gles\
+	--enable-vdpau \
+	--enable-vaapi \
+	--enable-openmax \
+	--enable-libbluray
 
 # non-free = unrar
 # dvdcss is handled via dlopen when disabled
 # (cg) We cannot enable MythTV support easily via a passthrough configure from above
 #      so re-run configure here and explicitly pass the --enable-addons-with-dependencies option
-pushd pvr-addons
+pushd xbmc-pvr-addons-1*
 %configure2_5x \
 	--enable-external-ffmpeg \
 	--enable-addons-with-dependencies
