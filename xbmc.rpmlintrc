@@ -1,0 +1,2 @@
+addFilter('xbmc\..*:.*devel-file-in-non-devel-package.*/usr/share/xbmc/addons/')
+

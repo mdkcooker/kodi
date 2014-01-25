@@ -21,6 +21,7 @@ Source0:	http://mirrors.xbmc.org/releases/source/%{name}-%{version}.tar.gz
 # commit eaefeffaee16216fd12fc3178c33d850dd6305ea
 # 20140103
 Source1:	xbmc-pvr-addons-1.0.0.tar.xz
+Source2:	%{name}.rpmlintrc
 
 Patch1:		xbmc-12.1-samba4.patch
 # Display Music Videos in "Artist - Name" format instead of just "Name"
