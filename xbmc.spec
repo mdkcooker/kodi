@@ -129,7 +129,7 @@ BuildRequires:	java
 BuildRequires:	swig
 
 # dlopened (existence check required by rpm5 as it doesn't use stderr):
-%define	dlopenreq() %([ -e %{_libdir}/lib%{1}.so ] && rpm -qf --fileprovide $(readlink -f %{_libdir}/lib%{1}.so) 2>/dev/null | grep $(readlink -f %{_libdir}/lib%{1}.so) | cut -f2)
+%define	dlopenreq() %([ -e %{_libdir}/lib%{1}.so ] && rpm -qf --fileprovide $(readlink -f %{_libdir}/lib%{1}.so) 2>/dev/null | grep $(readlink -f %{_libdir}/lib%{1}.so) | cut -f2 || echo %{name})
 Requires:	%dlopenreq curl
 Requires:	%dlopenreq FLAC
 Requires:	%dlopenreq mad
