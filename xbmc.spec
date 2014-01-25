@@ -446,16 +446,17 @@ ok=1
 %dir %{_libdir}/xbmc/addons/*
 %{_libdir}/xbmc/addons/*/*.so
 %{_libdir}/xbmc/addons/*/*.vis
-%{_libdir}/xbmc/addons/*/*.xbs
-%{_libdir}/xbmc/addons/*/*.pvr
+#%{_libdir}/xbmc/addons/*/*.xbs
+#%{_libdir}/xbmc/addons/*/*.pvr
 %{_libdir}/xbmc/system/ImageLib-*.so
 %{_libdir}/xbmc/system/hdhomerun-*.so
 %{_libdir}/xbmc/system/libcmyth-*.so
 %{_libdir}/xbmc/system/libcpluff-*.so
 %{_libdir}/xbmc/system/libexif-*.so
+%{_libdir}/xbmc/system/players/dvdplayer/libdvdcss-*.so
 %{_libdir}/xbmc/system/players/dvdplayer/libdvdnav-*.so
 %{_libdir}/xbmc/system/players/paplayer/adpcm-*.so
-%{_libdir}/xbmc/system/players/paplayer/libsidplay2-*.so
+#%{_libdir}/xbmc/system/players/paplayer/libsidplay2-*.so
 %{_libdir}/xbmc/system/players/paplayer/nosefart-*.so
 %{_libdir}/xbmc/system/players/paplayer/stsoundlibrary-*.so
 %{_libdir}/xbmc/system/players/paplayer/timidity-*.so
