@@ -307,6 +307,7 @@ popd
 export PKG_CONFIG_PATH=%{_libdir}/pkgconfig
 export GIT_REV="tarball"
 ./bootstrap
+ln -s configure.ac configure.in
 
 %build
 export PKG_CONFIG_PATH=%{_libdir}/pkgconfig
