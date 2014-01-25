@@ -55,7 +55,6 @@ BuildRequires:	jpeg-devel
 BuildRequires:	lzo-devel
 BuildRequires:	mariadb-devel
 BuildRequires:	rtmp-devel
-BuildRequires:	sidplay-devel
 BuildRequires:	ssh-devel
 BuildRequires:	tiff-devel
 BuildRequires:	tinyxml-devel
@@ -95,6 +94,7 @@ BuildRequires:	pkgconfig(libpcre)
 BuildRequires:	pkgconfig(libplist)
 BuildRequires:	pkgconfig(libpng)
 BuildRequires:	pkgconfig(libpulse)
+BuildRequires:	pkgconfig(libsidplay2)
 BuildRequires:	pkgconfig(libshairport)
 BuildRequires:	pkgconfig(libva)
 BuildRequires:	pkgconfig(mad)
