@@ -39,7 +39,7 @@ Patch105:	05-Fix-GLES-with-X11.patch
 Patch106:	06-use-external-libraries.patch
 Patch107:	07-use-system-groovy.patch
 Patch108:	http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/media-tv/xbmc/files/xbmc-12.3-no-sse2.patch?revision=1.1
-
+Patch109:	xbmc-system-groovy-hack.patch
 
 BuildRequires:	afpclient-devel
 BuildRequires:	avahi-common-devel
