@@ -20,7 +20,7 @@ Source0:	http://mirrors.xbmc.org/releases/source/%{name}-%{version}.tar.gz
 # ./bootstrap && ./configure && make dist-xz
 # commit eaefeffaee16216fd12fc3178c33d850dd6305ea
 # 20140103
-Source1:	xbmc-pvr-addons-1:0:0.tar.xz
+Source1:	xbmc-pvr-addons-1.0.0.tar.xz
 
 # Hack to workaround upgrading from our old hack... see patch header for more
 # details and an upstreaming plan.
