@@ -22,14 +22,36 @@ Source0:	http://mirrors.xbmc.org/releases/source/%{name}-%{version}.tar.gz
 # 20140103
 Source1:	xbmc-pvr-addons-1.0.0.tar.xz
 
-# Hack to workaround upgrading from our old hack... see patch header for more
-# details and an upstreaming plan.
-Patch0:		0001-hack-workaround-for-old-incompatible-PVR-addon-datab.patch
 Patch1:		xbmc-12.1-samba4.patch
 # Display Music Videos in "Artist - Name" format instead of just "Name"
 Patch2:		xbmc-12.1-upnp-musicvideos-artist.patch
 # Fix bug with UPnP playback for Playlists
 Patch3:		xbmc-12.2-upnp-playlists.patch
+
+# Fix bootstrap script return value on error
+Patch5:		xbmc-bootstrap-return-value.patch
+
+# From upstream
+Patch7:		0001-Fix-crash-when-audio-encoder-is-not-initalized.patch
+Patch11:	xbmc-ffmpeg-codecid.patch
+Patch8:		0001-DVDAudioCodecPcm-Do-not-use-AVCODEC_MAX_AUDIO_FRAME_.patch
+Patch9:		0002-DVDAudioCodecLPcm-Do-not-use-AVCODEC_MAX_AUDIO_FRAME.patch
+Patch12:	0003-Update-libavfilter-version-check.patch
+Patch13:	0001-CDRip-FFmpeg-Reduce-a-bit-the-avio-buffer-size-as-su.patch
+Patch14:	0001-DllAvFilter-Always-include-libavfilter-buffersrc.h-f.patch
+Patch15:	0001-DVDAudioCodecFFmpeg-Grow-the-resampling-buffer-as-ne.patch
+Patch16:	0002-DVDAudioCodecFFmpeg-Remove-write-only-assignment.patch
+Patch17:	0001-DVDVideoCodecFFmpeg-Do-not-set-AVCodecContext.dsp_ma.patch
+Patch18:	0002-dvdplayer-sub_id-in-ffmpeg-has-been-depreciated-and-.patch
+
+# Hack to workaround upgrading from our old hack... see patch header for more
+# details and an upstreaming plan.
+Patch213:	0001-hack-workaround-for-old-incompatible-PVR-addon-datab.patch
+
+# https://bugs.mageia.org/show_bug.cgi?id=2331
+# TODO: needs changes for upstreaming
+Patch214:	0001-Fix-handling-of-filenames-with-spaces-in-wrapper-she.patch
+
 # debian patches
 Patch101:	01-Compile-against-system-libavcodec.patch
 Patch102:	02-Fix-avcodec-vdpau-detection.patch
