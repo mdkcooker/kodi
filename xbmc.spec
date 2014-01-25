@@ -335,7 +335,7 @@ export ac_cv_prog_HAVE_GIT="no"
 	--enable-pulse \
 	--with-lirc-device=/var/run/lirc/lircd \
 	--enable-libcap \
-	--enable-textirepacker \
+	--enable-texturepacker \
 	--enable-libusb \
 	--enable-libmp3lame \
 	--enable-avahi \
