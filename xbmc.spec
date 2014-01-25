@@ -95,7 +95,7 @@ BuildRequires:	pkgconfig(fontconfig)
 BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(fribidi)
 BuildRequires:	pkgconfig(gl)
-BuildRequires:	pkgconfig(glesv2)
+#BuildRequires:	pkgconfig(glesv2)
 BuildRequires:	pkgconfig(glew)
 BuildRequires:	pkgconfig(glu)
 BuildRequires:	pkgconfig(ice)
@@ -351,12 +351,12 @@ export ac_cv_prog_HAVE_GIT="no"
 	--enable-projectm \
 	--enable-xrandr \
 	--enable-gl \
-	--enable-gles\
 	--enable-vdpau \
 	--enable-vaapi \
 	--enable-libbluray \
 	--disable-openmax \
-	--disable-rsxs
+	--disable-rsxs \
+	--disable-gles
 
 # non-free = unrar
 # dvdcss is handled via dlopen when disabled
