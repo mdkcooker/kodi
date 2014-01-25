@@ -28,6 +28,8 @@ Patch2:		xbmc-12.1-upnp-musicvideos-artist.patch
 # Fix bug with UPnP playback for Playlists
 Patch3:		xbmc-12.2-upnp-playlists.patch
 
+# work around weird gold output redirection weirdness...
+Patch4:		xbmc-12.3-try-work-around-gold-linker-output-fd-weirdness.patch
 # Fix bootstrap script return value on error
 Patch5:		xbmc-bootstrap-return-value.patch
 
