@@ -123,6 +123,7 @@ BuildRequires:	pkgconfig(mad)
 BuildRequires:	pkgconfig(python2)
 BuildRequires:	pkgconfig(ogg)
 BuildRequires:	pkgconfig(openssl)
+BuildRequires:	pkgconfig(libprojectM)
 BuildRequires:	pkgconfig(samplerate)
 BuildRequires:	pkgconfig(sdl)
 BuildRequires:	pkgconfig(SDL_mixer)
@@ -352,7 +353,7 @@ export ac_cv_prog_HAVE_GIT="no"
 	--enable-vaapi \
 	--enable-libbluray \
 	--disable-openmax \
-	--disable-rsxs \
+	--disable-rsxs
 
 # non-free = unrar
 # dvdcss is handled via dlopen when disabled
