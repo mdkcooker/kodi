@@ -345,14 +345,14 @@ export ac_cv_prog_HAVE_GIT="no"
 	--enable-upnp \
 	--enable-x11 \
 	--enable-projectm \
-	--enable-rsxs \
 	--enable-xrandr \
 	--enable-gl \
 	--enable-gles\
 	--enable-vdpau \
 	--enable-vaapi \
-	--enable-openmax \
-	--enable-libbluray
+	--enable-libbluray \
+	--disable-openmax \
+	--disable-rsxs \
 
 # non-free = unrar
 # dvdcss is handled via dlopen when disabled
