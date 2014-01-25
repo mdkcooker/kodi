@@ -50,6 +50,7 @@ BuildRequires:	crystalhd-devel
 BuildRequires:	cwiid-devel
 BuildRequires:	ffmpeg-devel
 BuildRequires:	gettext-devel
+BuildRequires:	groovy
 BuildRequires:	jpeg-devel
 BuildRequires:	lzo-devel
 BuildRequires:	mariadb-devel
