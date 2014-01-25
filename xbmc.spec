@@ -55,7 +55,7 @@ Patch213:	0001-hack-workaround-for-old-incompatible-PVR-addon-datab.patch
 Patch214:	0001-Fix-handling-of-filenames-with-spaces-in-wrapper-she.patch
 
 # debian patches
-Patch101:	01-Compile-against-system-libavcodec.patch
+#Patch101:	01-Compile-against-system-libavcodec.patch
 Patch102:	02-Fix-avcodec-vdpau-detection.patch
 Patch103:	03-configure-use-pkgconfig-to-detect-samba.patch
 Patch104:	04-differentiate-from-vanilla-XBMC.patch
