@@ -1,0 +1,26 @@
+From f2d79a048d67280e429acd46b380d1793a001ab0 Mon Sep 17 00:00:00 2001
+From: fabio81 <toshirikudo@yahoo.it>
+Date: Tue, 30 Apr 2013 01:31:37 +0300
+Subject: [PATCH] Fix crash when audio encoder is not initalized.
+
+In some cases, audio encoder is not initalized (as explained in ticket #14298).
+---
+ xbmc/cores/AudioEngine/Engines/SoftAE/SoftAE.cpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/xbmc/cores/AudioEngine/Engines/SoftAE/SoftAE.cpp b/xbmc/cores/AudioEngine/Engines/SoftAE/SoftAE.cpp
+index 9222944..6b25512 100644
+--- a/xbmc/cores/AudioEngine/Engines/SoftAE/SoftAE.cpp
++++ b/xbmc/cores/AudioEngine/Engines/SoftAE/SoftAE.cpp
+@@ -1295,6 +1295,8 @@ int CSoftAE::RunRawOutputStage(bool hasAudio)
+ 
+ int CSoftAE::RunTranscodeStage(bool hasAudio)
+ {
++  if (!m_encoder) return 0;
++  
+   /* if we dont have enough samples to encode yet, return */
+   unsigned int block     = m_encoderFormat.m_frames * m_encoderFormat.m_frameSize;
+   unsigned int sinkBlock = m_sinkFormat.m_frames    * m_sinkFormat.m_frameSize;
+-- 
+1.8.1.5
+

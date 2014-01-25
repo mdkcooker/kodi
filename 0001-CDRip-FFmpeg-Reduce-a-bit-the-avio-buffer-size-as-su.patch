@@ -1,0 +1,35 @@
+From 96503d30944b468b963e891a6e81ae650c229620 Mon Sep 17 00:00:00 2001
+From: Alexis Ballier <aballier@gentoo.org>
+Date: Wed, 3 Jul 2013 12:04:33 -0400
+Subject: [PATCH] CDRip FFmpeg: Reduce a bit the avio buffer size as suggsted
+ by libavformat documentation. (cherry picked from commit
+ 93412b795c8d6588725c339c5214bbd5e884c5e3)
+
+Conflicts:
+	xbmc/cdrip/EncoderFFmpeg.h
+---
+ xbmc/cdrip/EncoderFFmpeg.h | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/xbmc/cdrip/EncoderFFmpeg.h b/xbmc/cdrip/EncoderFFmpeg.h
+index 86f7f85..9022097 100644
+--- a/xbmc/cdrip/EncoderFFmpeg.h
++++ b/xbmc/cdrip/EncoderFFmpeg.h
+@@ -45,7 +45,13 @@ private:
+   AVCodecContext   *m_CodecCtx;
+   AVStream         *m_Stream;
+   AVPacket          m_Pkt;
+-  unsigned char     m_BCBuffer[AVCODEC_MAX_AUDIO_FRAME_SIZE];
++  /* From libavformat/avio.h:
++   * The buffer size is very important for performance.
++   * For protocols with fixed blocksize it should be set to this
++   * blocksize.
++   * For others a typical size is a cache page, e.g. 4kb.
++   */
++  unsigned char     m_BCBuffer[4096];
+   static int        MuxerReadPacket(void *opaque, uint8_t *buf, int buf_size);
+   void              SetTag(const CStdString tag, const CStdString value);
+ 
+-- 
+1.8.1.5
+

@@ -1,0 +1,113 @@
+From 5b13f9fd5b9142a02d997854568406615abfb72e Mon Sep 17 00:00:00 2001
+From: Alexis Ballier <aballier@gentoo.org>
+Date: Fri, 14 Jun 2013 14:18:26 -0400
+Subject: [PATCH 1/2] DVDAudioCodecFFmpeg: Grow the resampling buffer as needed
+ instead of allocating it an arbitrary big size. (cherry picked from commit
+ 75d8c968fb75fcbf4c67b5c27638272b28eb7884)
+
+Conflicts:
+	xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecFFmpeg.cpp
+---
+ .../DVDCodecs/Audio/DVDAudioCodecFFmpeg.cpp        | 37 ++++++++++++++++++----
+ .../DVDCodecs/Audio/DVDAudioCodecFFmpeg.h          |  1 +
+ 2 files changed, 32 insertions(+), 6 deletions(-)
+
+diff --git a/xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecFFmpeg.cpp b/xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecFFmpeg.cpp
+index 985a01c..e13e896 100644
+--- a/xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecFFmpeg.cpp
++++ b/xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecFFmpeg.cpp
+@@ -30,8 +30,8 @@ CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
+ {
+   m_iBufferSize1 = 0;
+   m_iBufferSize2 = 0;
+-  m_pBuffer2     = (BYTE*)_aligned_malloc(AVCODEC_MAX_AUDIO_FRAME_SIZE + FF_INPUT_BUFFER_PADDING_SIZE, 16);
+-  memset(m_pBuffer2, 0, AVCODEC_MAX_AUDIO_FRAME_SIZE + FF_INPUT_BUFFER_PADDING_SIZE);
++  m_iBufferTotalSize2 = 0;
++  m_pBuffer2     = NULL;
+ 
+   m_iBuffered = 0;
+   m_pCodecContext = NULL;
+@@ -50,7 +50,6 @@ CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
+ 
+ CDVDAudioCodecFFmpeg::~CDVDAudioCodecFFmpeg()
+ {
+-  _aligned_free(m_pBuffer2);
+   Dispose();
+ }
+ 
+@@ -123,6 +122,9 @@ void CDVDAudioCodecFFmpeg::Dispose()
+   if (m_pConvert)
+     m_dllSwResample.swr_free(&m_pConvert);
+ 
++  if (m_pBuffer2)
++    m_dllAvUtil.av_freep(&m_pBuffer2);
++
+   if (m_pCodecContext)
+   {
+     if (m_bOpenedCodec) m_dllAvCodec.avcodec_close(m_pCodecContext);
+@@ -137,6 +139,7 @@ void CDVDAudioCodecFFmpeg::Dispose()
+ 
+   m_iBufferSize1 = 0;
+   m_iBufferSize2 = 0;
++  m_iBufferTotalSize2 = 0;
+   m_iBuffered = 0;
+ }
+ 
+@@ -205,8 +208,25 @@ void CDVDAudioCodecFFmpeg::ConvertToFloat()
+       return;
+     }
+ 
+-    int len = m_iBufferSize1 / m_dllAvUtil.av_get_bytes_per_sample(m_pCodecContext->sample_fmt);
+-    if(m_dllSwResample.swr_convert(m_pConvert, &m_pBuffer2, len, (const uint8_t**)m_pFrame1->data, m_pFrame1->nb_samples) < 0)
++    int needed_buf_size = m_dllAvUtil.av_samples_get_buffer_size(NULL, m_pCodecContext->channels, m_pFrame1->nb_samples, AV_SAMPLE_FMT_FLT, 0);
++    if(m_iBufferTotalSize2 < needed_buf_size)
++    {
++        m_pBuffer2 = (uint8_t*)m_dllAvUtil.av_realloc(m_pBuffer2, needed_buf_size);
++        if(!m_pBuffer2)
++        {
++            CLog::Log(LOGERROR, "CDVDAudioCodecFFmpeg::Decode - Unable to allocate a %i bytes buffer for resampling", needed_buf_size);
++            m_iBufferSize1 = 0;
++            m_iBufferSize2 = 0;
++            m_iBufferTotalSize2 = 0;
++            return;
++        }
++        m_iBufferTotalSize2 = needed_buf_size;
++    }
++
++    int outsamples;
++    outsamples = m_dllSwResample.swr_convert(m_pConvert, &m_pBuffer2, m_iBufferTotalSize2, (const uint8_t**)m_pFrame1->extended_data, m_pFrame1->nb_samples);
++
++    if(outsamples < 0)
+     {
+       CLog::Log(LOGERROR, "CDVDAudioCodecFFmpeg::Decode - Unable to convert %d to AV_SAMPLE_FMT_FLT", (int)m_pCodecContext->sample_fmt);
+       m_iBufferSize1 = 0;
+@@ -214,8 +234,13 @@ void CDVDAudioCodecFFmpeg::ConvertToFloat()
+       return;
+     }
+ 
++    if(outsamples < m_pFrame1->nb_samples)
++    {
++      CLog::Log(LOGWARNING, "CDVDAudioCodecFFmpeg::Decode - Resampler produced less samples than what it was given");
++    }
++
+     m_iBufferSize1 = 0;
+-    m_iBufferSize2 = len * m_dllAvUtil.av_get_bytes_per_sample(AV_SAMPLE_FMT_FLT);
++    m_iBufferSize2 = m_dllAvUtil.av_samples_get_buffer_size(NULL, m_pCodecContext->channels, m_pFrame1->nb_samples, AV_SAMPLE_FMT_FLT, 0);
+   }
+ }
+ 
+diff --git a/xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecFFmpeg.h b/xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecFFmpeg.h
+index 5d677f9..f2789e5 100644
+--- a/xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecFFmpeg.h
++++ b/xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecFFmpeg.h
+@@ -57,6 +57,7 @@ protected:
+   int      m_iBufferSize1;
+   BYTE*    m_pBuffer2;
+   int      m_iBufferSize2;
++  int      m_iBufferTotalSize2;
+ 
+   bool m_bOpenedCodec;
+   int m_iBuffered;
+-- 
+1.8.1.5
+

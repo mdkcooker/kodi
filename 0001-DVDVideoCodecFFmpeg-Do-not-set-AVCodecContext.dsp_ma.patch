@@ -1,0 +1,28 @@
+From f26d31fd98759d52b22aeef055fb3493dda78af5 Mon Sep 17 00:00:00 2001
+From: Alexis Ballier <aballier@gentoo.org>
+Date: Sat, 26 Jan 2013 15:46:00 -0300
+Subject: [PATCH 1/2] DVDVideoCodecFFmpeg: Do not set AVCodecContext.dsp_mask.
+
+Setting it to 0 is useless since it is the default (meaning autodetection) and this variable is deprecated.
+(cherry picked from commit 12299d228e4b3a8a04672f4e6f10dc4d9ac547cb)
+---
+ xbmc/cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.cpp | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/xbmc/cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.cpp b/xbmc/cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.cpp
+index 31a6a7a..3630a08 100644
+--- a/xbmc/cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.cpp
++++ b/xbmc/cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.cpp
+@@ -272,9 +272,6 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
+     memcpy(m_pCodecContext->extradata, hints.extradata, hints.extrasize);
+   }
+ 
+-  // set acceleration
+-  m_pCodecContext->dsp_mask = 0;//FF_MM_FORCE | FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE;
+-
+   // advanced setting override for skip loop filter (see avcodec.h for valid options)
+   // TODO: allow per video setting?
+   if (g_advancedSettings.m_iSkipLoopFilter != 0)
+-- 
+1.8.1.5
+

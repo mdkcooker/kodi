@@ -1,0 +1,82 @@
+From 80b7abf60f657395fa8c2f1aacdf352e2cb1988e Mon Sep 17 00:00:00 2001
+From: Alexis Ballier <aballier@gentoo.org>
+Date: Thu, 25 Jul 2013 07:25:16 -0400
+Subject: [PATCH 2/3] DVDAudioCodecLPcm: Do not use
+ AVCODEC_MAX_AUDIO_FRAME_SIZE which has been removed from FFmpeg 2.0 and
+ dynamically allocate buffers as needed. (cherry picked from commit
+ d603014f9944c279d89af52bbb72989bbfe5cfac)
+
+Conflicts:
+	xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecLPcm.h
+---
+ .../dvdplayer/DVDCodecs/Audio/DVDAudioCodecLPcm.cpp    | 18 +++++++++++++++---
+ .../dvdplayer/DVDCodecs/Audio/DVDAudioCodecLPcm.h      |  6 ++----
+ 2 files changed, 17 insertions(+), 7 deletions(-)
+
+diff --git a/xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecLPcm.cpp b/xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecLPcm.cpp
+index 0a0a723..06a6159 100644
+--- a/xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecLPcm.cpp
++++ b/xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecLPcm.cpp
+@@ -24,8 +24,13 @@
+ CDVDAudioCodecLPcm::CDVDAudioCodecLPcm() : CDVDAudioCodecPcm()
+ {
+   m_codecID = AV_CODEC_ID_NONE;
+-  m_bufferSize = LPCM_BUFFER_SIZE;
+-  memset(m_buffer, 0, sizeof(m_buffer));
++  m_bufferSize = 0;
++  m_buffer = NULL;
++}
++
++CDVDAudioCodecLPcm::~CDVDAudioCodecLPcm()
++{
++  delete m_buffer;
+ }
+ 
+ bool CDVDAudioCodecLPcm::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
+@@ -49,7 +54,14 @@ int CDVDAudioCodecLPcm::Decode(BYTE* pData, int iSize)
+   BYTE* s = pData;
+   int iDecoded = 0;
+ 
+-  if (iSize > m_bufferSize) iSize = m_bufferSize;
++  if (iSize > m_bufferSize)
++  {
++    delete m_buffer;
++    d = m_buffer = new uint8_t[iSize];
++    if(!m_buffer)
++      return -1;
++    m_bufferSize = iSize;
++  }
+ 
+   if (iSize >= 12)
+   {
+diff --git a/xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecLPcm.h b/xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecLPcm.h
+index 060d3dc..310dd0e 100644
+--- a/xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecLPcm.h
++++ b/xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecLPcm.h
+@@ -24,13 +24,11 @@
+ #include "DVDCodecs/DVDCodecs.h"
+ #include "DVDAudioCodecPcm.h"
+ 
+-#define LPCM_BUFFER_SIZE (AVCODEC_MAX_AUDIO_FRAME_SIZE / 2)
+-
+ class CDVDAudioCodecLPcm : public CDVDAudioCodecPcm
+ {
+ public:
+   CDVDAudioCodecLPcm();
+-  virtual ~CDVDAudioCodecLPcm() {}
++  virtual ~CDVDAudioCodecLPcm();
+   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
+   virtual int Decode(BYTE* pData, int iSize);
+   virtual const char* GetName()  { return "lpcm"; }
+@@ -38,7 +36,7 @@ public:
+ protected:
+ 
+   int m_bufferSize;
+-  BYTE m_buffer[LPCM_BUFFER_SIZE];
++  uint8_t *m_buffer;
+ 
+   AVCodecID m_codecID;
+ };
+-- 
+1.8.1.5
+

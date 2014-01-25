@@ -1,0 +1,45 @@
+From 11bb5c48fe2581f87cd2c00903cc9fd50efcb840 Mon Sep 17 00:00:00 2001
+From: Alexis Ballier <aballier@gentoo.org>
+Date: Fri, 14 Jun 2013 13:17:22 -0400
+Subject: [PATCH] DllAvFilter: Always include libavfilter/buffersrc.h for
+ av_buffersrc_add_frame. (cherry picked from commit
+ 5387d6986552b680300f5ab621ef285fdeee34ce)
+
+Conflicts:
+	lib/DllAvFilter.h
+---
+ lib/DllAvFilter.h | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
+
+diff --git a/lib/DllAvFilter.h b/lib/DllAvFilter.h
+index fc919b0..da82540 100644
+--- a/lib/DllAvFilter.h
++++ b/lib/DllAvFilter.h
+@@ -42,19 +42,15 @@ extern "C" {
+ #endif
+ 
+ #if (defined USE_EXTERNAL_FFMPEG)
+-  #if (defined HAVE_LIBAVFILTER_AVFILTER_H)
+-    #include <libavfilter/avfiltergraph.h>
+-    #include <libavfilter/buffersink.h>
+-    #include <libavfilter/avcodec.h>
+-  #elif (defined HAVE_FFMPEG_AVFILTER_H)
+-    #include <ffmpeg/avfiltergraph.h>
+-    #include <ffmpeg/buffersink.h>
+-    #include <ffmpeg/avcodec.h>
+-  #endif
++  #include <libavfilter/avfiltergraph.h>
++  #include <libavfilter/buffersink.h>
++  #include <libavfilter/avcodec.h>
++  #include <libavfilter/buffersrc.h>
+ #else
+   #include "libavfilter/avfiltergraph.h"
+   #include "libavfilter/buffersink.h"
+   #include "libavfilter/avcodec.h"
++  #include "libavfilter/buffersrc.h"
+ #endif
+ }
+ 
+-- 
+1.8.1.5
+
