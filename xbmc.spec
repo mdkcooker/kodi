@@ -272,6 +272,7 @@ rm -rf system/players/dvdplayer/etc/fonts
 
 pushd xbmc/interfaces/python/
 doxygen -u
+popd
 #pushd xbmc-pvr-addons-1*
 #./bootstrap
 #popd
