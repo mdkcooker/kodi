@@ -32,8 +32,8 @@ Last-Update: <YYYY-MM-DD>
 -	$(JAVA) -cp "$(GROOVY_DIR)/groovy-all-1.8.4.jar:$(GROOVY_DIR)/commons-lang-2.6.jar:$(TOPDIR)/tools/codegenerator:$(INTERFACES_DIR)/python" \
 -          groovy.ui.GroovyMain $(TOPDIR)/tools/codegenerator/Generator.groovy $< $(INTERFACES_DIR)/python/PythonSwig.cpp.template $@ $(DOXY_XML_PATH)
 +	# work around groovy crash
-+	groovyc -cp "/usr/share/java/groovy-all-1.8.6.jar:/usr/share/java/commons-lang-2.6.jar:./tools/codegenerator:xbmc/interfaces/python" -d tools/codegenerator tools/codegenerator/Helper.groovy  tools/codegenerator/SwigTypeParser.groovy xbmc/interfaces/python/MethodType.groovy xbmc/interfaces/python/PythonTools.groovy
-+	groovy -cp "/usr/share/java/groovy-all-1.8.6.jar:/usr/share/java/commons-lang-2.6.jar:$(TOPDIR)/tools/codegenerator:$(INTERFACES_DIR)/python" \
++	groovyc -cp "/usr/share/java/groovy-all-1.8.6.jar:/usr/share/java/commons-lang.jar:./tools/codegenerator:xbmc/interfaces/python" -d tools/codegenerator tools/codegenerator/Helper.groovy  tools/codegenerator/SwigTypeParser.groovy xbmc/interfaces/python/MethodType.groovy xbmc/interfaces/python/PythonTools.groovy
++	groovy -cp "/usr/share/java/groovy-all-1.8.6.jar:/usr/share/java/commons-lang.jar:$(TOPDIR)/tools/codegenerator:$(INTERFACES_DIR)/python" \
 +		$(TOPDIR)/tools/codegenerator/Generator.groovy $< $(INTERFACES_DIR)/python/PythonSwig.cpp.template $@ $(DOXY_XML_PATH)
  	rm $<
  
