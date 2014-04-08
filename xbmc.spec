@@ -2,8 +2,8 @@
 
 Summary:	XBMC Media Center - media player and home entertainment system
 Name:		xbmc
-Version:	13.0
-%global	codenam	Gotham
+Version:	12.3
+%global	codenam	Frodo
 Release:	1
 Group:		Video
 # nosefart audio plugin and RSXS-0.9 based screensavers are GPLv2 only
