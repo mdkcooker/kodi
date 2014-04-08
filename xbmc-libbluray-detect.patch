@@ -1,0 +1,21 @@
+diff -aur xbmc-frodo-pvr-3cb4695.orig/configure.in xbmc-frodo-pvr-3cb4695.patch/configure.in
+--- xbmc-frodo-pvr-3cb4695.orig/configure.ac    2012-07-09 19:21:20.000000000 +0000
++++ xbmc-frodo-pvr-3cb4695.patch/configure.ac   2012-07-10 00:13:21.951710215 +0000
+@@ -28,7 +28,7 @@
+     AC_MSG_CHECKING([for lib$2 soname])
+     $1_FILENAME=$($CC -nostdlib -o /dev/null $LDFLAGS -l$2 -Wl,-M 2>/dev/null | grep "^LOAD.*$2" | awk '{V=2; print $V}')
+     if [[ ! -z $$1_FILENAME ]]; then
+-      $1_SONAME=$(objdump -p $$1_FILENAME | grep "SONAME.*$2" | awk '{V=2; print $V}')
++      $1_SONAME=$($OBJDUMP -p $$1_FILENAME | grep "SONAME.*$2" | awk '{V=2; print $V}')
+     fi
+   else
+     AC_MSG_CHECKING([for lib$2 dylib])
+diff -aur xbmc-frodo-pvr-3cb4695.orig/Makefile.include.in xbmc-frodo-pvr-3cb4695.patch/Makefile.include.in
+--- xbmc-frodo-pvr-3cb4695.orig/Makefile.include.in     2012-07-09 19:21:13.000000000 +0000
++++ xbmc-frodo-pvr-3cb4695.patch/Makefile.include.in    2012-07-10 00:49:05.528541298 +0000
+@@ -1,4 +1,4 @@
+-AR=ar
++AR=@AR@
+ ARFLAGS=crus
+ RM=rm -rf
+ SHELL=@SHELL@

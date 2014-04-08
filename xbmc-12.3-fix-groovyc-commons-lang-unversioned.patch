@@ -1,0 +1,13 @@
+--- xbmc-12.3-Frodo/codegenerator.mk.commons_lang~	2014-01-25 13:02:02.163121889 +0100
++++ xbmc-12.3-Frodo/codegenerator.mk	2014-01-25 13:02:18.613122049 +0100
+@@ -32,8 +32,8 @@ vpath %.i $(INTERFACES_DIR)/swig
+ 
+ $(GENDIR)/%.cpp: $(GENDIR)/%.xml $(JAVA) $(SWIG) $(DOXY_XML_PATH)
+ 	# work around groovy crash
+-	groovyc -cp "/usr/share/java/groovy-all-1.8.6.jar:/usr/share/java/commons-lang-2.6.jar:./tools/codegenerator:xbmc/interfaces/python" -d tools/codegenerator tools/codegenerator/Helper.groovy  tools/codegenerator/SwigTypeParser.groovy xbmc/interfaces/python/MethodType.groovy xbmc/interfaces/python/PythonTools.groovy
+-	groovy -cp "/usr/share/java/groovy-all-1.8.6.jar:/usr/share/java/commons-lang-2.6.jar:$(TOPDIR)/tools/codegenerator:$(INTERFACES_DIR)/python" \
++	groovyc -cp "/usr/share/java/groovy-all-1.8.6.jar:/usr/share/java/commons-lang.jar:./tools/codegenerator:xbmc/interfaces/python" -d tools/codegenerator tools/codegenerator/Helper.groovy  tools/codegenerator/SwigTypeParser.groovy xbmc/interfaces/python/MethodType.groovy xbmc/interfaces/python/PythonTools.groovy
++	groovy -cp "/usr/share/java/groovy-all-1.8.6.jar:/usr/share/java/commons-lang.jar:$(TOPDIR)/tools/codegenerator:$(INTERFACES_DIR)/python" \
+ 		$(TOPDIR)/tools/codegenerator/Generator.groovy $< $(INTERFACES_DIR)/python/PythonSwig.cpp.template $@ $(DOXY_XML_PATH)
+ 	rm $<
+ 

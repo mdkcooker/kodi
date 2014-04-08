@@ -2,8 +2,8 @@
 
 Summary:	XBMC Media Center - media player and home entertainment system
 Name:		xbmc
-Version:	12.3
-%global	codenam	Frodo
+Version:	13.0
+%global	codenam	Gotham
 Release:	1
 Group:		Video
 # nosefart audio plugin and RSXS-0.9 based screensavers are GPLv2 only
@@ -20,7 +20,7 @@ Source0:	http://mirrors.xbmc.org/releases/source/%{name}-%{version}.tar.gz
 # ./bootstrap && ./configure && make dist-xz
 # commit eaefeffaee16216fd12fc3178c33d850dd6305ea
 # 20140103
-Source1:	xbmc-pvr-addons-1.0.0.tar.xz
+Source1:	xbmc-pvr-addons-f73fac7eb0519afb0e2a8d4f04ac734dceff2ffa.tar.xz
 Source2:	%{name}.rpmlintrc
 
 Patch1:		xbmc-12.1-samba4.patch
@@ -75,7 +75,6 @@ BuildRequires:	crystalhd-devel
 BuildRequires:	cwiid-devel
 BuildRequires:	ffmpeg-devel
 BuildRequires:	gettext-devel
-BuildRequires:	groovy
 BuildRequires:	jpeg-devel
 BuildRequires:	lzo-devel
 BuildRequires:	mariadb-devel
@@ -154,8 +153,10 @@ BuildRequires:	nasm
 Requires:	lsb-release
 # for codegenrator
 BuildRequires:	doxygen
-BuildRequires:	java
+BuildRequires:	java-rpmbuild
 BuildRequires:	swig
+BuildRequires:	groovy
+BuildRequires:	apache-commons-lang
 
 # dlopened (existence check required by rpm5 as it doesn't use stderr):
 %define	dlopenreq() %([ -e %{_libdir}/lib%{1}.so ] && rpm -qf --fileprovide $(readlink -f %{_libdir}/lib%{1}.so) 2>/dev/null | grep $(readlink -f %{_libdir}/lib%{1}.so) | cut -f2 || echo %{name})
@@ -302,9 +303,9 @@ rm -rf system/players/dvdplayer/etc/fonts
 pushd xbmc/interfaces/python/
 doxygen -u
 popd
-#pushd xbmc-pvr-addons-1*
-#./bootstrap
-#popd
+pushd *pvr-addons*
+./bootstrap
+popd
 export PKG_CONFIG_PATH=%{_libdir}/pkgconfig
 export GIT_REV="tarball"
 ./bootstrap
@@ -321,6 +322,7 @@ export GIT_REV="tarball"
 # Workaround configure using git to override GIT_REV (TODO: fix it properly)
 export ac_cv_prog_HAVE_GIT="no"
 
+%if 0
 %configure2_5x \
 	--disable-debug \
 	--disable-ccache \
@@ -359,11 +361,12 @@ export ac_cv_prog_HAVE_GIT="no"
 	--disable-rsxs \
 	--disable-gles
 
+%endif
 # non-free = unrar
 # dvdcss is handled via dlopen when disabled
 # (cg) We cannot enable MythTV support easily via a passthrough configure from above
 #      so re-run configure here and explicitly pass the --enable-addons-with-dependencies option
-pushd xbmc-pvr-addons-1*
+pushd *pvr-addons*
 %configure2_5x \
 	--enable-external-ffmpeg \
 	--enable-addons-with-dependencies
@@ -447,8 +450,8 @@ ok=1
 %dir %{_libdir}/xbmc/addons/*
 %{_libdir}/xbmc/addons/*/*.so
 %{_libdir}/xbmc/addons/*/*.vis
-#%{_libdir}/xbmc/addons/*/*.xbs
-#%{_libdir}/xbmc/addons/*/*.pvr
+%{_libdir}/xbmc/addons/*/*.xbs
+%{_libdir}/xbmc/addons/*/*.pvr
 %{_libdir}/xbmc/system/ImageLib-*.so
 %{_libdir}/xbmc/system/hdhomerun-*.so
 %{_libdir}/xbmc/system/libcmyth-*.so
