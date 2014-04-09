@@ -1,0 +1,19 @@
+--- xbmc-12.3-Frodo/xbmc-pvr-addons-82dd3c498624006b82e33d1b3036188b912b4d84/addons/pvr.wmc/src/pvr2wmc.cpp~	2014-04-09 11:52:17.074937131 +0200
++++ xbmc-12.3-Frodo/xbmc-pvr-addons-82dd3c498624006b82e33d1b3036188b912b4d84/addons/pvr.wmc/src/pvr2wmc.cpp	2014-04-09 11:52:21.660617316 +0200
+@@ -1087,11 +1087,11 @@ PVR_ERROR Pvr2Wmc::SignalStatus(PVR_SIGN
+ 			if (results.size() >= 9)
+ 			{
+ 				memset(&cachedSignalStatus, 0, sizeof(cachedSignalStatus));
+-				snprintf(signalStatus.strAdapterName, sizeof(signalStatus.strAdapterName), results[0]);
+-				snprintf(signalStatus.strAdapterStatus, sizeof(signalStatus.strAdapterStatus), results[1]);
+-				snprintf(signalStatus.strProviderName, sizeof(signalStatus.strProviderName), results[2]);
+-				snprintf(signalStatus.strServiceName, sizeof(signalStatus.strServiceName), results[3]);
+-				snprintf(signalStatus.strMuxName, sizeof(signalStatus.strMuxName), results[4]);
++				snprintf("%s", sizeof(signalStatus.strAdapterName), (const char*)signalStatus.strAdapterName, (const char*)results[0]);
++				snprintf("%s", sizeof(signalStatus.strAdapterStatus), (const char*)signalStatus.strAdapterStatus, (const char*)results[1]);
++				snprintf("%s", sizeof(signalStatus.strProviderName), (const char*)signalStatus.strProviderName, (const char*)results[2]);
++				snprintf("%s", sizeof(signalStatus.strServiceName), (const char*)signalStatus.strServiceName, (const char*)results[3]);
++				snprintf("%s", sizeof(signalStatus.strMuxName), (const char*)signalStatus.strMuxName, (const char*)results[4]);
+ 				signalStatus.iSignal = atoi(results[5]) * 655.35;
+ 				signalStatus.dVideoBitrate = atof(results[6]);
+ 				signalStatus.dAudioBitrate = atof(results[7]);

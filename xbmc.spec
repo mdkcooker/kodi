@@ -4,7 +4,7 @@ Summary:	XBMC Media Center - media player and home entertainment system
 Name:		xbmc
 Version:	12.3
 %global	codenam	Frodo
-Release:	1
+Release:	2
 Group:		Video
 # nosefart audio plugin and RSXS-0.9 based screensavers are GPLv2 only
 # several eventclients are GPLv3+ (in subpackages)
@@ -20,7 +20,7 @@ Source0:	http://mirrors.xbmc.org/releases/source/%{name}-%{version}.tar.gz
 # ./bootstrap && ./configure && make dist-xz
 # commit eaefeffaee16216fd12fc3178c33d850dd6305ea
 # 20140103
-Source1:	xbmc-pvr-addons-f73fac7eb0519afb0e2a8d4f04ac734dceff2ffa.tar.xz
+Source1:	xbmc-pvr-addons-82dd3c498624006b82e33d1b3036188b912b4d84.tar.xz
 Source2:	%{name}.rpmlintrc
 
 Patch1:		xbmc-12.1-samba4.patch
@@ -79,6 +79,7 @@ BuildRequires:	jpeg-devel
 BuildRequires:	lzo-devel
 BuildRequires:	mariadb-devel
 BuildRequires:	rtmp-devel
+BuildRequires:	rsxs
 BuildRequires:	ssh-devel
 BuildRequires:	tiff-devel
 BuildRequires:	tinyxml-devel
@@ -322,10 +323,8 @@ export GIT_REV="tarball"
 # Workaround configure using git to override GIT_REV (TODO: fix it properly)
 export ac_cv_prog_HAVE_GIT="no"
 
-%if 0
 %configure2_5x \
 	--disable-debug \
-	--disable-ccache \
 %ifarch %{arm}
 	--enable-neon	\
 %endif
@@ -358,10 +357,9 @@ export ac_cv_prog_HAVE_GIT="no"
 	--enable-vaapi \
 	--enable-libbluray \
 	--disable-openmax \
-	--disable-rsxs \
+	--enable-rsxs \
 	--disable-gles
 
-%endif
 # non-free = unrar
 # dvdcss is handled via dlopen when disabled
 # (cg) We cannot enable MythTV support easily via a passthrough configure from above
@@ -369,7 +367,9 @@ export ac_cv_prog_HAVE_GIT="no"
 pushd *pvr-addons*
 %configure2_5x \
 	--enable-external-ffmpeg \
-	--enable-addons-with-dependencies
+	--enable-addons-with-dependencies \
+	--enable-release
+%make
 popd
 
 %make
@@ -450,7 +450,7 @@ ok=1
 %dir %{_libdir}/xbmc/addons/*
 %{_libdir}/xbmc/addons/*/*.so
 %{_libdir}/xbmc/addons/*/*.vis
-%{_libdir}/xbmc/addons/*/*.xbs
+#%{_libdir}/xbmc/addons/*/*.xbs
 %{_libdir}/xbmc/addons/*/*.pvr
 %{_libdir}/xbmc/system/ImageLib-*.so
 %{_libdir}/xbmc/system/hdhomerun-*.so
@@ -500,4 +500,3 @@ ok=1
 
 %files eventclient-wiiremote
 %{_bindir}/xbmc-wiiremote
-
