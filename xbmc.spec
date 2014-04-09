@@ -46,6 +46,7 @@ Patch15:	0001-DVDAudioCodecFFmpeg-Grow-the-resampling-buffer-as-ne.patch
 Patch16:	0002-DVDAudioCodecFFmpeg-Remove-write-only-assignment.patch
 Patch17:	0001-DVDVideoCodecFFmpeg-Do-not-set-AVCodecContext.dsp_ma.patch
 Patch18:	0002-dvdplayer-sub_id-in-ffmpeg-has-been-depreciated-and-.patch
+Patch19:	xbmc-12.3-Frodo-str-fmt-fixes.patch
 
 # Hack to workaround upgrading from our old hack... see patch header for more
 # details and an upstreaming plan.
@@ -450,7 +451,7 @@ ok=1
 %dir %{_libdir}/xbmc/addons/*
 %{_libdir}/xbmc/addons/*/*.so
 %{_libdir}/xbmc/addons/*/*.vis
-#%{_libdir}/xbmc/addons/*/*.xbs
+%{_libdir}/xbmc/addons/*/*.xbs
 %{_libdir}/xbmc/addons/*/*.pvr
 %{_libdir}/xbmc/system/ImageLib-*.so
 %{_libdir}/xbmc/system/hdhomerun-*.so
