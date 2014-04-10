@@ -149,6 +149,9 @@ BuildRequires:	pkgconfig(zlib)
 BuildRequires:	cmake
 BuildRequires:	gperf
 BuildRequires:	zip
+%if "%{disttag}" == "mdk"
+BuildRequires:	lame-devel
+%endif
 %ifarch %{ix86}
 BuildRequires:	nasm
 %endif
@@ -157,7 +160,9 @@ Requires:	lsb-release
 BuildRequires:	doxygen
 BuildRequires:	java-rpmbuild
 BuildRequires:	swig
+%if "%{distepoch}" >= "2014.0"
 BuildRequires:	groovy
+%endif
 BuildRequires:	apache-commons-lang
 
 # dlopened (existence check required by rpm5 as it doesn't use stderr):
@@ -287,6 +292,9 @@ This package contains the xbmc-send eventclient.
 %prep
 %setup -q -a 1 -n %{name}-%{version}%{?codenam:-%{codenam}}
 %apply_patches
+%if "%{distepoch}" <= "2014.0"
+%patch107 -p1 -R
+%endif
 
 # otherwise backups end up in binary rpms
 find -type f \( -name '*.00??' -o -name '*.00??~' \) -print -delete
