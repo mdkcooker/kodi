@@ -1,0 +1,40 @@
+From 21b4b864dc24ecf41ab3e93847d0d5b009301834 Mon Sep 17 00:00:00 2001
+From: Natanael Copa <ncopa@alpinelinux.org>
+Date: Fri, 1 Nov 2013 09:25:22 +0100
+Subject: [PATCH] configure: use pkgconfig to detect samba
+
+Recent Samba versions require pkg-config. We try that first but fall
+back to old behaviour if smbclient.pc is missing.
+
+This solves also an 'issue' with samba4 that correctly detects the
+libsmbclient in the link test in configure, but fails to compile later
+due to missing headers.
+
+Signed-off-by: Natanael Copa <ncopa@alpinelinux.org>
+---
+ configure.in |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/configure.in b/configure.in
+index fa872e8..2743bd2 100644
+--- a/configure.in
++++ b/configure.in
+@@ -1309,9 +1309,12 @@ fi
+ 
+ # samba
+ if test "x$use_samba" != "xno"; then
+-  AC_CHECK_LIB([smbclient], [main],,
+-    use_samba=no;AC_MSG_ERROR($missing_library))
+-    USE_LIBSMBCLIENT=0
++  PKG_CHECK_MODULES([SAMBA], [smbclient],
++    [INCLUDES="$INCLUDES $SAMBA_CFLAGS"; LIBS="$LIBS $SAMBA_LIBS"],
++    [AC_CHECK_LIB([smbclient], [main],,
++      use_samba=no;AC_MSG_ERROR($missing_library))
++      USE_LIBSMBCLIENT=0
++    ])
+ else
+   AC_MSG_RESULT($samba_disabled)
+   USE_LIBSMBCLIENT=0
+-- 
+1.7.10.4
+

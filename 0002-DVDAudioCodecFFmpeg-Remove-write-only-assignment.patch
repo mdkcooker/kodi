@@ -1,0 +1,25 @@
+From ffedc51d93e34b0784ed5cc411aeed80b5618caa Mon Sep 17 00:00:00 2001
+From: Alexis Ballier <aballier@gentoo.org>
+Date: Fri, 14 Jun 2013 14:19:30 -0400
+Subject: [PATCH 2/2] DVDAudioCodecFFmpeg: Remove write only assignment.
+ (cherry picked from commit 3c6c0fc704edd01eea5b869bf05a568b61e2df07)
+
+---
+ xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecFFmpeg.cpp | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecFFmpeg.cpp b/xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecFFmpeg.cpp
+index e13e896..4bc8235 100644
+--- a/xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecFFmpeg.cpp
++++ b/xbmc/cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodecFFmpeg.cpp
+@@ -148,7 +148,6 @@ int CDVDAudioCodecFFmpeg::Decode(BYTE* pData, int iSize)
+   int iBytesUsed, got_frame;
+   if (!m_pCodecContext) return -1;
+ 
+-  m_iBufferSize1 = AVCODEC_MAX_AUDIO_FRAME_SIZE ;
+   m_iBufferSize2 = 0;
+ 
+   AVPacket avpkt;
+-- 
+1.8.1.5
+

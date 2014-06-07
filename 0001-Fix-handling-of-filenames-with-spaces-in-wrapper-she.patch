@@ -1,0 +1,60 @@
+From 170846be7dd73b8eee84aaf4d8ab3e981adb997f Mon Sep 17 00:00:00 2001
+From: Anssi Hannula <anssi@xbmc.org>
+Date: Wed, 11 Sep 2013 21:58:00 +0300
+Subject: [PATCH] Fix handling of filenames with spaces in wrapper shell script
+
+FIXME/TODO
+
+This is currently done by dropping the option handling unneeded in
+Mageia, since handling this properly would be a lot of work:
+http://www.seanius.net/blog/2009/03/saving-and-restoring-positional-params-redux/
+---
+ tools/Linux/xbmc.sh.in | 18 ++----------------
+ 1 file changed, 2 insertions(+), 16 deletions(-)
+
+diff --git a/tools/Linux/xbmc.sh.in b/tools/Linux/xbmc.sh.in
+index 64cae55..12e6427 100644
+--- a/tools/Linux/xbmc.sh.in
++++ b/tools/Linux/xbmc.sh.in
+@@ -24,20 +24,6 @@ exec_prefix="@exec_prefix@"
+ datarootdir="@datarootdir@"
+ LIBDIR="@libdir@"
+ 
+-# Check for some options used by this script
+-while [ "$#" -gt "0" ]
+-do
+-    case "$1" in
+-        --setlibdir)
+-            LIBDIR="$2"
+-            shift; shift
+-            ;;
+-        *)
+-            shift
+-            ;;
+-    esac
+-done
+-
+ single_stacktrace()
+ {
+   # core filename is either "core.$PID" or "core"
+@@ -107,7 +93,7 @@ print_crash_report()
+   echo "Crash report available at $FILE"
+ }
+ 
+-python @datadir@/xbmc/FEH.py $SAVED_ARGS
++python @datadir@/xbmc/FEH.py "$@"
+ RET=$?
+ if [ $RET -ne 0 ]; then
+   exit $RET
+@@ -125,7 +111,7 @@ LOOP=1
+ while [ $(( $LOOP )) = "1" ]
+ do
+   LOOP=0
+-  "$LIBDIR/xbmc/xbmc.bin" $SAVED_ARGS
++  "$LIBDIR/xbmc/xbmc.bin" "$@"
+   RET=$?
+   if [ $(( $RET == 65 )) = "1" ]
+   then # User requested to restart app
+-- 
+1.8.1.5
+

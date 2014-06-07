@@ -1,0 +1,146 @@
+From 6b52a3b4135da5874c9b090ac0eb9f2610c931a5 Mon Sep 17 00:00:00 2001
+From: Joakim Plate <elupus@ecce.se>
+Date: Thu, 11 Apr 2013 23:50:27 +0200
+Subject: [PATCH 2/2] dvdplayer: sub_id in ffmpeg has been depreciated and
+ doesn't work (cherry picked from commit
+ 8967acd26032c9daeec2f3a1656372eebb6647f5)
+
+---
+ xbmc/cores/dvdplayer/DVDCodecs/Overlay/DVDOverlayCodecFFmpeg.cpp | 1 -
+ xbmc/cores/dvdplayer/DVDDemuxers/DVDDemux.h                      | 3 ---
+ xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxFFmpeg.cpp              | 1 -
+ xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxHTSP.cpp                | 8 +++++++-
+ xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxPVRClient.cpp           | 8 +++++++-
+ xbmc/cores/dvdplayer/DVDStreamInfo.cpp                           | 5 -----
+ xbmc/cores/dvdplayer/DVDStreamInfo.h                             | 1 -
+ 7 files changed, 14 insertions(+), 13 deletions(-)
+
+diff --git a/xbmc/cores/dvdplayer/DVDCodecs/Overlay/DVDOverlayCodecFFmpeg.cpp b/xbmc/cores/dvdplayer/DVDCodecs/Overlay/DVDOverlayCodecFFmpeg.cpp
+index 1909971..2d9ef9c 100644
+--- a/xbmc/cores/dvdplayer/DVDCodecs/Overlay/DVDOverlayCodecFFmpeg.cpp
++++ b/xbmc/cores/dvdplayer/DVDCodecs/Overlay/DVDOverlayCodecFFmpeg.cpp
+@@ -60,7 +60,6 @@ bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
+   m_pCodecContext->debug_mv = 0;
+   m_pCodecContext->debug = 0;
+   m_pCodecContext->workaround_bugs = FF_BUG_AUTODETECT;
+-  m_pCodecContext->sub_id = hints.identifier;
+   m_pCodecContext->codec_tag = hints.codec_tag;
+   m_pCodecContext->time_base.num = 1;
+   m_pCodecContext->time_base.den = DVD_TIME_BASE;
+diff --git a/xbmc/cores/dvdplayer/DVDDemuxers/DVDDemux.h b/xbmc/cores/dvdplayer/DVDDemuxers/DVDDemux.h
+index 121a2d4..2219387 100644
+--- a/xbmc/cores/dvdplayer/DVDDemuxers/DVDDemux.h
++++ b/xbmc/cores/dvdplayer/DVDDemuxers/DVDDemux.h
+@@ -207,11 +207,8 @@ class CDemuxStreamSubtitle : public CDemuxStream
+ public:
+   CDemuxStreamSubtitle() : CDemuxStream()
+   {
+-    identifier = 0;
+     type = STREAM_SUBTITLE;
+   }
+-
+-  int identifier;
+ };
+ 
+ class CDemuxStreamTeletext : public CDemuxStream
+diff --git a/xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxFFmpeg.cpp b/xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxFFmpeg.cpp
+index efd8cae..7f013ab 100644
+--- a/xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxFFmpeg.cpp
++++ b/xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxFFmpeg.cpp
+@@ -1043,7 +1043,6 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
+         {
+           CDemuxStreamSubtitleFFmpeg* st = new CDemuxStreamSubtitleFFmpeg(this, pStream);
+           m_streams[iId] = st;
+-          st->identifier = pStream->codec->sub_id;
+ 	    
+           if(m_dllAvUtil.av_dict_get(pStream->metadata, "title", NULL, 0))
+             st->m_description = m_dllAvUtil.av_dict_get(pStream->metadata, "title", NULL, 0)->value;
+diff --git a/xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxHTSP.cpp b/xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxHTSP.cpp
+index f940bb0..3494f26 100644
+--- a/xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxHTSP.cpp
++++ b/xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxHTSP.cpp
+@@ -316,7 +316,13 @@ void CDVDDemuxHTSP::SubscriptionStart (htsmsg_t *m)
+       uint32_t composition_id = 0, ancillary_id = 0;
+       htsmsg_get_u32(sub, "composition_id", &composition_id);
+       htsmsg_get_u32(sub, "ancillary_id"  , &ancillary_id);
+-      st.s->identifier = (composition_id & 0xffff) | ((ancillary_id & 0xffff) << 16);
++      if(composition_id || ancillary_id)
++      {
++        st.s->ExtraData = new uint8_t[4];
++        st.s->ExtraSize = 4;
++        ((uint16_t*)st.s->ExtraData)[0] = composition_id;
++        ((uint16_t*)st.s->ExtraData)[1] = ancillary_id;
++      }
+     } else if(!strcmp(type, "TEXTSUB")) {
+       st.s = new CDemuxStreamSubtitle();
+       st.s->codec = AV_CODEC_ID_TEXT;
+diff --git a/xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxPVRClient.cpp b/xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxPVRClient.cpp
+index 1445584..99e499a 100644
+--- a/xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxPVRClient.cpp
++++ b/xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxPVRClient.cpp
+@@ -418,7 +418,13 @@ void CDVDDemuxPVRClient::RequestStreams()
+       {
+         st = new CDemuxStreamSubtitlePVRClient(this);
+       }
+-      st->identifier = props.stream[i].iIdentifier;
++      if(props.stream[i].iIdentifier)
++      {
++        st->ExtraData = new uint8_t[4];
++        st->ExtraSize = 4;
++        ((uint16_t*)st->ExtraData)[0] = (props.stream[i].iIdentifier >> 0) & 0xFFFFu;
++        ((uint16_t*)st->ExtraData)[1] = (props.stream[i].iIdentifier >> 4) & 0xFFFFu;
++      }
+       m_streams[i] = st;
+     }
+     else
+diff --git a/xbmc/cores/dvdplayer/DVDStreamInfo.cpp b/xbmc/cores/dvdplayer/DVDStreamInfo.cpp
+index cd54a33..4e059f6 100644
+--- a/xbmc/cores/dvdplayer/DVDStreamInfo.cpp
++++ b/xbmc/cores/dvdplayer/DVDStreamInfo.cpp
+@@ -67,7 +67,6 @@ void CDVDStreamInfo::Clear()
+   bitrate    = 0;
+   bitspersample = 0;
+ 
+-  identifier = 0;
+   orientation = 0;
+ }
+ 
+@@ -108,7 +107,6 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
+   ||  bitspersample != right.bitspersample ) return false;
+ 
+   // SUBTITLE
+-  if( identifier != right.identifier ) return false;
+ 
+   return true;
+ }
+@@ -164,7 +162,6 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
+   bitspersample = right.bitspersample;
+ 
+   // SUBTITLE
+-  identifier = right.identifier;
+ }
+ 
+ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
+@@ -209,7 +206,5 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
+   }
+   else if(  right.type == STREAM_SUBTITLE )
+   {
+-    const CDemuxStreamSubtitle *stream = static_cast<const CDemuxStreamSubtitle*>(&right);
+-    identifier = stream->identifier;
+   }
+ }
+diff --git a/xbmc/cores/dvdplayer/DVDStreamInfo.h b/xbmc/cores/dvdplayer/DVDStreamInfo.h
+index 9f84a5b..fd425fa 100644
+--- a/xbmc/cores/dvdplayer/DVDStreamInfo.h
++++ b/xbmc/cores/dvdplayer/DVDStreamInfo.h
+@@ -87,7 +87,6 @@ public:
+   int bitspersample;
+ 
+   // SUBTITLE
+-  int identifier;
+ 
+   // CODEC EXTRADATA
+   void*        extradata; // extra data for codec to use
+-- 
+1.8.1.5
+
