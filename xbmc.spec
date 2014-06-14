@@ -3,8 +3,8 @@
 
 Summary:	XBMC Media Center - media player and home entertainment system
 Name:		xbmc
-Version:	13.0
-Release:	2
+Version:	13.1
+Release:	1
 # nosefart audio plugin and RSXS-0.9 based screensavers are GPLv2 only
 # several eventclients are GPLv3+ (in subpackages)
 # libhdhomerun is LGPLv3+ with an exception (always ok to link against it)
@@ -15,13 +15,13 @@ Release:	2
 License:	GPLv2+ and GPLv2 and (LGPLv3+ with exceptions)
 Group:		Video
 Url:		http://xbmc.org/
-Source0:	http://mirrors.xbmc.org/releases/source/%{name}-%{version}-%{codename}.tar.gz
+Source0:	http://mirrors.xbmc.org/releases/source/%{name}-%{version}.tar.gz
 Source1:	xbmc.rpmlintrc
 # (cg) From https://github.com/opdenkamp/xbmc-pvr-addons
 # ./bootstrap && ./configure && make dist-xz
-# commit eaefeffaee16216fd12fc3178c33d850dd6305ea
-# 20140103
-Source2:	xbmc-pvr-addons-82dd3c498624006b82e33d1b3036188b912b4d84.tar.xz
+# commit 1db308ba7db2aa5ecea22cb032ec20e04e4e6730
+# 20140529
+Source2:	xbmc-pvr-addons-1db308ba7db2aa5ecea22cb032ec20e04e4e6730.tar.xz
 
 Patch0:		xbmc-13.0-external-ffmpeg.patch
 Patch1:		xbmc-13.0-no-win32.patch
@@ -31,42 +31,26 @@ Patch2:		xbmc-13.0-upnp-musicvideos-artist.patch
 Patch3:		xbmc-13.0-upnp-playlists.patch
 
 # work around weird gold output redirection weirdness...
-Patch4:		xbmc-12.3-try-work-around-gold-linker-output-fd-weirdness.patch
+Patch4:		xbmc-13.1-try-work-around-gold-linker-output-fd-weirdness.patch
 # Fix bootstrap script return value on error
 Patch5:		xbmc-bootstrap-return-value.patch
 
-# From upstream
-Patch7:		0001-Fix-crash-when-audio-encoder-is-not-initalized.patch
-Patch11:	xbmc-ffmpeg-codecid.patch
-Patch8:		0001-DVDAudioCodecPcm-Do-not-use-AVCODEC_MAX_AUDIO_FRAME_.patch
-Patch9:		0002-DVDAudioCodecLPcm-Do-not-use-AVCODEC_MAX_AUDIO_FRAME.patch
-Patch12:	0003-Update-libavfilter-version-check.patch
-Patch13:	0001-CDRip-FFmpeg-Reduce-a-bit-the-avio-buffer-size-as-su.patch
-Patch14:	0001-DllAvFilter-Always-include-libavfilter-buffersrc.h-f.patch
-Patch15:	0001-DVDAudioCodecFFmpeg-Grow-the-resampling-buffer-as-ne.patch
-Patch16:	0002-DVDAudioCodecFFmpeg-Remove-write-only-assignment.patch
-Patch17:	0001-DVDVideoCodecFFmpeg-Do-not-set-AVCodecContext.dsp_ma.patch
-Patch18:	0002-dvdplayer-sub_id-in-ffmpeg-has-been-depreciated-and-.patch
-Patch19:	xbmc-12.3-Frodo-str-fmt-fixes.patch
-
 # Hack to workaround upgrading from our old hack... see patch header for more
 # details and an upstreaming plan.
-Patch213:	0001-hack-workaround-for-old-incompatible-PVR-addon-datab.patch
+#Patch213:	0001-hack-workaround-for-old-incompatible-PVR-addon-datab.patch
 
 # https://bugs.mageia.org/show_bug.cgi?id=2331
 # TODO: needs changes for upstreaming
-Patch214:	0001-Fix-handling-of-filenames-with-spaces-in-wrapper-she.patch
+Patch214:	xbmc-13.1-Gotham-Fix-handling-of-filenames-with-spaces-in-wrapper-she.patch
 
 # debian patches
 #Patch101:	01-Compile-against-system-libavcodec.patch
-Patch102:	02-Fix-avcodec-vdpau-detection.patch
-Patch103:	03-configure-use-pkgconfig-to-detect-samba.patch
-Patch104:	04-differentiate-from-vanilla-XBMC.patch
-Patch105:	05-Fix-GLES-with-X11.patch
-Patch106:	06-use-external-libraries.patch
-Patch107:	07-use-system-groovy.patch
-Patch108:	http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/media-tv/xbmc/files/xbmc-12.3-no-sse2.patch?revision=1.1
-Patch109:	xbmc-system-groovy-hack.patch
+#Patch104:	04-differentiate-from-vanilla-XBMC.patch
+#Patch105:	05-Fix-GLES-with-X11.patch
+#Patch106:	06-use-external-libraries.patch
+#Patch107:	07-use-system-groovy.patch
+#Patch108:	http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/media-tv/xbmc/files/xbmc-12.3-no-sse2.patch?revision=1.1
+#Patch109:	xbmc-system-groovy-hack.patch
 
 BuildRequires:	afpclient-devel
 BuildRequires:	avahi-common-devel
@@ -167,29 +151,27 @@ BuildRequires:	groovy
 %endif
 BuildRequires:	apache-commons-lang
 
-# dlopened (existence check required by rpm5 as it doesn't use stderr):
-%define	dlopenreq() %([ -e %{_libdir}/lib%{1}.so ] && rpm -qf --fileprovide $(readlink -f %{_libdir}/lib%{1}.so) 2>/dev/null | grep $(readlink -f %{_libdir}/lib%{1}.so) | cut -f2 || echo %{name})
-Requires:	%dlopenreq curl
-Requires:	%dlopenreq FLAC
-Requires:	%dlopenreq mad
-Requires:	%dlopenreq ogg
-Requires:	%dlopenreq vorbis
-Requires:	%dlopenreq vorbisenc
-Requires:	%dlopenreq vorbisfile
-Requires:	%dlopenreq modplug
-Requires:	%dlopenreq rtmp
-Requires:	%dlopenreq mpeg2
-Requires:	%dlopenreq ass
-Requires:	%dlopenreq bluray
-Requires:	%dlopenreq nfs
-Requires:	%dlopenreq afpclient
-Requires:	%dlopenreq plist
-Requires:	%dlopenreq shairport
+Requires:	%{dlopen_req curl}
+Requires:	%{dlopen_req FLAC}
+Requires:	%{dlopen_req mad}
+Requires:	%{dlopen_req ogg}
+Requires:	%{dlopen_req vorbis}
+Requires:	%{dlopen_req vorbisenc}
+Requires:	%{dlopen_req vorbisfile}
+Requires:	%{dlopen_req modplug}
+Requires:	%{dlopen_req rtmp}
+Requires:	%{dlopen_req mpeg2}
+Requires:	%{dlopen_req ass}
+Requires:	%{dlopen_req bluray}
+Requires:	%{dlopen_req nfs}
+Requires:	%{dlopen_req afpclient}
+Requires:	%{dlopen_req plist}
+Requires:	%{dlopen_req shairport}
 %if %{build_cec}
-Requires:	%dlopenreq cec
+Requires:	%{dlopen_req cec}
 %endif
 # not nearly as common as the above, so just suggest instead for now:
-Suggests:	%dlopenreq crystalhd
+Suggests:	%{dlopen_req crystalhd}
 # TODO: FEH.py is useless nowadays, drop it here and upstream.
 # for FEH.py, to check current configuration is ok for xbmc:
 Requires:	xdpyinfo
@@ -296,10 +278,10 @@ This package contains the xbmc-send eventclient.
 #----------------------------------------------------------------------------
 
 %prep
-%setup -q -a 1 -n %{name}-%{version}%{?codenam:-%{codenam}}
+%setup -q -a 2 -n %{name}-%{version}%{?codename:-%{codename}}
 %apply_patches
 %if "%{distepoch}" <= "2014.0"
-%patch107 -p1 -R
+#%patch107 -p1 -R
 %endif
 
 find . -name "Makefile*" -o -name "*.m4" -o -name "configure*" -o -name "missing" -o -name "bootstrap*" |xargs sed -i -e 's,configure.in,configure.ac,g'
@@ -320,7 +302,7 @@ rm -rf system/players/dvdplayer/etc/fonts
 pushd xbmc/interfaces/python/
 doxygen -u
 popd
-pushd *pvr-addons*
+pushd xbmc-pvr-addons
 ./bootstrap
 popd
 export PKG_CONFIG_PATH=%{_libdir}/pkgconfig
@@ -380,9 +362,8 @@ export ac_cv_prog_HAVE_GIT="no"
 # dvdcss is handled via dlopen when disabled
 # (cg) We cannot enable MythTV support easily via a passthrough configure from above
 #      so re-run configure here and explicitly pass the --enable-addons-with-dependencies option
-pushd *pvr-addons*
+pushd xbmc-pvr-addons
 %configure2_5x \
-	--enable-external-ffmpeg \
 	--enable-addons-with-dependencies \
 	--enable-release
 %make
@@ -475,8 +456,8 @@ ok=1
 %{_libdir}/xbmc/system/libexif-*.so
 %{_libdir}/xbmc/system/players/dvdplayer/libdvdcss-*.so
 %{_libdir}/xbmc/system/players/dvdplayer/libdvdnav-*.so
-%{_libdir}/xbmc/system/players/paplayer/adpcm-*.so
-#%{_libdir}/xbmc/system/players/paplayer/libsidplay2-*.so
+#%{_libdir}/xbmc/system/players/paplayer/adpcm-*.so
+%{_libdir}/xbmc/system/players/paplayer/libsidplay2-*.so
 %{_libdir}/xbmc/system/players/paplayer/nosefart-*.so
 %{_libdir}/xbmc/system/players/paplayer/stsoundlibrary-*.so
 %{_libdir}/xbmc/system/players/paplayer/timidity-*.so
@@ -500,9 +481,10 @@ ok=1
 %dir %{_datadir}/pixmaps/xbmc
 %{_datadir}/pixmaps/xbmc/*.png
 
-%files eventclients-devel
+%files devel
 %dir %{_includedir}/xbmc
-%{_includedir}/xbmc/xbmcclient.h
+%{_includedir}/xbmc/*
+%{_libdir}/xbmc/*.cmake
 
 %files eventclient-j2me
 %{_bindir}/xbmc-j2meremote
