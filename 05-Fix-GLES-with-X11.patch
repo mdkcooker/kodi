@@ -34,8 +34,8 @@ index 3d82fbf..cef19a0 100644
  	return false;
  
 -  CTexture iconTexture;
--  iconTexture.LoadFromFile("special://xbmc/media/icon.png");
-+  CBaseTexture* iconTexture = CTexture::LoadFromFile("special://xbmc/media/icon.png");
+-  iconTexture.LoadFromFile("special://xbmc/media/icon256x256.png");
++  CBaseTexture* iconTexture = CTexture::LoadFromFile("special://xbmc/media/icon256x256.png");
  
 -  SDL_WM_SetIcon(SDL_CreateRGBSurfaceFrom(iconTexture.GetPixels(), iconTexture.GetWidth(), iconTexture.GetHeight(), BPP, iconTexture.GetPitch(), 0xff0000, 0x00ff00, 0x0000ff, 0xff000000L), NULL);
 +  if (iconTexture)

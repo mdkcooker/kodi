@@ -1,60 +1,55 @@
-diff --git a/addons/skin.confluence/720p/Home.xml b/addons/skin.confluence/720p/Home.xml
-index 1eb6bd6..4a81fee 100644
 --- a/addons/skin.confluence/720p/Home.xml
 +++ b/addons/skin.confluence/720p/Home.xml
-@@ -18,7 +18,7 @@
+@@ -19,7 +19,7 @@
  			<description>LOGO</description>
- 			<posx>0</posx>
- 			<posy>5</posy>
+ 			<left>0</left>
+ 			<top>5</top>
 -			<width>170</width>
 +			<width>680</width>
  			<height>100</height>
  			<aspectratio aligny="top" align="left">keep</aspectratio>
  			<texture>xbmc-logo.png</texture>
-diff --git a/addons/skin.confluence/720p/LoginScreen.xml b/addons/skin.confluence/720p/LoginScreen.xml
-index b2a6c2e..f32ed91 100644
 --- a/addons/skin.confluence/720p/LoginScreen.xml
 +++ b/addons/skin.confluence/720p/LoginScreen.xml
-@@ -23,7 +23,7 @@
+@@ -24,7 +24,7 @@
  				<description>LOGO</description>
- 				<posx>0</posx>
- 				<posy>5</posy>
+ 				<left>0</left>
+ 				<top>5</top>
 -				<width>170</width>
 +				<width>680</width>
  				<height>100</height>
  				<aspectratio aligny="top" align="left">keep</aspectratio>
  				<texture>xbmc-logo.png</texture>
-diff --git a/xbmc/Application.cpp b/xbmc/Application.cpp
-index 17eccbe..e08ccaf 100644
 --- a/xbmc/Application.cpp
 +++ b/xbmc/Application.cpp
-@@ -633,7 +633,7 @@ bool CApplication::Create()
- #elif defined(__FreeBSD__)
-   CLog::Log(LOGNOTICE, "Starting XBMC (%s), Platform: FreeBSD (%s). Built on %s", g_infoManager.GetVersion().c_str(), g_sysinfo.GetUnameVersion().c_str(), __DATE__);
- #elif defined(_LINUX)
--  CLog::Log(LOGNOTICE, "Starting XBMC (%s), Platform: Linux (%s, %s). Built on %s", g_infoManager.GetVersion().c_str(), g_sysinfo.GetLinuxDistro().c_str(), g_sysinfo.GetUnameVersion().c_str(), __DATE__);
-+  CLog::Log(LOGNOTICE, "Starting XBMC from Moondrake (%s), Platform: GNU/Linux (%s, %s). Built on %s", g_infoManager.GetVersion().c_str(), g_sysinfo.GetLinuxDistro().c_str(), g_sysinfo.GetUnameVersion().c_str(), __DATE__);
- #elif defined(_WIN32)
-   CLog::Log(LOGNOTICE, "Starting XBMC (%s), Platform: %s. Built on %s (compiler %i)", g_infoManager.GetVersion().c_str(), g_sysinfo.GetKernelVersion().c_str(), __DATE__, _MSC_VER);
- #if defined(__arm__)
-diff --git a/xbmc/GUIInfoManager.cpp b/xbmc/GUIInfoManager.cpp
-index 58b766d..1eee06c 100644
+@@ -693,7 +693,7 @@
+   CProfilesManager::Get().Load();
+ 
+   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
+-  CLog::Log(LOGNOTICE, "Starting XBMC (%s). Platform: %s %s %d-bit", g_infoManager.GetVersion().c_str(), g_sysinfo.GetBuildTargetCpuFamily().c_str(),
++  CLog::Log(LOGNOTICE, "Starting XBMC from Debian (%s). Platform: %s %s %d-bit", g_infoManager.GetVersion().c_str(), g_sysinfo.GetBuildTargetCpuFamily().c_str(),
+       g_sysinfo.GetBuildTargetPlatformName().c_str(), g_sysinfo.GetXbmcBitness());
+ 
+ /* Expand macro before stringify */
 --- a/xbmc/GUIInfoManager.cpp
 +++ b/xbmc/GUIInfoManager.cpp
-@@ -4079,10 +4079,14 @@ CTemperature CGUIInfoManager::GetGPUTemperature()
- CStdString CGUIInfoManager::GetVersion()
- {
-   CStdString tmp;
--#ifdef GIT_REV
--  tmp.Format("%d.%d%s Git:%s", VERSION_MAJOR, VERSION_MINOR, VERSION_TAG, GIT_REV);
-+#ifdef DEB_VERSION
-+  tmp.Format("%d.%d%s Moondrake package version:%s", VERSION_MAJOR, VERSION_MINOR, VERSION_TAG, DEB_VERSION);
- #else
-+# ifdef GIT_REV
-+  tmp.Format("%d.%d%s Git:%s", VERSION_MAJOR, VERSION_MINOR, VERSION_TAG, GIT_REV);
-+# else
-   tmp.Format("%d.%d%s", VERSION_MAJOR, VERSION_MINOR, VERSION_TAG);
-+# endif
- #endif
+@@ -4208,7 +4208,7 @@
+   if (GetXbmcGitRevision())
+     tmp = StringUtils::Format("%d.%d%s Git:%s", VERSION_MAJOR, VERSION_MINOR, VERSION_TAG, GetXbmcGitRevision());
+   else
+-    tmp = StringUtils::Format("%d.%d%s", VERSION_MAJOR, VERSION_MINOR, VERSION_TAG);
++    tmp = StringUtils::Format("%d.%d%s Debian package version:%s", VERSION_MAJOR, VERSION_MINOR, VERSION_TAG, DEB_VERSION);
    return tmp;
  }
+ 
+--- a/xbmc/GitRevision.cpp
++++ b/xbmc/GitRevision.cpp
+@@ -29,7 +29,7 @@
+ const char *GetXbmcGitRevision()
+ {
+ #ifdef GIT_REV
+-  return GIT_REV;
++  return NULL;
+ #else
+   return NULL;
+ #endif

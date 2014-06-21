@@ -44,13 +44,19 @@ Patch5:		xbmc-bootstrap-return-value.patch
 Patch214:	xbmc-13.1-Gotham-Fix-handling-of-filenames-with-spaces-in-wrapper-she.patch
 
 # debian patches
-#Patch101:	01-Compile-against-system-libavcodec.patch
-#Patch104:	04-differentiate-from-vanilla-XBMC.patch
-#Patch105:	05-Fix-GLES-with-X11.patch
-#Patch106:	06-use-external-libraries.patch
-#Patch107:	07-use-system-groovy.patch
-#Patch108:	http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/media-tv/xbmc/files/xbmc-12.3-no-sse2.patch?revision=1.1
-#Patch109:	xbmc-system-groovy-hack.patch
+Patch101:	0001-Don-t-enter-ffmpeg-dir-when-using-external-ffmpeg-li.patch
+Patch102:	0002-Fix-compilation-with-libav-10-beta1.patch
+Patch103:	0004-Disable-static-ffmpeg-when-using-external-ffmpeg-liba.patch
+Patch104:	0005-Fix-av_stream_get_r_frame_rate-Libav-hack-accessor.patch
+Patch105:	0006-Define-AV_CODEC_ID_SUBRIP-to-AV_CODEC_ID_TEXT-in-lib.patch
+#Patch106:	0007-Enable-using-external-ffmpeg-in-.-configure.patch
+Patch107:	04-differentiate-from-vanilla-XBMC.patch
+Patch108:	05-Fix-GLES-with-X11.patch
+Patch109:	06-use-external-libraries.patch
+Patch110:	07-use-system-groovy.patch
+Patch111:	08-armel.patch
+Patch112:	09-use-correct-ftgl.h
+Patch113:	10-configure-all-arches.patch
 
 BuildRequires:	afpclient-devel
 BuildRequires:	avahi-common-devel
@@ -61,6 +67,7 @@ BuildRequires:	crystalhd-devel
 BuildRequires:	cwiid-devel
 BuildRequires:	ffmpeg-devel
 BuildRequires:	gettext-devel
+BuildRequires:	hdhomerun-devel
 BuildRequires:	jpeg-devel
 BuildRequires:	lzo-devel
 BuildRequires:	mariadb-devel
@@ -124,7 +131,6 @@ BuildRequires:	pkgconfig(taglib)
 BuildRequires:	pkgconfig(udev)
 BuildRequires:	pkgconfig(vdpau)
 BuildRequires:	pkgconfig(vorbis)
-BuildRequires:	pkgconfig(wavpack)
 BuildRequires:	pkgconfig(x11)
 BuildRequires:	pkgconfig(xinerama)
 BuildRequires:	pkgconfig(xmu)
@@ -138,7 +144,7 @@ BuildRequires:	zip
 %if "%{disttag}" == "mdk"
 BuildRequires:	lame-devel
 %endif
-%ifarch %{ix86}
+%ifarch %{ix86} x86_64
 BuildRequires:	nasm
 %endif
 Requires:	lsb-release
@@ -302,9 +308,6 @@ rm -rf system/players/dvdplayer/etc/fonts
 pushd xbmc/interfaces/python/
 doxygen -u
 popd
-pushd xbmc-pvr-addons
-./bootstrap
-popd
 export PKG_CONFIG_PATH=%{_libdir}/pkgconfig
 export GIT_REV="tarball"
 ./bootstrap
@@ -321,7 +324,8 @@ export GIT_REV="tarball"
 # Workaround configure using git to override GIT_REV (TODO: fix it properly)
 export ac_cv_prog_HAVE_GIT="no"
 
-%configure2_5x \
+%global debugcflags %{debugcflags} -fno-var-tracking-assignments
+%configure \
 	--disable-debug \
 %ifarch %{arm}
 	--enable-neon	\
@@ -336,7 +340,7 @@ export ac_cv_prog_HAVE_GIT="no"
 %endif
 	--enable-goom \
 	--enable-pulse \
-	--with-lirc-device=/var/run/lirc/lircd \
+	--with-lirc-device=%{_varrun}/lirc/lircd \
 	--enable-libcap \
 	--enable-texturepacker \
 	--enable-libusb \
@@ -351,19 +355,21 @@ export ac_cv_prog_HAVE_GIT="no"
 	--enable-projectm \
 	--enable-xrandr \
 	--enable-gl \
+	--enable-sdl \
 	--enable-vdpau \
 	--enable-vaapi \
 	--enable-libbluray \
 	--disable-openmax \
 	--enable-rsxs \
-	--disable-gles
+	--disable-gles \
+	--disable-wayland
 
 # non-free = unrar
 # dvdcss is handled via dlopen when disabled
 # (cg) We cannot enable MythTV support easily via a passthrough configure from above
 #      so re-run configure here and explicitly pass the --enable-addons-with-dependencies option
-pushd xbmc-pvr-addons
-%configure2_5x \
+pushd pvr-addons
+%configure \
 	--enable-addons-with-dependencies \
 	--enable-release
 %make
@@ -450,14 +456,12 @@ ok=1
 %{_libdir}/xbmc/addons/*/*.xbs
 %{_libdir}/xbmc/addons/*/*.pvr
 %{_libdir}/xbmc/system/ImageLib-*.so
-%{_libdir}/xbmc/system/hdhomerun-*.so
 %{_libdir}/xbmc/system/libcmyth-*.so
 %{_libdir}/xbmc/system/libcpluff-*.so
 %{_libdir}/xbmc/system/libexif-*.so
 %{_libdir}/xbmc/system/players/dvdplayer/libdvdcss-*.so
 %{_libdir}/xbmc/system/players/dvdplayer/libdvdnav-*.so
 #%{_libdir}/xbmc/system/players/paplayer/adpcm-*.so
-%{_libdir}/xbmc/system/players/paplayer/libsidplay2-*.so
 %{_libdir}/xbmc/system/players/paplayer/nosefart-*.so
 %{_libdir}/xbmc/system/players/paplayer/stsoundlibrary-*.so
 %{_libdir}/xbmc/system/players/paplayer/timidity-*.so
