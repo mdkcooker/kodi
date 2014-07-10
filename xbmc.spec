@@ -15,14 +15,9 @@ Release:	1
 License:	GPLv2+ and GPLv2 and (LGPLv3+ with exceptions)
 Group:		Video
 Url:		http://xbmc.org/
-Source0:	http://mirrors.xbmc.org/releases/source/%{name}-%{version}.tar.gz
+#Source0:	http://mirrors.xbmc.org/releases/source/%{name}-%{version}.tar.gz
+Source0: 	xbmc-13.1.tar.gz
 Source1:	xbmc.rpmlintrc
-# (cg) From https://github.com/opdenkamp/xbmc-pvr-addons
-# ./bootstrap && ./configure && make dist-xz
-# commit 1db308ba7db2aa5ecea22cb032ec20e04e4e6730
-# 20140529
-Source2:	xbmc-pvr-addons-1db308ba7db2aa5ecea22cb032ec20e04e4e6730.tar.xz
-
 Patch0:		xbmc-13.0-external-ffmpeg.patch
 Patch1:		xbmc-13.0-no-win32.patch
 # Display Music Videos in "Artist - Name" format instead of just "Name"
@@ -30,49 +25,19 @@ Patch2:		xbmc-13.0-upnp-musicvideos-artist.patch
 # Fix bug with UPnP playback for Playlists
 Patch3:		xbmc-13.0-upnp-playlists.patch
 
-# work around weird gold output redirection weirdness...
-Patch4:		xbmc-13.1-try-work-around-gold-linker-output-fd-weirdness.patch
-# Fix bootstrap script return value on error
-Patch5:		xbmc-bootstrap-return-value.patch
-
-# Hack to workaround upgrading from our old hack... see patch header for more
-# details and an upstreaming plan.
-#Patch213:	0001-hack-workaround-for-old-incompatible-PVR-addon-datab.patch
-
-# https://bugs.mageia.org/show_bug.cgi?id=2331
-# TODO: needs changes for upstreaming
-Patch214:	xbmc-13.1-Gotham-Fix-handling-of-filenames-with-spaces-in-wrapper-she.patch
-
-# debian patches
-Patch101:	0001-Don-t-enter-ffmpeg-dir-when-using-external-ffmpeg-li.patch
-Patch102:	0002-Fix-compilation-with-libav-10-beta1.patch
-Patch103:	0004-Disable-static-ffmpeg-when-using-external-ffmpeg-liba.patch
-Patch104:	0005-Fix-av_stream_get_r_frame_rate-Libav-hack-accessor.patch
-Patch105:	0006-Define-AV_CODEC_ID_SUBRIP-to-AV_CODEC_ID_TEXT-in-lib.patch
-#Patch106:	0007-Enable-using-external-ffmpeg-in-.-configure.patch
-Patch107:	04-differentiate-from-vanilla-XBMC.patch
-Patch108:	05-Fix-GLES-with-X11.patch
-Patch109:	06-use-external-libraries.patch
-Patch110:	07-use-system-groovy.patch
-Patch111:	08-armel.patch
-Patch112:	09-use-correct-ftgl.h
-Patch113:	10-configure-all-arches.patch
-
 BuildRequires:	afpclient-devel
 BuildRequires:	avahi-common-devel
 BuildRequires:	boost-devel
-BuildRequires:	cap-devel
 BuildRequires:	bzip2-devel
 BuildRequires:	crystalhd-devel
 BuildRequires:	cwiid-devel
 BuildRequires:	ffmpeg-devel
 BuildRequires:	gettext-devel
-BuildRequires:	hdhomerun-devel
 BuildRequires:	jpeg-devel
 BuildRequires:	lzo-devel
-BuildRequires:	mariadb-devel
+BuildRequires:	mysql-devel
+BuildRequires:	python-devel
 BuildRequires:	rtmp-devel
-BuildRequires:	rsxs
 BuildRequires:	ssh-devel
 BuildRequires:	tiff-devel
 BuildRequires:	tinyxml-devel
@@ -81,7 +46,6 @@ BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(avahi-client)
 BuildRequires:	pkgconfig(bluez)
 BuildRequires:	pkgconfig(dbus-1)
-BuildRequires:	pkgconfig(egl)
 BuildRequires:	pkgconfig(enca)
 BuildRequires:	pkgconfig(expat)
 BuildRequires:	pkgconfig(flac)
@@ -89,7 +53,6 @@ BuildRequires:	pkgconfig(fontconfig)
 BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(fribidi)
 BuildRequires:	pkgconfig(gl)
-#BuildRequires:	pkgconfig(glesv2)
 BuildRequires:	pkgconfig(glew)
 BuildRequires:	pkgconfig(glu)
 BuildRequires:	pkgconfig(ice)
@@ -112,15 +75,12 @@ BuildRequires:	pkgconfig(libpcre)
 BuildRequires:	pkgconfig(libplist)
 BuildRequires:	pkgconfig(libpng)
 BuildRequires:	pkgconfig(libpulse)
-BuildRequires:	pkgconfig(libsidplay2)
 BuildRequires:	pkgconfig(libshairport)
 BuildRequires:	pkgconfig(libva)
 BuildRequires:	pkgconfig(libxslt)
 BuildRequires:	pkgconfig(mad)
-BuildRequires:	pkgconfig(python2)
 BuildRequires:	pkgconfig(ogg)
 BuildRequires:	pkgconfig(openssl)
-BuildRequires:	pkgconfig(libprojectM)
 BuildRequires:	pkgconfig(samplerate)
 BuildRequires:	pkgconfig(sdl)
 BuildRequires:	pkgconfig(SDL_mixer)
@@ -131,6 +91,7 @@ BuildRequires:	pkgconfig(taglib)
 BuildRequires:	pkgconfig(udev)
 BuildRequires:	pkgconfig(vdpau)
 BuildRequires:	pkgconfig(vorbis)
+BuildRequires:	pkgconfig(wavpack)
 BuildRequires:	pkgconfig(x11)
 BuildRequires:	pkgconfig(xinerama)
 BuildRequires:	pkgconfig(xmu)
@@ -141,43 +102,38 @@ BuildRequires:	pkgconfig(zlib)
 BuildRequires:	cmake
 BuildRequires:	gperf
 BuildRequires:	zip
-%if "%{disttag}" == "mdk"
-BuildRequires:	lame-devel
-%endif
-%ifarch %{ix86} x86_64
+%ifarch %{ix86}
 BuildRequires:	nasm
 %endif
 Requires:	lsb-release
 # for codegenrator
 BuildRequires:	doxygen
-BuildRequires:	java-rpmbuild
+BuildRequires:	java
 BuildRequires:	swig
-%if "%{distepoch}" >= "2014.0"
-BuildRequires:	groovy
-%endif
-BuildRequires:	apache-commons-lang
 
-Requires:	%{dlopen_req curl}
-Requires:	%{dlopen_req FLAC}
-Requires:	%{dlopen_req mad}
-Requires:	%{dlopen_req ogg}
-Requires:	%{dlopen_req vorbis}
-Requires:	%{dlopen_req vorbisenc}
-Requires:	%{dlopen_req vorbisfile}
-Requires:	%{dlopen_req modplug}
-Requires:	%{dlopen_req rtmp}
-Requires:	%{dlopen_req mpeg2}
-Requires:	%{dlopen_req ass}
-Requires:	%{dlopen_req bluray}
-Requires:	%{dlopen_req nfs}
-Requires:	%{dlopen_req afpclient}
-Requires:	%{dlopen_req plist}
-Requires:	%{dlopen_req shairport}
+# dlopened (existence check required by rpm5 as it doesn't use stderr):
+%define dlopenreq() %([ -e %{_libdir}/lib%{1}.so ] && rpm -qf --qf '%%{name}' $(readlink -f %{_libdir}/lib%{1}.so) 2>/dev/null || echo %{name})
+Requires:	%dlopenreq curl
+Requires:	%dlopenreq FLAC
+Requires:	%dlopenreq mad
+Requires:	%dlopenreq ogg
+Requires:	%dlopenreq vorbis
+Requires:	%dlopenreq vorbisenc
+Requires:	%dlopenreq vorbisfile
+Requires:	%dlopenreq modplug
+Requires:	%dlopenreq rtmp
+Requires:	%dlopenreq mpeg2
+Requires:	%dlopenreq ass
+Requires:	%dlopenreq bluray
+Requires:	%dlopenreq nfs
+Requires:	%dlopenreq afpclient
+Requires:	%dlopenreq plist
+Requires:	%dlopenreq shairport
 %if %{build_cec}
-Requires:	%{dlopen_req cec}
+Requires:	%dlopenreq cec
 %endif
 # not nearly as common as the above, so just suggest instead for now:
-Suggests:	%{dlopen_req crystalhd}
+Suggests:	%dlopenreq crystalhd
 # TODO: FEH.py is useless nowadays, drop it here and upstream.
 # for FEH.py, to check current configuration is ok for xbmc:
 Requires:	xdpyinfo
@@ -204,19 +160,70 @@ ideal solution for your home theater.
 
 Support for RAR files is not included due to license issues.
 
+%files
+%doc %{_docdir}/xbmc
+%{_sysconfdir}/X11/wmsession.d/15XBMC
+%{_bindir}/xbmc
+%{_bindir}/xbmc-standalone
+%dir %{_libdir}/xbmc
+%dir %{_libdir}/xbmc/addons
+%dir %{_libdir}/xbmc/system
+%dir %{_libdir}/xbmc/system/players
+%dir %{_libdir}/xbmc/system/players/dvdplayer
+%dir %{_libdir}/xbmc/system/players/paplayer
+%{_libdir}/xbmc/xbmc.bin
+%{_libdir}/xbmc/xbmc-xrandr
+%dir %{_libdir}/xbmc/addons/*
+%{_libdir}/xbmc/addons/*/*.so
+%{_libdir}/xbmc/addons/*/*.vis
+%{_libdir}/xbmc/addons/*/*.xbs
+%{_libdir}/xbmc/system/ImageLib-*.so
+%{_libdir}/xbmc/system/hdhomerun-*.so
+%{_libdir}/xbmc/system/libcmyth-*.so
+%{_libdir}/xbmc/system/libcpluff-*.so
+%{_libdir}/xbmc/system/libexif-*.so
+%{_libdir}/xbmc/system/players/dvdplayer/libdvdnav-*.so
+%{_libdir}/xbmc/system/players/paplayer/libsidplay2-*.so
+%{_libdir}/xbmc/system/players/paplayer/nosefart-*.so
+%{_libdir}/xbmc/system/players/paplayer/stsoundlibrary-*.so
+%{_libdir}/xbmc/system/players/paplayer/timidity-*.so
+%{_libdir}/xbmc/system/players/paplayer/vgmstream-*.so
+%ifarch %{ix86}
+%{_libdir}/xbmc/system/players/paplayer/SNESAPU-*.so
+%endif
+%dir %{_datadir}/xbmc
+%{_datadir}/xbmc/addons
+%{_datadir}/xbmc/FEH.py
+%{_datadir}/xbmc/language
+%{_datadir}/xbmc/media
+%{_datadir}/xbmc/sounds
+%{_datadir}/xbmc/system
+%{_datadir}/xbmc/userdata
+%{_datadir}/applications/xbmc.desktop
+%{_iconsdir}/hicolor/*/apps/xbmc.png
+
+#----------------------------------------------------------------------------
+
 %package	devel
 Summary:	Development files for XBMC
 License:	GPLv2+
 Group:		Development/C
 Provides:	xbmc-eventclients-devel = %{EVRD}
-Conflicts:	xbmc-eventclients-devel < 13.0
-Obsoletes:	xbmc-eventclients-devel < 13.0
+Conflicts:	xbmc-eventclients-devel < 13.1
+Obsoletes:	xbmc-eventclients-devel < 13.1
 
 %description	devel
 XBMC is an award-winning free and open source software media player
 and entertainment hub for digital media.
 
 This package contains files needed to build addons and eventclients.
+
+%files devel
+%dir %{_includedir}/xbmc
+%{_includedir}/xbmc/*
+%{_libdir}/xbmc/*.cmake
+
+#----------------------------------------------------------------------------
 
 %package	eventclients-common
 Summary:	Common files for XBMC eventclients
@@ -229,6 +236,13 @@ and entertainment hub for digital media.
 
 This package contains common files for eventclients.
 
+%files eventclients-common
+%{python_sitelib}/xbmc
+%dir %{_datadir}/pixmaps/xbmc
+%{_datadir}/pixmaps/xbmc/*.png
+
+#----------------------------------------------------------------------------
+
 %package	eventclient-wiiremote
 Summary:	Wii Remote eventclient for XBMC
 License:	GPLv3+
@@ -240,6 +254,11 @@ XBMC is an award-winning free and open source software media player
 and entertainment hub for digital media.
 
 This package contains the Wii Remote eventclient.
+
+%files eventclient-wiiremote
+%{_bindir}/xbmc-wiiremote
+
+#----------------------------------------------------------------------------
 
 %package	eventclient-j2me
 Summary:	J2ME eventclient for XBMC
@@ -254,6 +273,11 @@ and entertainment hub for digital media.
 
 This package contains the J2ME eventclient, providing a bluetooth
 server that can communicate with a mobile tool supporting J2ME.
+
+%files eventclient-j2me
+%{_bindir}/xbmc-j2meremote
+
+#----------------------------------------------------------------------------
 
 %package	eventclient-ps3
 Summary:	PS3 eventclients for XBMC
@@ -270,6 +294,12 @@ and entertainment hub for digital media.
 
 This package contains the PS3 remote and sixaxis eventclients.
 
+%files eventclient-ps3
+%{_bindir}/xbmc-ps3d
+%{_bindir}/xbmc-ps3remote
+
+#----------------------------------------------------------------------------
+
 %package	eventclient-xbmc-send
 Summary:	PS3 eventclient for XBMC
 License:	GPLv2+
@@ -281,14 +311,18 @@ XBMC is an award-winning free and open source software media player
 and entertainment hub for digital media.
 
 This package contains the xbmc-send eventclient.
+
+%files eventclient-xbmc-send
+%{_bindir}/xbmc-send
+
 #----------------------------------------------------------------------------
 
 %prep
-%setup -q -a 2 -n %{name}-%{version}%{?codename:-%{codename}}
-%apply_patches
-%if "%{distepoch}" <= "2014.0"
-#%patch107 -p1 -R
-%endif
+%setup -qn %{name}-%{version}-%{codename}
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
 
 find . -name "Makefile*" -o -name "*.m4" -o -name "configure*" -o -name "missing" -o -name "bootstrap*" |xargs sed -i -e 's,configure.in,configure.ac,g'
 cp configure.in configure.ac
@@ -305,17 +339,9 @@ rm -r lib/cmyth/Win32/include/mysql
 # win32 only
 rm -rf system/players/dvdplayer/etc/fonts
 
-pushd xbmc/interfaces/python/
-doxygen -u
-popd
-export PKG_CONFIG_PATH=%{_libdir}/pkgconfig
+%build
 export GIT_REV="tarball"
 ./bootstrap
-ln -s configure.ac configure.in
-
-%build
-export PKG_CONFIG_PATH=%{_libdir}/pkgconfig
-export GIT_REV="tarball"
 
 # due to xbmc modules that use symbols from xbmc binary
 # and are not using libtool
@@ -324,56 +350,21 @@ export GIT_REV="tarball"
 # Workaround configure using git to override GIT_REV (TODO: fix it properly)
 export ac_cv_prog_HAVE_GIT="no"
 
-%global debugcflags %{debugcflags} -fno-var-tracking-assignments
-%configure \
+%configure2_5x \
 	--disable-debug \
+	--disable-ccache \
 %ifarch %{arm}
 	--enable-neon	\
 %endif
 	--enable-external-libraries \
-	--enable-external-ffmpeg \
-%if "%{disttag}" == "mdk"
-	--enable-non-free \
-%else
 	--disable-non-free \
 	--disable-dvdcss \
-%endif
 	--enable-goom \
 	--enable-pulse \
-	--with-lirc-device=%{_varrun}/lirc/lircd \
-	--enable-libcap \
-	--enable-texturepacker \
-	--enable-libusb \
-	--enable-libmp3lame \
-	--enable-avahi \
-	--disable-hal \
-	--enable-mid \
-	--enable-ffmpeg-libvorbis \
-	--enable-nfs \
-	--enable-upnp \
-	--enable-x11 \
-	--enable-projectm \
-	--enable-xrandr \
-	--enable-gl \
-	--enable-sdl \
-	--enable-vdpau \
-	--enable-vaapi \
-	--enable-libbluray \
-	--disable-openmax \
-	--enable-rsxs \
-	--disable-gles \
-	--disable-wayland
+	--with-lirc-device=/var/run/lirc/lircd
 
 # non-free = unrar
 # dvdcss is handled via dlopen when disabled
-# (cg) We cannot enable MythTV support easily via a passthrough configure from above
-#      so re-run configure here and explicitly pass the --enable-addons-with-dependencies option
-pushd pvr-addons
-%configure \
-	--enable-addons-with-dependencies \
-	--enable-release
-%make
-popd
 
 %make
 %make -C tools/EventClients wiimote
@@ -437,68 +428,3 @@ ok=1
 [ -n "$ok" ]
 )
 
-%files
-%doc %{_docdir}/xbmc
-%{_sysconfdir}/X11/wmsession.d/15XBMC
-%{_bindir}/xbmc
-%{_bindir}/xbmc-standalone
-%dir %{_libdir}/xbmc
-%dir %{_libdir}/xbmc/addons
-%dir %{_libdir}/xbmc/system
-%dir %{_libdir}/xbmc/system/players
-%dir %{_libdir}/xbmc/system/players/dvdplayer
-%dir %{_libdir}/xbmc/system/players/paplayer
-%{_libdir}/xbmc/xbmc.bin
-%{_libdir}/xbmc/xbmc-xrandr
-%dir %{_libdir}/xbmc/addons/*
-%{_libdir}/xbmc/addons/*/*.so
-%{_libdir}/xbmc/addons/*/*.vis
-%{_libdir}/xbmc/addons/*/*.xbs
-%{_libdir}/xbmc/addons/*/*.pvr
-%{_libdir}/xbmc/system/ImageLib-*.so
-%{_libdir}/xbmc/system/libcmyth-*.so
-%{_libdir}/xbmc/system/libcpluff-*.so
-%{_libdir}/xbmc/system/libexif-*.so
-%{_libdir}/xbmc/system/players/dvdplayer/libdvdcss-*.so
-%{_libdir}/xbmc/system/players/dvdplayer/libdvdnav-*.so
-#%{_libdir}/xbmc/system/players/paplayer/adpcm-*.so
-%{_libdir}/xbmc/system/players/paplayer/nosefart-*.so
-%{_libdir}/xbmc/system/players/paplayer/stsoundlibrary-*.so
-%{_libdir}/xbmc/system/players/paplayer/timidity-*.so
-%{_libdir}/xbmc/system/players/paplayer/vgmstream-*.so
-%ifarch %{ix86}
-%{_libdir}/xbmc/system/players/paplayer/SNESAPU-*.so
-%endif
-%dir %{_datadir}/xbmc
-%{_datadir}/xbmc/addons
-%{_datadir}/xbmc/FEH.py
-%{_datadir}/xbmc/language
-%{_datadir}/xbmc/media
-%{_datadir}/xbmc/sounds
-%{_datadir}/xbmc/system
-%{_datadir}/xbmc/userdata
-%{_datadir}/applications/xbmc.desktop
-%{_iconsdir}/hicolor/*/apps/xbmc.png
-
-%files eventclients-common
-%{python_sitelib}/xbmc
-%dir %{_datadir}/pixmaps/xbmc
-%{_datadir}/pixmaps/xbmc/*.png
-
-%files devel
-%dir %{_includedir}/xbmc
-%{_includedir}/xbmc/*
-%{_libdir}/xbmc/*.cmake
-
-%files eventclient-j2me
-%{_bindir}/xbmc-j2meremote
-
-%files eventclient-ps3
-%{_bindir}/xbmc-ps3d
-%{_bindir}/xbmc-ps3remote
-
-%files eventclient-xbmc-send
-%{_bindir}/xbmc-send
-
-%files eventclient-wiiremote
-%{_bindir}/xbmc-wiiremote

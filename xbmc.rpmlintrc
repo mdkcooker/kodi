@@ -1,2 +1,2 @@
+addFilter("E: devel-file-in-non-devel-package")
 addFilter("E: explicit-lib-dependency")
-addFilter('xbmc\..*:.*devel-file-in-non-devel-package.*/usr/share/xbmc/addons/')
