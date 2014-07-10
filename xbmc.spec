@@ -15,7 +15,8 @@ Release:	1
 License:	GPLv2+ and GPLv2 and (LGPLv3+ with exceptions)
 Group:		Video
 Url:		http://xbmc.org/
-Source0:	http://mirrors.xbmc.org/releases/source/%{name}-%{version}.tar.gz
+#Source0:	http://mirrors.xbmc.org/releases/source/%{name}-%{version}.tar.gz
+Source0:    xbmc-13.1.tar.gz
 Source1:	xbmc.rpmlintrc
 # (cg) From https://github.com/opdenkamp/xbmc-pvr-addons
 # ./bootstrap && ./configure && make dist-xz
@@ -209,8 +210,8 @@ Summary:	Development files for XBMC
 License:	GPLv2+
 Group:		Development/C
 Provides:	xbmc-eventclients-devel = %{EVRD}
-Conflicts:	xbmc-eventclients-devel < 13.0
-Obsoletes:	xbmc-eventclients-devel < 13.0
+Conflicts:	xbmc-eventclients-devel < 13.1
+Obsoletes:	xbmc-eventclients-devel < 13.1
 
 %description	devel
 XBMC is an award-winning free and open source software media player
