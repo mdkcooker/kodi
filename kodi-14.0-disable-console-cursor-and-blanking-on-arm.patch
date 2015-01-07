@@ -1,0 +1,16 @@
+--- xbmc-14.0-Helix/tools/Linux/kodi.sh.in.console~	2014-12-22 23:11:35.000000000 +0000
++++ xbmc-14.0-Helix/tools/Linux/kodi.sh.in	2015-01-07 09:16:39.869238166 +0000
+@@ -28,6 +28,13 @@ LIBDIR="@libdir@"
+ CRASHLOG_DIR=${CRASHLOG_DIR:-$HOME}
+ USERDATA_DIR="${HOME}/.${bin_name}"
+ 
++if [ "$(arch)" == "armv7hl" ]; then
++    # disable screen blanking
++    echo -e '\033[9;0]' > /dev/tty0
++    # disable console cursor
++    echo -e '\033[?25h' > /dev/tty0
++    echo -e '\033[?17;0;0c' > /dev/tty0
++fi
+ 
+ # Check for some options used by this script
+ while [ "$#" -gt "0" ]

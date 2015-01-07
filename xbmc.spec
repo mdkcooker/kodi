@@ -27,6 +27,10 @@ Patch1:		xbmc-13.0-no-win32.patch
 Patch2:		kodi-14.0-EventClients-python-override.patch
 Patch3:		xbmc-14.0-remove-usage-of-dead-internal-ffmpeg-function.patch
 Patch4:		0001-fix-some-merory-errors-in-kodi-wiiremote.patch
+# This will disable console screen blanking and cursor blinking on arm, where
+# kodi will rather run on console using OpenGL ES, hence the need to disable
+# features such as console blanking and cursor blinking as they'll interfer.
+Patch5:		kodi-14.0-disable-console-cursor-and-blanking-on-arm.patch
 
 # Hack to workaround upgrading from our old hack... see patch header for more
 # details and an upstreaming plan.
