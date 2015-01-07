@@ -92,6 +92,7 @@ BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(fribidi)
 %ifarch armv7hl
 BuildRequires:	libgpu-viv-bin-mx6q-devel
+Provides:	kodi(wandboard) = %{EVRD}
 %endif
 %ifarch %{armx}
 BuildRequires:	pkgconfig(glesv2)
