@@ -193,7 +193,7 @@ Requires:	%{dlopen_req shairport}
 Requires:	%{dlopen_req cec}
 %endif
 # not nearly as common as the above, so just suggest instead for now:
-Suggests:	%{dlopenreq crystalhd}
+Suggests:	%{dlopen_req crystalhd}
 # TODO: FEH.py is useless nowadays, drop it here and upstream.
 # for FEH.py, to check current configuration is ok for kodi:
 Requires:	xdpyinfo
