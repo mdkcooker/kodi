@@ -1,9 +1,9 @@
-%define build_cec 1
-%define codename Helix
+%define build_cec 0
+%define codename Jarvis
 
 Summary:	XBMC Media Center - media player and home entertainment system
 Name:		kodi
-Version:	14.0
+Version:	16.1
 Release:	1
 # nosefart audio plugin and RSXS-0.9 based screensavers are GPLv2 only
 # several eventclients are GPLv3+ (in subpackages)
@@ -15,6 +15,7 @@ Release:	1
 License:	GPLv2+ and GPLv2 and (LGPLv3+ with exceptions)
 Group:		Video
 Url:		http://kodi.tv/
+%define	srcver	17.0b5
 Source0:	http://mirrors.kodi.tv/releases/source/%{version}-%{codename}.tar.gz
 Source1:	kodi.rpmlintrc
 # (cg) From https://github.com/opdenkamp/xbmc-pvr-addons.xz
@@ -23,14 +24,14 @@ Source1:	kodi.rpmlintrc
 # 20140529
 Source2:	kodi-pvr-addons-78397afa33774b484a1649c379d9b5e6eb3180c0.tar.xz
 
-Patch1:		xbmc-13.0-no-win32.patch
+#Patch1:		xbmc-13.0-no-win32.patch
 Patch2:		kodi-14.0-EventClients-python-override.patch
 Patch3:		xbmc-14.0-remove-usage-of-dead-internal-ffmpeg-function.patch
 Patch4:		0001-fix-some-merory-errors-in-kodi-wiiremote.patch
 # This will disable console screen blanking and cursor blinking on arm, where
 # kodi will rather run on console using OpenGL ES, hence the need to disable
 # features such as console blanking and cursor blinking as they'll interfer.
-Patch5:		kodi-14.0-disable-console-cursor-and-blanking-on-arm.patch
+Patch5:		kodi-16.1-disable-console-cursor-and-blanking-on-arm.patch
 
 # Hack to workaround upgrading from our old hack... see patch header for more
 # details and an upstreaming plan.
@@ -49,8 +50,9 @@ Patch5:		kodi-14.0-disable-console-cursor-and-blanking-on-arm.patch
 #Patch106:	0007-Enable-using-external-ffmpeg-in-.-configure.patch
 #Patch107:	04-differentiate-from-vanilla-XBMC.patch
 #Patch108:	05-Fix-GLES-with-X11.patch
-Patch109:	06-use-external-libraries.patch
-Patch110:	07-use-system-groovy.patch
+#Patch109:	06-use-external-libraries.patch
+#FIXME: later...
+#Patch110:	07-use-system-groovy.patch
 #Patch111:	08-armel.patch
 #Patch112:	09-use-correct-ftgl.h
 #Patch113:	10-configure-all-arches.patch
@@ -75,6 +77,7 @@ BuildRequires:	pkgconfig(mariadb)
 BuildRequires:	rtmp-devel
 %ifnarch %{armx}
 BuildRequires:	rsxs
+%endif
 BuildRequires:	ssh-devel
 BuildRequires:	tiff-devel
 BuildRequires:	tinyxml-devel
@@ -171,7 +174,7 @@ BuildRequires:	nasm
 Requires:	lsb-release
 # for codegenrator
 BuildRequires:	doxygen
-BuildRequires:	java-build
+BuildRequires:	java-devel
 BuildRequires:	swig
 Requires:	%{dlopen_req curl}
 Requires:	%{dlopen_req FLAC}
@@ -250,11 +253,6 @@ and entertainment hub for digital media.
 
 This package contains common files for eventclients.
 
-%files eventclients-common
-%{python_sitelib}/xbmc
-%dir %{_datadir}/pixmaps/xbmc
-%{_datadir}/pixmaps/xbmc/*.png
-
 %package	eventclient-wiiremote
 Summary:	Wii Remote eventclient for XBMC
 License:	GPLv3+
@@ -315,8 +313,6 @@ This package contains the xbmc-send eventclient.
 #%patch107 -p1 -R
 %endif
 
-find . -name "Makefile*" -o -name "*.m4" -o -name "configure*" -o -name "missing" -o -name "bootstrap*" |xargs sed -i -e 's,configure.in,configure.ac,g'
-cp configure.in configure.ac
 
 # otherwise backups end up in binary rpms
 find -type f \( -name '*.00??' -o -name '*.00??~' \) -print -delete
@@ -327,12 +323,8 @@ find -type f \( -iname '*.so' -o -iname '*.dll' -o -iname '*.exe' \) -delete
 # win32 only
 rm -rf system/players/dvdplayer/etc/fonts
 
-pushd xbmc/interfaces/python/
-doxygen -u
-popd
 export PKG_CONFIG_PATH=%{_libdir}/pkgconfig
 ./bootstrap
-ln -s configure.ac configure.in
 
 %build
 export PKG_CONFIG_PATH=%{_libdir}/pkgconfig
@@ -341,7 +333,7 @@ export PKG_CONFIG_PATH=%{_libdir}/pkgconfig
 # and are not using libtool
 %define _disable_ld_no_undefined 1
 
-%global debugcflags %{debugcflags} -fno-var-tracking-assignments
+%global debugcflags %{debugcflags}
 %global optflags %{optflags} -Ofast
 %configure \
 	--disable-debug \
@@ -352,6 +344,9 @@ export PKG_CONFIG_PATH=%{_libdir}/pkgconfig
 %if "%{disttag}" == "mdk"
 	--enable-non-free \
 %else
+	--disable-non-free \
+	--disable-dvdcss \
+%endif
 	--with-lirc-device=%{_varrun}/lirc/lircd \
 	--enable-pulse \
 	--enable-libcap \

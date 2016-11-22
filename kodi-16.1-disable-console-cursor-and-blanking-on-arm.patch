@@ -1,5 +1,5 @@
---- xbmc-14.0-Helix/tools/Linux/kodi.sh.in.console~	2014-12-22 23:11:35.000000000 +0000
-+++ xbmc-14.0-Helix/tools/Linux/kodi.sh.in	2015-01-07 09:16:39.869238166 +0000
+--- xbmc-16.1-Jarvis/tools/Linux/kodi.sh.in.0005~	2016-11-21 23:40:23.325286288 +0000
++++ xbmc-16.1-Jarvis/tools/Linux/kodi.sh.in	2016-11-21 23:42:04.101684785 +0000
 @@ -28,6 +28,13 @@ LIBDIR="@libdir@"
  CRASHLOG_DIR=${CRASHLOG_DIR:-$HOME}
  USERDATA_DIR="${HOME}/.${bin_name}"
